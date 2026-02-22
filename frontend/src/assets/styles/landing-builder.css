@@ -1,0 +1,450 @@
+/**
+ * Clickify Landing Page Builder - CSS Styles
+ */
+
+/* Editor Container */
+.lp-editor-pro {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: #1a1a2e;
+    border-radius: 12px;
+    min-height: 400px;
+}
+
+/* Toolbar */
+.lp-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.lp-toolbar label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.lp-toolbar input[type="number"],
+.lp-toolbar input[type="text"],
+.lp-toolbar input[type="color"] {
+    padding: 6px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 13px;
+}
+
+.lp-toolbar input[type="color"] {
+    width: 40px;
+    height: 32px;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.lp-toolbar input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.lp-toolbar button {
+    padding: 8px 14px;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lp-toolbar button:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.lp-toolbar button:active {
+    transform: scale(0.98);
+}
+
+.lp-toolbar button[data-theme] {
+    min-width: 80px;
+}
+
+.lp-toolbar button[data-theme="azul"] {
+    background: #2F6BFF;
+}
+
+.lp-toolbar button[data-theme="verde"] {
+    background: #0b8a6a;
+}
+
+.lp-toolbar button[data-theme="escuro"] {
+    background: #374151;
+}
+
+.lp-toolbar button[data-theme="premium"] {
+    background: linear-gradient(135deg, #ffd66e, #f59e0b);
+    color: #000;
+}
+
+.lp-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 8px;
+}
+
+/* Preview Area */
+.lp-preview {
+    flex: 1;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    min-height: 300px;
+    color: #111827;
+    overflow: auto;
+}
+
+.lp-preview:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Sections */
+.lp-section {
+    padding: 24px;
+    margin: 16px 0;
+    min-height: 200px;
+    border: 2px dashed transparent;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.lp-section:hover {
+    border-color: #3b82f6;
+}
+
+.lp-section.selected {
+    border-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+/* CTA Button */
+.lp-cta,
+.lp-preview a {
+    display: inline-block;
+    background: #3b82f6;
+    color: #ffffff;
+    border: 1px solid #3b82f6;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.lp-cta:hover,
+.lp-preview a:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+/* Images */
+.lp-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin: 12px 0;
+}
+
+/* Iframes */
+.lp-preview iframe {
+    width: 100%;
+    height: 360px;
+    border: none;
+    border-radius: 10px;
+    margin: 12px 0;
+}
+
+/* Headings */
+.lp-preview h1 {
+    font-size: 2.5em;
+    margin: 0 0 16px 0;
+    color: #111827;
+}
+
+.lp-preview h2 {
+    font-size: 1.75em;
+    margin: 0 0 12px 0;
+    color: #374151;
+}
+
+.lp-preview h3 {
+    font-size: 1.25em;
+    margin: 0 0 8px 0;
+    color: #374151;
+}
+
+/* Paragraphs */
+.lp-preview p {
+    line-height: 1.6;
+    margin: 0 0 12px 0;
+    color: #4b5563;
+}
+
+/* Funnel Card Styles */
+.funnel-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.funnel-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.funnel-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.funnel-name {
+    font-size: 1em;
+    font-weight: 600;
+    color: #f9fafb;
+    margin: 0;
+}
+
+.funnel-date {
+    font-size: 0.85em;
+    color: #9ca3af;
+}
+
+.funnel-menu {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.funnel-menu:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #f9fafb;
+}
+
+/* Funnel Popup Menu */
+.funnel-pop {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    display: none;
+    min-width: 140px;
+}
+
+.funnel-pop.open {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.funnel-pop .funnel-edit,
+.funnel-pop .funnel-delete {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #f9fafb;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.funnel-pop .funnel-edit:hover,
+.funnel-pop .funnel-delete:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.funnel-pop .funnel-delete {
+    color: #ef4444;
+}
+
+.funnel-pop .funnel-delete:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Confirm Row */
+.confirm-row {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+.confirm-row .yes,
+.confirm-row .no {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.confirm-row .yes {
+    background: #ef4444;
+    color: #fff;
+}
+
+.confirm-row .yes:hover {
+    background: #dc2626;
+}
+
+.confirm-row .no {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f9fafb;
+}
+
+.confirm-row .no:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Edit Page View */
+#editPageView {
+    --lp-bg: #0b0f14;
+    --lp-text: #e8f0ff;
+    --lp-border: #303a49;
+    --lp-accent: #0e7a50;
+}
+
+#editPageView .ep-content {
+    background: var(--lp-bg);
+    color: var(--lp-text);
+    border: 1px solid var(--lp-border);
+    border-radius: 12px;
+    padding: 24px;
+    min-height: 400px;
+}
+
+.ep-section {
+    padding: 16px;
+    margin: 12px 0;
+    min-height: 150px;
+    border: 1px dashed transparent;
+    border-radius: 8px;
+    transition: border-color 0.2s;
+}
+
+.ep-section:hover {
+    border-color: var(--lp-accent);
+}
+
+.ep-section.selected {
+    border-color: var(--lp-accent);
+    background: rgba(14, 122, 80, 0.1);
+}
+
+/* Animations */
+.anim-fade {
+    animation: fadeIn 0.5s ease;
+}
+
+.anim-slide {
+    animation: slideIn 0.5s ease;
+}
+
+.anim-pop {
+    animation: popIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Column layouts */
+.ep-one .ep-inner,
+.lp-preview.ep-one {
+    display: block;
+}
+
+.ep-two .ep-inner,
+.lp-preview.ep-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.ep-three .ep-inner,
+.lp-preview.ep-three {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .lp-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .lp-toolbar button {
+        width: 100%;
+    }
+    
+    .ep-two .ep-inner,
+    .lp-preview.ep-two,
+    .ep-three .ep-inner,
+    .lp-preview.ep-three {
+        grid-template-columns: 1fr;
+    }
+}

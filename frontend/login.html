@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clickify - A plataforma de pagamentos que acelera seus resultados financeiros</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css" />
+
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #00b8ff;
+      --dark-text: #333;
+      --light-bg: #f9fbff;
+      --white: #fff;
+      --gradient: linear-gradient(135deg, #007bff, #00b8ff);
+      --card-shadow: 0 8px 20px rgba(2,30,76,0.06);
+      --bg: #0b1020;
+      --bg-elev: #0f172a;
+      --text: #e5e7eb;
+      --muted: rgba(229,231,235,0.72);
+      --border: rgba(255,255,255,0.14);
+      --shadow-lg: 0 24px 80px rgba(0,0,0,0.45);
+      --header-surface: rgba(15, 23, 42, 0.82);
+    }
+
+    /* ---------- Global (site inicial) ---------- */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background:
+        radial-gradient(1100px circle at 18% 12%, rgba(0, 123, 255, 0.16), transparent 45%),
+        radial-gradient(900px circle at 82% 16%, rgba(0, 184, 255, 0.12), transparent 52%),
+        linear-gradient(180deg, rgba(6, 10, 18, 0.98), rgba(6, 10, 18, 0.98));
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .net-bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
+    #mainSite {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* MODIFICAÇÃO SOLICITADA: FUNDO CINZA GRAFITE/ESCURO COM BASE NA IMAGEM */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--header-surface);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(10px);
+      z-index: 1200;
+    }
+
+    .navbar {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 90%; max-width: 1200px; margin: 0 auto; padding: 15px 0;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-weight: 900;
+      letter-spacing: 0.6px;
+    }
+    .logo .brand-text {
+      font-size: clamp(22px, 2.8vw, 34px);
+      line-height: 1;
+      background: linear-gradient(90deg, #0A84FF 0%, #0E60C7 38%, #2B5E89 58%, #BFD9FF 78%, #FFFFFF 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-stroke: 0.6px rgba(0,0,0,0.35);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.12), 0 3px 6px rgba(0,0,0,0.5), 0 12px 26px rgba(0,0,0,0.38);
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,0.08));
+      display: inline-block;
+    }
+    .logo:hover .brand-text {
+      background: linear-gradient(90deg, #1B8CFF 0%, #1C6FE0 38%, #356A9A 58%, #D8E6FF 78%, #FFFFFF 100%);
+      text-shadow: 0 2px 0 rgba(255,255,255,0.14), 0 4px 8px rgba(0,0,0,0.52), 0 14px 30px rgba(0,0,0,0.42);
+    }
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: transparent;
+      background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='none'/%3E%3Ccircle cx='20' cy='20' r='16' fill='none' stroke='%230A84FF' stroke-width='6' stroke-linecap='round' stroke-dasharray='80 50' transform='rotate(-30 20 20)'/%3E%3Ccircle cx='31' cy='20' r='2' fill='%23FFFFFF'/%3E%3Cpath d='M8 12 L12 10' stroke='%23FFFFFF' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M8 28 L12 30' stroke='%23FFFFFF' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100% 100%;
+      box-shadow: 0 10px 22px rgba(10, 132, 255, 0.22);
+      flex: none;
+    }
+
+    .nav-links {
+      display:flex;
+      gap:25px;
+      list-style:none;
+      margin:0;
+      padding:0;
+      align-items: center; /* Alinha verticalmente links e botões */
+    }
+
+    /* Ajuste da cor dos links para se destacarem no fundo escuro */
+    .nav-links a {
+      text-decoration: none;
+      color: #94a3b8; /* Cor ajustada para tom mais escuro */
+      font-weight: 700;
+      transition: color .18s ease, opacity .18s ease;
+      opacity: 1;
+    }
+    .nav-links a:hover { color: var(--secondary-color); opacity: 1; }
+    .nav-links a:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.25); border-radius: 10px; }
+
+    .highlight {
+      background: var(--gradient); 
+      color: var(--white); 
+      padding:10px 22px; 
+      border-radius:25px; 
+      font-weight:700;
+      font-family: inherit; /* Garante a mesma fonte do corpo */
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      box-shadow: 0 10px 26px rgba(0, 123, 255, 0.32);
+      border: none;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+      line-height: normal; /* Evita desalinhamentos em buttons */
+    }
+    .highlight:hover { 
+      box-shadow: 0 16px 34px rgba(0, 123, 255, 0.38), 0 0 0 6px rgba(0, 184, 255, 0.10);
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      color: var(--white);
+    }
+    .highlight:active {
+      transform: translateY(0);
+    }
+    .highlight:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .highlight.loading {
+      position: relative;
+      color: transparent !important;
+      pointer-events: none;
+    }
+    .highlight.loading::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--white);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    .highlight:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.35), 0 16px 34px rgba(0, 123, 255, 0.38); }
+
+    /* --- Fixed Menu Styles (Added) --- */
+    .nav-links {
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    
+    .nav-links.fixed-active {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-surface);
+      backdrop-filter: blur(16px);
+      padding: 12px 30px;
+      border-radius: 50px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+      z-index: 9999;
+      width: max-content;
+      max-width: 90vw;
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+
+    .close-menu-item {
+      display: none;
+      margin-left: 10px;
+    }
+
+    .nav-links.fixed-active .close-menu-item {
+      display: block;
+      animation: fadeIn 0.3s ease 0.2s both;
+    }
+
+    .close-menu-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .close-menu-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    @media (max-width: 820px) {
+      .nav-links.fixed-active {
+         width: 90%;
+         flex-wrap: wrap;
+         border-radius: 20px;
+         padding: 15px;
+      }
+    }
+
+    /* Modais (login/cadastro) */
+    .modal {
+      display:none; position:fixed; inset:0;
+      background:
+        radial-gradient(900px circle at 20% 10%, rgba(0, 123, 255, 0.18), transparent 45%),
+        radial-gradient(900px circle at 80% 20%, rgba(0, 184, 255, 0.14), transparent 55%),
+        rgba(7, 10, 18, 0.72);
+      backdrop-filter: blur(6px);
+      justify-content:center; align-items:center; z-index:2000;
+    }
+
+    /* Fix para o menu de países do intl-tel-input aparecer sobre o modal */
+    .iti__country-list {
+      z-index: 2100 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4) !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      overflow-x: hidden;
+    }
+
+    .modal-content {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(11, 16, 32, 0.98));
+      padding: 30px 30px;
+      border-radius: 16px;
+      width: 92%;
+      max-width: 460px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255,255,255,0.10);
+      position: relative;
+      animation: fadeIn .28s ease both;
+    }
+
+    .modal-content h2 { color: var(--text); margin-bottom: 18px; font-weight: 800; }
+    
+    .modal-content .info-cadastro { 
+        margin: -10px 0 20px 0; 
+        color: var(--muted);
+        font-size: 0.95em;
+    }
+    
+    /* INÍCIO DOS ESTILOS DE INPUT (Melhor Alinhamento) */
+    
+    .input-group {
+      display: flex; 
+      align-items: center; 
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px; 
+      margin-bottom: 15px; 
+      padding: 0 12px; 
+      position: relative;
+      height: 50px; 
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, transform 0.12s ease;
+    }
+    
+    .input-group:focus-within {
+        border-color: rgba(0, 184, 255, 0.55);
+        box-shadow: 0 0 0 4px rgba(0, 184, 255, 0.14);
+        background: rgba(255,255,255,0.08);
+        transform: translateY(-1px);
+    }
+    
+    .input-group:hover {
+        background: rgba(255,255,255,0.07);
+        border-color: rgba(255,255,255,0.18);
+    }
+
+    .input-group i { 
+      color: rgba(0, 184, 255, 0.95);
+      min-width: 18px; 
+      text-align: center; 
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2; 
+    }
+    
+    .input-group input {
+      border: none; 
+      background: transparent; 
+      outline: none; 
+      width: 100%; 
+      font-size: 1em;
+      height: 100%; 
+      position: relative;
+      z-index: 1;
+      color: var(--text);
+    }
+    
+    .input-group:not(.phone-group) input {
+      padding-left: 46px;
+      padding-right: 40px;
+    }
+    .input-group input::placeholder { color: rgba(229,231,235,0.50); }
+    
+    /* ESTILO PARA O LABEL FLUTUANTE */
+    .input-group label {
+      position: absolute;
+      left: 45px; /* Posição inicial após o ícone */
+      top: 50%; 
+      transform: translateY(-50%);
+      color: rgba(229,231,235,0.62);
+      pointer-events: none; 
+      transition: all 0.2s ease-out;
+      font-size: 1em;
+      z-index: 2;
+    }
+
+    /* Flutuação do Label (sobe) */
+    .input-group input:focus ~ label,
+    .input-group input:not(:placeholder-shown) ~ label 
+    {
+      top: 5px; 
+      font-size: 0.75em; 
+      color: rgba(0, 184, 255, 0.95);
+      transform: translateY(0);
+      background: rgba(15, 23, 42, 0.98);
+      padding: 0 4px;
+      left: 40px; 
+      z-index: 3; 
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 36px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+      cursor: pointer;
+      z-index: 6;
+      transition: color .18s ease, transform .12s ease, opacity .12s ease;
+    }
+    .toggle-password:hover { color: rgba(229,231,235,0.9); }
+    .toggle-password:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.18); border-radius: 10px; }
+    .toggle-password:active { transform: translateY(-50%) scale(0.96); }
+    .password-group i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+      min-width: 18px;
+      text-align: center;
+      z-index: 2;
+    }
+    .password-group input {
+      padding-left: 44px;
+      padding-right: 44px;
+    }
+    .password-group label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .password-group .toggle-password {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .password-group input:focus ~ .toggle-password,
+    .password-group input:not(:placeholder-shown) ~ .toggle-password {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      .input-group,
+      .toggle-password {
+        transition: none;
+        transform: none;
+      }
+    }
+
+    /* Campo de termos */
+    .terms { 
+      margin-top: 5px; 
+      margin-bottom: 25px; 
+      text-align: left;
+      font-size: 0.9em;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .terms input[type="checkbox"] {
+        margin-top: 2px;
+        min-width: 16px;
+    }
+    .terms label {
+        font-size: 1em;
+    }
+
+    /* Ajuste de mensagem de erro */
+    #cadastroFeedback {
+      color: #e74c3c;
+      font-size: 0.9em;
+      margin: -5px 0 15px 0;
+      font-weight: 600;
+      text-align: left;
+      min-height: 1.2em;
+    }
+
+
+    /* AJUSTES FINAIS E FLUIDEZ NO CAMPO DE CELULAR/TELEFONE */
+    .input-group .iti { 
+        width: 100%; 
+        height: 100%; 
+        display: flex; 
+    }
+    
+    .input-group.phone-group { 
+        padding: 0; 
+    }
+    
+    /* Contêiner da bandeira */
+    .input-group .iti__flag-container {
+        height: 100%; 
+        position: relative;
+        z-index: 4; 
+        padding: 0 12px;
+        border-radius: 8px 0 0 8px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Adiciona o ícone de telefone antes da bandeira para alinhamento */
+    .input-group.phone-group > i {
+      position: relative;
+      left: 0;
+      top: 0;
+      transform: none;
+      margin-right: 0;
+      margin-left: 12px;
+    }
+    
+    /* Input de telefone */
+    .input-group input#cadTelefone { 
+        padding-left: 12px; 
+        height: 100%;
+        border-radius: 0 8px 8px 0;
+        flex-grow: 1; 
+    }
+    
+    /* Ajusta a posição inicial do Label de telefone */
+    .input-group.phone-group label {
+        left: 105px; 
+    }
+
+    /* Ajusta a posição flutuante do Label de telefone */
+    .input-group input#cadTelefone:focus ~ label,
+    .input-group input#cadTelefone:not(:placeholder-shown) ~ label {
+        left: 100px; 
+        background: var(--light-bg); 
+        padding: 0 4px;
+    }
+    
+    .iti__country-list {
+        background: #000000;
+        border-color: rgba(148, 163, 184, 0.45);
+        color: var(--text);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+        position: absolute;
+        top: 100%;
+        z-index: 100;
+        max-height: 200px;
+        overflow-y: auto;
+        pointer-events: auto;
+    }
+    
+    .iti__country {
+        background: #020617;
+        color: var(--text);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-left: 3px solid transparent;
+        box-sizing: border-box;
+    }
+    
+    .iti__country:hover,
+    .iti__country.iti__highlight,
+    .iti__country.iti__active {
+        background: #020617;
+        border-left-color: rgba(0,184,255,0.9);
+    }
+    
+    .iti__country .iti__country-name {
+        color: var(--text);
+    }
+    
+    .iti__country .iti__dial-code {
+        color: var(--muted);
+    }
+
+    .iti__divider {
+        height: 0;
+        margin: 0;
+        border: 0;
+        background: transparent;
+    }
+
+    /* Fix para o botão de toggle password não aparecer no input de telefone */
+    .input-group.phone-group .toggle-password {
+        display: none;
+    }
+    
+    /* FIM DOS AJUSTES DE TELEFONE */
+    
+    /* Botão de submissão */
+    .btn-submit {
+      width:100%; padding:12px; border:none; border-radius:25px; background:var(--gradient); color:var(--white);
+      font-weight:700; cursor:pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+      box-shadow: 0 12px 30px rgba(0, 123, 255, 0.32);
+    }
+    .btn-submit:hover {
+        box-shadow: 0 18px 46px rgba(0, 123, 255, 0.38), 0 0 0 6px rgba(0, 184, 255, 0.10);
+        transform: translateY(-1px);
+        filter: brightness(1.03);
+    }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.35), 0 18px 46px rgba(0, 123, 255, 0.38); }
+
+    .close-btn { position:absolute; top:14px; right:18px; color: rgba(229,231,235,0.70); font-size:1.4em; cursor:pointer; background: transparent; border: 0; padding: 0; line-height: 1; }
+    .close-btn:hover { color: rgba(229,231,235,0.95); }
+    .close-btn:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.18); border-radius: 10px; }
+    .muted { font-size:0.9em; color: rgba(229,231,235,0.65); margin-top:10px; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .auth-modal {
+      max-width: 440px;
+      padding: 34px 32px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.6);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+    }
+
+    .auth-brand {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .auth-brand .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(0,123,255,0.85), rgba(0,184,255,0.85));
+      box-shadow: 0 14px 28px rgba(0, 123, 255, 0.18);
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .auth-title {
+      margin: 0;
+      text-align: center;
+    }
+
+    .auth-subtitle {
+      margin: 8px 0 18px;
+      text-align: center;
+      color: rgba(229,231,235,0.72);
+      font-size: 0.95em;
+    }
+
+    .auth-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 4px 0 14px;
+      font-size: 0.92em;
+    }
+
+    .auth-actions a {
+      color: rgba(0, 184, 255, 0.95);
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.18s ease, text-decoration-color 0.18s ease;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 3px;
+    }
+
+    .auth-actions a:hover { opacity: 0.92; text-decoration-color: rgba(0,184,255,0.55); }
+    .auth-actions a:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.18); border-radius: 10px; }
+
+    .form-feedback {
+      display: none;
+      margin: 12px 0 14px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(244, 63, 94, 0.32);
+      background: rgba(244, 63, 94, 0.12);
+      color: rgba(255, 228, 230, 0.95);
+      font-weight: 600;
+      font-size: 0.92em;
+    }
+
+    .form-feedback.is-visible { display: block; }
+
+    .input-group.is-invalid {
+      border-color: rgba(231, 76, 60, 0.55);
+      box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.12);
+    }
+
+    .toggle-password {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      margin: 0;
+    }
+
+    .auth-modal .input-group label:not(.sr-only) {
+      position: static;
+      transform: none;
+      left: auto;
+      top: auto;
+      background: transparent;
+      padding: 0;
+      font-size: inherit;
+    }
+
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform: translateY(0); } }
+
+    /* Outras seções do site... (mantidas como estão) */
+    .hero { text-align:center; padding: 88px 20px 40px; background: transparent; }
+    .hero h1 { font-size: clamp(28px, 3.6vw, 46px); color: var(--text); margin-bottom: 16px; font-weight: 900; letter-spacing: -0.02em; text-shadow: 0 2px 8px rgba(0,0,0,0.35); }
+    .hero-brand {
+      background: linear-gradient(90deg, #0A84FF 0%, #0E60C7 38%, #2B5E89 58%, #BFD9FF 78%, #FFFFFF 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-stroke: 0.6px rgba(0,0,0,0.35);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.12), 0 3px 6px rgba(0,0,0,0.5), 0 12px 26px rgba(0,0,0,0.38);
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,0.08));
+      letter-spacing: 0.6px;
+      display: inline-block;
+    }
+    .hero p { font-size: 1.12em; color: var(--muted); max-width: 760px; margin: 0 auto 30px; }
+    .hero .accent { background: linear-gradient(90deg, #22d3ee, #38bdf8 55%, #60a5fa); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 2px 12px rgba(56,189,248,0.35); }
+    .cta-button { background: radial-gradient(circle at 20% 0%, #38bdf8, #2563eb); color: var(--white); padding: 15px 42px; border-radius: 999px; text-decoration: none; font-weight: 800; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 16px 44px rgba(37, 99, 235, 0.9), 0 0 0 1px rgba(56, 189, 248, 0.35); transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; }
+    .cta-button:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 20px 56px rgba(37, 99, 235, 1), 0 0 0 6px rgba(56,189,248,0.15); }
+    .cta-button:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(0,184,255,0.35), 0 18px 44px rgba(0, 123, 255, 0.34); }
+    section { text-align: center; padding: 56px 20px; background: transparent; }
+    .hero + section { padding-top: 36px; }
+    /* Duo Cards (Prova Social + Nossos Cursos) abaixo do CTA */
+    .duo-wrapper { width: 92%; max-width: 1040px; margin: 28px auto 0; padding: 20px; border-radius: 22px; background: radial-gradient(circle at 0 0, rgba(37,99,235,0.12), transparent 55%), rgba(15,23,42,0.82); box-shadow: 0 0 0 1px rgba(148,163,184,0.28), 0 22px 66px rgba(15,23,42,0.88), 0 0 32px rgba(56,189,248,0.22); backdrop-filter: blur(16px); }
+    .duo-grid { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1.2fr); gap: 18px; align-items: stretch; }
+    .duo-card { position: relative; overflow: hidden; border-radius: 18px; padding: 18px; background: radial-gradient(circle at 0 0, rgba(56,189,248,0.12), transparent 55%), rgba(15,23,42,0.88); border: 1px solid rgba(148,163,184,0.38); box-shadow: 0 18px 45px rgba(15,23,42,0.86), 0 0 0 1px rgba(15,23,42,0.9); text-align: left; }
+    .duo-card::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; background: linear-gradient(135deg, rgba(56,189,248,0.35), transparent, rgba(59,130,246,0.45)); opacity: 0.35; mix-blend-mode: screen; pointer-events: none; }
+    .duo-label { font-size: 0.78em; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(148,163,184,0.9); margin-bottom: 8px; font-weight: 700; }
+    .duo-metric { font-size: clamp(32px, 4.2vw, 42px); font-weight: 900; letter-spacing: -0.03em; color: #e6f2ff; }
+    .duo-sub { font-size: 0.92em; color: var(--muted); margin-top: 4px; }
+    .duo-courses { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 6px; }
+    .duo-course { position: relative; height: 110px; border-radius: 16px; background: radial-gradient(circle at 0 0, rgba(56,189,248,0.6), transparent 55%), rgba(15,23,42,0.96); border: 1px solid rgba(96,165,250,0.7); box-shadow: 0 18px 38px rgba(15,23,42,0.9), 0 0 22px rgba(56,189,248,0.6); overflow: hidden; }
+    .duo-course::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 80% 10%, rgba(244,244,245,0.14), transparent 55%); }
+    .duo-course-title { position: absolute; left: 12px; top: 12px; right: 12px; font-size: 0.88em; font-weight: 800; color: #f8fafc; }
+    .duo-course-sub { position: absolute; left: 12px; bottom: 12px; right: 12px; font-size: 0.78em; color: rgba(241,245,249,0.92); }
+    @media (max-width: 900px) { .duo-grid { grid-template-columns: 1fr; } }
+    #inicio, #funcionamento, #recursos, #taxas { background: transparent; border: none; }
+    section h2 { font-size: 2.15em; color: var(--text); margin-bottom: 22px; font-weight: 900; letter-spacing: -0.02em; }
+    .func-grid, .recursos-grid, .taxas-grid {
+      display:grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap:25px;
+      width:90%; max-width:1100px; margin:0 auto;
+    }
+    .func-box, .recurso-box, .taxa-box {
+      position: relative;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.12), transparent 55%), rgba(15,23,42,0.88);
+      border: 1px solid rgba(148,163,184,0.34);
+      border-radius: 18px;
+      box-shadow: 0 18px 46px rgba(15,23,42,0.92);
+      padding: 26px;
+      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, filter .25s ease;
+      text-align: left;
+      overflow: hidden;
+    }
+    .func-box::before, .recurso-box::before, .taxa-box::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; background: linear-gradient(135deg, rgba(56,189,248,0.45), transparent, rgba(37,99,235,0.55)); opacity: 0.25; pointer-events: none; }
+    .func-box:hover, .recurso-box:hover, .taxa-box:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(15,23,42,0.98), 0 0 0 1px rgba(56,189,248,0.25); border-color: rgba(56,189,248,0.35); filter: brightness(1.03); }
+    .func-box i, .recurso-box i, .taxa-box i { font-size: 2em; color: rgba(56,189,248,0.95); margin-bottom: 10px; text-shadow: 0 0 18px rgba(56,189,248,0.55); }
+    footer.site-footer {
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.12), transparent 55%),
+        rgba(15, 23, 42, 0.92);
+      color: var(--muted);
+      padding: 38px 16px 22px;
+      margin-top: 54px;
+      border-top: 1px solid rgba(148,163,184,0.18);
+      box-shadow: 0 -24px 70px rgba(15,23,42,0.65);
+      backdrop-filter: blur(12px);
+      position: relative;
+    }
+    footer.site-footer::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(56,189,248,0.65), rgba(37,99,235,0.65), transparent);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    .site-footer .footer-inner {
+      width: 92%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .site-footer .footer-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .site-footer .footer-brandline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; }
+    .site-footer .footer-brand-text {
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      background: linear-gradient(90deg, #0A84FF 0%, #0E60C7 38%, #2B5E89 58%, #BFD9FF 78%, #FFFFFF 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-stroke: 0.6px rgba(0,0,0,0.35);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.12), 0 3px 6px rgba(0,0,0,0.5), 0 12px 26px rgba(0,0,0,0.38);
+      filter: drop-shadow(0 1px 0 rgba(255,255,255,0.08));
+      display: inline-block;
+    }
+    .site-footer .footer-tag { font-weight: 700; color: rgba(226,232,240,0.9); }
+    .site-footer .footer-desc { margin: 10px 0 0; max-width: 520px; color: rgba(148,163,184,0.95); line-height: 1.6; }
+    .site-footer .footer-social { display: flex; gap: 10px; margin-top: 14px; }
+    .site-footer .footer-social a {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15,23,42,0.7);
+      border: 1px solid rgba(148,163,184,0.24);
+      color: rgba(226,232,240,0.92);
+      box-shadow: 0 12px 30px rgba(15,23,42,0.6);
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+      text-decoration: none;
+    }
+    .site-footer .footer-social a:hover { transform: translateY(-1px); border-color: rgba(56,189,248,0.38); filter: brightness(1.05); }
+    .site-footer .footer-social a:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(56,189,248,0.18); }
+    .site-footer .footer-cols {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      align-items: start;
+      justify-items: start;
+    }
+    .site-footer .footer-col-title {
+      font-weight: 900;
+      color: rgba(226,232,240,0.95);
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+      font-size: 0.95em;
+    }
+    .site-footer .footer-link {
+      display: flex;
+      align-items: center;
+      color: rgba(148,163,184,0.95);
+      text-decoration: none;
+      padding: 6px 0;
+      border-radius: 10px;
+      transition: color .18s ease, text-decoration-color .18s ease, opacity .18s ease;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 4px;
+      font-weight: 700;
+    }
+    .site-footer .footer-link:hover { color: rgba(226,232,240,0.95); text-decoration-color: rgba(56,189,248,0.55); }
+    .site-footer .footer-link:focus-visible { outline: none; box-shadow: 0 0 0 4px rgba(56,189,248,0.18); }
+    .site-footer .footer-bottom {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px 14px;
+      flex-wrap: wrap;
+      padding-top: 16px;
+      margin-top: 8px;
+      border-top: 1px solid rgba(148,163,184,0.16);
+      font-size: 0.92em;
+      color: rgba(148,163,184,0.95);
+    }
+    .site-footer .footer-bottom strong { color: rgba(226,232,240,0.95); }
+    @media (max-width: 760px) {
+      .site-footer .footer-top { grid-template-columns: 1fr; }
+      .site-footer .footer-cols { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+    }
+    @media (max-width: 420px) {
+      .site-footer .footer-cols { grid-template-columns: 1fr; }
+    }
+    
+    /* Botão de Suporte (Mantido) */
+    .support-btn {
+      position: fixed; bottom: 25px; right: 25px; background: var(--gradient); color:var(--white);
+      border:none; border-radius:50px; padding:15px 25px; font-size:1em; font-weight:600;
+      box-shadow:0 6px 18px rgba(0,0,0,0.2); cursor:pointer; z-index:1000;
+    }
+    
+    /* ESTILOS DO CHAT DE SUPORTE (MODIFICADO) */
+    .chat-window {
+      display:none;
+      position:fixed;
+      bottom:90px;
+      right:25px;
+      width:90%;
+      max-width:350px;
+      height:450px;
+      background: var(--white);
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18); 
+      flex-direction: column;
+      z-index:1500;
+      overflow: hidden;
+      animation: fadeIn .2s ease-out; 
+    }
+
+    .chat-header {
+      background: var(--gradient);
+      color: var(--white);
+      padding: 15px 20px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .close-chat {
+      font-size: 1.5em;
+      cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .close-chat:hover { opacity: 1; }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: var(--light-bg); 
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      flex-direction: column; /* Novo: Garante alinhamento das bolhas */
+    }
+
+    .message {
+      margin-bottom: 10px;
+      padding: 10px 14px;
+      border-radius: 18px;
+      max-width: 80%;
+      line-height: 1.4;
+      font-size: 0.95em;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .message.bot {
+      background: var(--white);
+      color: var(--dark-text);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      margin-right: auto;
+    }
+
+    .message.user {
+      background: var(--primary-color); 
+      color: var(--white);
+      align-self: flex-end;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: var(--white);
+    }
+
+    .chat-input input {
+      flex-grow: 1;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+      font-size: 1em;
+      margin-right: 10px;
+      transition: border-color 0.2s;
+    }
+    
+    .chat-input input:focus {
+        border-color: var(--primary-color);
+    }
+
+    .chat-input button {
+      background: var(--secondary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 20px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .chat-input button:hover {
+        background: #008cff;
+    }
+
+    
+    
+    @media (max-width: 640px) {
+      .hero { padding:60px 16px; }
+      .hero h1 { font-size:1.8em; }
+      .modal-content { padding:20px; max-width:92%; }
+      .chat-window { bottom: 15px; right: 15px; height: 400px; }
+    }
+
+    @media (max-width: 820px) {
+      .navbar { width: 92%; padding: 12px 0; }
+      .nav-links { flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+      section { padding: 64px 16px; }
+    }
+
+    /* PAYMENT SECTION STYLES */
+    .payment-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .payment-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Highlight effect on hover */
+    .payment-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at center, rgba(0, 184, 255, 0.1), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .payment-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Row 1: 3 items */
+    .payment-grid > .payment-card:nth-child(-n+3) {
+      flex-basis: calc(33.333% - 14px);
+      max-width: calc(33.333% - 14px);
+    }
+
+    /* Row 2: 4 items */
+    .payment-grid > .payment-card:nth-child(n+4) {
+      flex-basis: calc(25% - 15px);
+      max-width: calc(25% - 15px);
+    }
+
+    .payment-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 184, 255, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .payment-icon {
+      font-size: 2.5em;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Nupay (Nubank) themed card */
+    .nu-card .payment-icon {
+      background: #820AD1;
+      border-color: rgba(130,10,209,0.85);
+      box-shadow: 0 10px 24px rgba(130,10,209,0.25);
+    }
+    .nu-card:hover {
+      border-color: rgba(130,10,209,0.35);
+      box-shadow: 0 12px 30px rgba(130,10,209,0.28);
+    }
+    .nu-card .payment-icon img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .picpay-card .payment-icon {
+      background: #21C25E;
+      border-color: rgba(33,194,94,0.85);
+      box-shadow: 0 10px 24px rgba(33,194,94,0.25);
+    }
+    .picpay-card:hover {
+      border-color: rgba(33,194,94,0.35);
+      box-shadow: 0 12px 30px rgba(33,194,94,0.28);
+    }
+    .picpay-card .payment-icon img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .applepay-card .payment-icon {
+      background: #000000;
+      border-color: rgba(255,255,255,0.18);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+    }
+    .applepay-card:hover {
+      border-color: rgba(255,255,255,0.28);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+    .applepay-card .payment-icon img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .gpay-card .payment-icon {
+      background: #1A73E8;
+      border-color: rgba(26,115,232,0.85);
+      box-shadow: 0 10px 24px rgba(26,115,232,0.25);
+    }
+    .gpay-card:hover {
+      border-color: rgba(26,115,232,0.35);
+      box-shadow: 0 12px 30px rgba(26,115,232,0.28);
+    }
+    .gpay-card .payment-icon img {
+      width: 34px;
+      height: 34px;
+    }
+
+    .brand-hero {
+      padding: 64px 20px;
+      background: none;
+      border-radius: 16px;
+      margin: 48px auto 0;
+      max-width: 1000px;
+      box-shadow: none;
+      text-align: center;
+    }
+    .brand-hero h2 {
+      margin: 0 0 12px;
+      font-size: clamp(22px, 4.2vw, 40px);
+      line-height: 1.1;
+      color: #EEEEEE;
+      letter-spacing: 0.2px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+    }
+    .brand-hero p {
+      margin: 0 auto;
+      max-width: 820px;
+      color: #C8CCD3;
+      font-size: clamp(14px, 1.6vw, 18px);
+    }
+    .brand-hero .accent {
+      background: linear-gradient(90deg, #0A84FF 0%, #1C6FE0 55%, #6AA7FF 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 10px rgba(10,132,255,0.35);
+    }
+
+    .pix-card .payment-icon {
+      background: #00BFA5;
+      border-color: rgba(0,191,165,0.85);
+      box-shadow: 0 10px 24px rgba(0,191,165,0.25);
+    }
+    .pix-card:hover {
+      border-color: rgba(0,191,165,0.35);
+      box-shadow: 0 12px 30px rgba(0,191,165,0.28);
+    }
+    .pix-card .payment-icon img {
+      width: 32px;
+      height: 32px;
+    }
+    .payment-icon i {
+        background: linear-gradient(135deg, #2ecc71, #00b8ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        /* Fallback */
+        color: #2ecc71;
+    }
+
+    .payment-name {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 1.1em;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .payment-time {
+      font-size: 0.85em;
+      color: var(--muted);
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+       .payment-grid > .payment-card:nth-child(n) {
+          flex-basis: calc(50% - 10px) !important;
+          max-width: calc(50% - 10px) !important;
+       }
+    }
+
+    @media (max-width: 600px) {
+       .payment-grid > .payment-card:nth-child(n) {
+          flex-basis: 100% !important;
+          max-width: 100% !important;
+       }
+    }
+
+  </style>
+</head>
+<body>
+
+  <canvas class="net-bg" id="netBg" aria-hidden="true"></canvas>
+
+  <div id="mainSite">
+
+  <header>
+    <nav class="navbar">
+      <div class="logo"><span class="brand-text">CLICKIFY</span></div>
+      <ul class="nav-links">
+        <li><a href="#inicio">INÍCIO</a></li>
+        <li><a href="#funcionamento">COMO FUNCIONA</a></li>
+        <li><a href="#recursos">RECURSOS</a></li>
+        <li><a href="#taxas">TAXAS</a></li>
+        
+        <li><button class="highlight" id="abrirLogin" aria-label="Abrir login">LOGIN</button></li>
+        
+        <li><button class="highlight" id="abrirCadastro" aria-label="Abrir cadastro">CADASTRE-SE</button></li>
+        <li class="close-menu-item"><button class="close-menu-btn" aria-label="Fechar menu fixo"><i class="fa fa-times"></i></button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="inicio" class="hero">
+    <h1><span class="hero-brand">Clickify</span>: <span class="accent">Acelerando</span> seus resultados.</h1>
+    <p>Automação, IA e checkouts mais rápidos do mercado — tudo em um só lugar.</p>
+    <a href="#" id="abrirCadastro2" class="cta-button">COMECE AGORA</a>
+    <div class="duo-wrapper" role="region" aria-labelledby="duo-title">
+      <div class="duo-grid">
+        <div class="duo-card" aria-label="Prova Social">
+          <div class="duo-label" id="duo-title">Prova Social</div>
+          <div class="duo-metric" aria-live="polite">2,5M+</div>
+          <div class="duo-sub">transações processadas</div>
+        </div>
+        <div class="duo-card" aria-label="Nossos Cursos">
+          <div class="duo-label">Nossos Cursos</div>
+          <div class="duo-courses">
+            <div class="duo-course" role="img" aria-label="Curso Checkout Piradão">
+              <div class="duo-course-title">Checkout Piradão</div>
+              <div class="duo-course-sub">Estratégias avançadas de conversão.</div>
+            </div>
+            <div class="duo-course" role="img" aria-label="Curso Sucesso em Pagamentos">
+              <div class="duo-course-title">Sucesso em Pagamentos</div>
+              <div class="duo-course-sub">Domine operações e escala.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="funcionamento">
+    <h2>Como Funciona a Clickify ?</h2>
+    <p>A Clickify une automação, inteligência artificial e performance para maximizar suas conversões.</p>
+    <div class="func-grid">
+      <div class="func-box">
+        <i class="fa-solid fa-rocket"></i>
+        <h3>Crie sua conta</h3>
+        <p>Cadastre-se em minutos e tenha acesso à sua área exclusiva de controle e vendas.</p>
+      </div>
+      <div class="func-box">
+        <i class="fa-solid fa-link"></i>
+        <h3>Conecte seu produto</h3>
+        <p>Integre seus produtos, páginas e campanhas em um solo painel simplificado.</p>
+      </div>
+      <div class="func-box">
+        <i class="fa-solid fa-chart-line"></i>
+        <h3>Venda e cresça</h3>
+        <p>Acompanhe resultados em tempo real com a IA ajustando automaticamente sua performance.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="recursos">
+    <h2>O que a Clickify Faz</h2>
+    <div class="recursos-grid">
+      <div class="recurso-box">
+        <i class="fa-solid fa-gears"></i>
+        <h3>  Quiz Inteligente</h3>
+        <p>Criar landing page em ultra performacer para a melhor experiência possível para nossos clientes.</p>
+      </div>
+      <div class="recurso-box">
+        <i class="fa-solid fa-bolt"></i>
+        <h3>Checkouts Rápidos</h3>
+        <p>Ofereça a melhor experiência de pagamento com o sistema mais ágil e seguro do mercado para não perder vendas .</p>
+      </div>
+      <div class="recurso-box">
+        <i class="fa-solid fa-chart-pie"></i>
+        <h3>Relatórios Avançados</h3>
+        <p>Monitore vendas, conversões e métricas em dashboards claros e objetivos.</p>
+      </div>
+      <div class="recurso-box">
+        <i class="fa-solid fa-headset"></i>
+        <h3>Suporte Dedicado</h3>
+        <p>Converse diretamente com o time de suporte dentro da plataforma.</p>
+      </div>
+    </div>
+  </section>
+  
+
+  <section id="taxas">
+    <h2>Taxas da Plataforma</h2>
+    <div class="taxas-grid">
+      <div class="taxa-box">
+        <i class="fa-solid fa-credit-card"></i>
+        <h3>Cartão de Crédito</h3>
+        <p>3,4% + R$0,40 por transação.</p>
+      </div>
+      <div class="taxa-box">
+        <i class="fa-solid fa-bolt"></i>
+        <h3>Pix Instantâneo</h3>
+        <p>0% por transação — recebimento instantâneo.</p>
+      </div>
+      <div class="taxa-box">
+        <i class="fa-solid fa-box"></i>
+        <h3>Produtos</h3>
+        <p>3% por produto vendido.</p>
+      </div>
+      <div class="taxa-box">
+        <i class="fa-solid fa-lock"></i>
+        <h3>Saques</h3>
+        <p>Disponível em até 1 dia útil.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="metodos-pagamento" style="padding-top: 20px;">
+    <h2>A melhor plataforma de pagamento para receber online</h2>
+    <p style="text-align: center; max-width: 800px; margin: 0 auto 40px; color: var(--muted);">Oferece múltiplas opções de pagamento para produtores, afiliados e vendedores digitais.</p>
+    
+    <div class="payment-grid" style="max-width: 900px; margin: 0 auto;">
+      <div class="payment-card">
+        <div class="payment-icon"><i class="fa-solid fa-barcode"></i></div>
+        <div class="payment-info">
+          <span class="payment-name">Boleto Bancário</span>
+          <span class="payment-time">Recebimento: 1 dia</span>
+        </div>
+      </div>
+      
+      <div class="payment-card pix-card">
+        <div class="payment-icon"><img src="https://cdn.simpleicons.org/pix/FFFFFF" alt="Pix"></div>
+        <div class="payment-info">
+          <span class="payment-name">Pix</span>
+          <span class="payment-time">Recebimento: Imediato</span>
+        </div>
+      </div>
+      
+      <div class="payment-card">
+        <div class="payment-icon"><i class="fa-solid fa-credit-card"></i></div>
+        <div class="payment-info">
+          <span class="payment-name">Cartão de Crédito</span>
+          <span class="payment-time">Recebimento: Em até 2 dias</span>
+        </div>
+      </div>
+
+      <div class="payment-card nu-card">
+        <div class="payment-icon"><img src="https://cdn.simpleicons.org/nubank/FFFFFF" alt="Nubank"></div>
+        <div class="payment-info">
+          <span class="payment-name">Nupay</span>
+          <span class="payment-time">Recebimento: Em até 2 dias</span>
+        </div>
+      </div>
+
+      <div class="payment-card picpay-card">
+        <div class="payment-icon"><img src="https://cdn.simpleicons.org/picpay/FFFFFF" alt="PicPay"></div>
+        <div class="payment-info">
+          <span class="payment-name">PicPay</span>
+          <span class="payment-time">Recebimento: Em até 2 dias</span>
+        </div>
+      </div>
+
+      <div class="payment-card gpay-card">
+        <div class="payment-icon"><img src="https://cdn.simpleicons.org/googlepay/FFFFFF" alt="Google Pay"></div>
+        <div class="payment-info">
+          <span class="payment-name">Google Pay</span>
+          <span class="payment-time">Recebimento: Em até 2 dias</span>
+        </div>
+      </div>
+
+      <div class="payment-card applepay-card">
+        <div class="payment-icon"><img src="https://cdn.simpleicons.org/applepay/FFFFFF" alt="Apple Pay"></div>
+        <div class="payment-info">
+          <span class="payment-name">Apple Pay</span>
+          <span class="payment-time">Recebimento: Em até 2 dias</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="brand-hero" aria-label="Quem usa a Clickify">
+    <h2>Quais infoprodutores usam <span class="hero-brand">Clickify</span>?</h2>
+    <p>Esses são alguns dos grandes infoprodutores que já utilizaram a Clickify em suas operações.</p>
+  </section>
+
+  <div id="modalLogin" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-btn" id="fecharLogin" aria-label="Fechar">&times;</button>
+      <h2>Acesse sua conta</h2>
+      <p class="info-cadastro">Bem-vindo de volta! Informe seus dados.</p>
+      
+      <div class="input-group" id="loginEmailGroup">
+        <i class="fa-solid fa-envelope"></i>
+        <input id="loginEmail" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="off" spellcheck="false" aria-label="E-mail">
+        <label for="loginEmail" class="sr-only">E-mail</label>
+      </div>
+
+      <div class="input-group password-group" id="loginSenhaGroup">
+        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+        <input id="loginSenha" type="password" placeholder="Senha" autocomplete="current-password" autocapitalize="off" spellcheck="false" required aria-label="Senha">
+        <button class="toggle-password" type="button" data-target="loginSenha" aria-label="Mostrar senha" aria-pressed="false">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+        <label for="loginSenha" class="sr-only">Senha</label>
+      </div>
+
+      <div id="loginFeedback" class="form-feedback"></div>
+
+      <div style="text-align:right; margin-bottom:20px;">
+        <a href="#" id="forgotPasswordLink" style="font-size:0.9em; color:var(--primary-color); font-weight:600; text-decoration:none;">Esqueceu a senha?</a>
+      </div>
+
+      <button class="btn-submit highlight" id="btnEntrar">ENTRAR</button>
+
+      <p class="muted">
+        Não tem uma conta? 
+        <a href="#" id="abrirCadastroLink" style="color:var(--primary-color);font-weight:700;">Criar conta</a>
+      </p>
+    </div>
+  </div>
+
+  <div id="modalCadastro" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <span class="close-btn" id="fecharCadastro">&times;</span>
+      <h2>Crie sua conta</h2>
+      <p class="info-cadastro">Informe seus dados para continuar na Clickify.</p> 
+
+      <div class="input-group password-group">
+        <i class="fa-solid fa-user"></i>
+        <input id="cadNome" type="password" placeholder="Nome completo" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Nome completo">
+        <button class="toggle-password" type="button" data-target="cadNome" aria-label="Mostrar nome" aria-pressed="false">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+        <label for="cadNome">Nome completo</label>
+      </div>
+      
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input id="cadEmail" type="email" placeholder="E-mail" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="E-mail">
+        <label for="cadEmail" class="sr-only">E-mail</label>
+      </div>
+      
+      <div class="input-group phone-group">
+        <i class="fa-solid fa-phone"></i> 
+        <input id="cadTelefone" type="tel" placeholder=" " autocomplete="tel">
+        <label for="cadTelefone"></label>
+      </div>
+
+      <div class="input-group password-group">
+        <i class="fa-solid fa-lock"></i>
+        <input id="cadSenha" type="password" placeholder="Senha" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Senha">
+        <button class="toggle-password" type="button" data-target="cadSenha" aria-label="Mostrar senha" aria-pressed="false">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+        <label for="cadSenha">Senha</label>
+      </div>
+
+      <div class="input-group password-group">
+        <i class="fa-solid fa-lock"></i>
+        <input id="cadSenhaConfirm" type="password" placeholder="Confirmar senha" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Confirmar senha">
+        <button class="toggle-password" type="button" data-target="cadSenhaConfirm" aria-label="Mostrar senha" aria-pressed="false">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+        <label for="cadSenhaConfirm">Confirmar senha</label>
+      </div>
+
+      <div id="cadastroFeedback"></div>
+      
+      <div class="terms">
+        <input type="checkbox" id="termos">
+        <label for="termos">
+            Ao criar conta, concordo com os 
+            <a href="#" style="color:var(--primary-color);font-weight:700;">Termos de uso</a> 
+            e 
+            <a href="#" style="color:var(--primary-color);font-weight:700;">Política de privacidade</a>
+        </label>
+      </div>
+
+      <button class="btn-submit" id="btnCadastrar">Criar conta grátis</button> 
+      
+      <p class="muted">
+        Já possui uma conta na Clickify? 
+        <a href="#" id="abrirLoginFromCad" style="color:var(--primary-color);font-weight:700;">Acessar</a>
+      </p>
+    </div>
+  </div>
+  
+  <div id="modalReset" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-btn" id="fecharReset" aria-label="Fechar">&times;</button>
+      <h2>Recuperar senha</h2>
+      <p class="info-cadastro">Informe seu e-mail para receber o código de verificação.</p>
+
+      <div class="input-group" id="resetEmailGroup">
+        <i class="fa-solid fa-envelope"></i>
+        <input id="resetEmail" type="email" placeholder="E-mail" autocomplete="email" autocapitalize="off" spellcheck="false" aria-label="E-mail">
+        <label for="resetEmail" class="sr-only">E-mail</label>
+      </div>
+
+      <div id="resetFeedback" class="form-feedback"></div>
+
+      <div class="input-group" id="resetCodeGroup">
+        <i class="fa-solid fa-key"></i>
+        <input id="resetCode" type="text" placeholder="Código de 6 dígitos" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" aria-label="Código de verificação">
+        <label for="resetCode" class="sr-only">Código</label>
+      </div>
+
+      <div class="input-group password-group" id="resetSenhaGroup">
+        <i class="fa-solid fa-lock"></i>
+        <input id="resetSenha" type="password" placeholder="Nova senha" autocomplete="new-password" aria-label="Nova senha">
+        <button class="toggle-password" type="button" data-target="resetSenha" aria-label="Mostrar senha" aria-pressed="false">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+        <label for="resetSenha" class="sr-only">Nova senha</label>
+      </div>
+
+      <div class="input-group password-group" id="resetSenhaConfirmGroup">
+        <i class="fa-solid fa-lock"></i>
+        <input id="resetSenhaConfirm" type="password" placeholder="Confirmar nova senha" autocomplete="new-password" aria-label="Confirmar nova senha">
+        <button class="toggle-password" type="button" data-target="resetSenhaConfirm" aria-label="Mostrar senha" aria-pressed="false">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i>
+        </button>
+        <label for="resetSenhaConfirm" class="sr-only">Confirmar nova senha</label>
+      </div>
+
+      <div class="auth-actions" style="display:flex;gap:12px;justify-content:flex-end;">
+        <button class="btn-submit" id="btnEnviarCodigo">Enviar código</button>
+        <button class="btn-submit highlight" id="btnRedefinirSenha">Redefinir senha</button>
+      </div>
+
+      <p class="muted" id="devCodeHint" style="margin-top:12px;display:none;">Código para testes: <strong id="devCode"></strong></p>
+    </div>
+  </div>
+  <button class="support-btn" id="abrirChat">💬 Suporte</button>
+
+  <div class="chat-window" id="chatWindow" aria-hidden="true">
+    <div class="chat-header">
+      <span>Suporte Clickify</span>
+      <span class="close-chat" id="fecharChat" aria-label="Fechar chat">&times;</span>
+    </div>
+    <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+      <div class="message bot">👋 Olá! Sou o assistente virtual da Clickify. Como posso te ajudar hoje?</div>
+    </div>
+    <div class="chat-input">
+      <input id="mensagemInput" type="text" placeholder="Digite sua mensagem..." aria-label="Digite sua mensagem">
+      <button id="enviarMensagem">Enviar</button>
+    </div>
+  </div>
+
+  <footer class="site-footer" role="contentinfo" aria-label="Rodapé">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brandline">
+            <span class="footer-brand-text">CLICKIFY</span>
+            <span class="footer-tag">Pagamentos e Tecnologia</span>
+          </div>
+          <p class="footer-desc">Infraestrutura de pagamentos com foco em conversão, segurança e performance.</p>
+          <div class="footer-social" aria-label="Redes sociais">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+          </div>
+        </div>
+        <nav class="footer-cols" aria-label="Links do rodapé">
+          <div>
+            <div class="footer-col-title">Institucional</div>
+            <a class="footer-link" href="#">Central de Ajuda</a>
+            <a class="footer-link" href="#">Canal de Denúncias</a>
+            <a class="footer-link" href="mailto:help@clickify.com">Fale com a Clickify: help@Clickify.com</a>
+          </div>
+          <div>
+            <div class="footer-col-title">Termos e Condições</div>
+            <a class="footer-link" href="#">Termos e Condições de Uso</a>
+            <a class="footer-link" href="#">Termos de Uso</a>
+            <a class="footer-link" href="#">Termos de Compra</a>
+            <a class="footer-link" href="#">Termos de Venda</a>
+            <a class="footer-link" href="#">Política de Conteúdo</a>
+            <a class="footer-link" href="#">Política de Cookies</a>
+          </div>
+          <div>
+            <div class="footer-col-title">Aprenda com a Clickify</div>
+            <a class="footer-link" href="#">Canal do YouTube</a>
+            <a class="footer-link" href="#">Blog da Clickify</a>
+          </div>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 <strong>CLICKIFY</strong>. Todos os direitos reservados.</span>
+        <span>Feito para escalar operações digitais.</span>
+      </div>
+    </div>
+  </footer>
+
+  </div> 
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"></script>
+
+  <script>
+    ;(function(){
+      const canvas = document.getElementById('netBg');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d', { alpha: true });
+      if (!ctx) return;
+
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+      const cfg = {
+        baseBgAlpha: 0,
+        nodeColor: 'rgba(80, 210, 255, 0.95)',
+        nodeGlowColor: 'rgba(0, 184, 255, 0.55)',
+        lineColor: 'rgba(0, 184, 255, 0.22)',
+        lineMaxDist: coarsePointer ? 150 : 180,
+        maxNodes: coarsePointer ? 64 : 88,
+        minNodes: 36,
+        areaDensity: coarsePointer ? 0.000035 : 0.000045,
+        speed: reduceMotion ? 0 : (coarsePointer ? 0.16 : 0.22),
+        mouseRadius: coarsePointer ? 0 : 170,
+        mouseForce: 0.00055,
+      };
+
+      let dpr = Math.min(2, window.devicePixelRatio || 1);
+      let w = 0;
+      let h = 0;
+      let nodes = [];
+      let raf = 0;
+      let lastTs = 0;
+      const mouse = { x: 0, y: 0, active: false };
+
+      function rand(min, max){ return min + Math.random() * (max - min); }
+      function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+      function resize(){
+        dpr = Math.min(2, window.devicePixelRatio || 1);
+        w = Math.max(1, Math.floor(window.innerWidth));
+        h = Math.max(1, Math.floor(window.innerHeight));
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const target = clamp(Math.round(w * h * cfg.areaDensity), cfg.minNodes, cfg.maxNodes);
+        if (nodes.length > target) nodes = nodes.slice(0, target);
+        while (nodes.length < target){
+          nodes.push({
+            x: rand(0, w),
+            y: rand(0, h),
+            vx: rand(-1, 1),
+            vy: rand(-1, 1),
+            r: rand(1.2, 2.6),
+          });
+        }
+        drawFrame(0);
+      }
+
+      function step(dt){
+        const s = cfg.speed;
+        for (let i = 0; i < nodes.length; i++){
+          const p = nodes[i];
+          if (!reduceMotion && cfg.mouseRadius > 0 && mouse.active){
+            const dx = mouse.x - p.x;
+            const dy = mouse.y - p.y;
+            const d2 = dx*dx + dy*dy;
+            const r2 = cfg.mouseRadius * cfg.mouseRadius;
+            if (d2 < r2 && d2 > 0.001){
+              const f = (1 - d2 / r2) * cfg.mouseForce;
+              p.vx += dx * f;
+              p.vy += dy * f;
+            }
+          }
+          p.x += p.vx * s * dt;
+          p.y += p.vy * s * dt;
+
+          if (p.x < -20) p.x = w + 20;
+          else if (p.x > w + 20) p.x = -20;
+          if (p.y < -20) p.y = h + 20;
+          else if (p.y > h + 20) p.y = -20;
+
+          p.vx *= 0.995;
+          p.vy *= 0.995;
+        }
+      }
+
+      function drawFrame(ts){
+        if (!reduceMotion){
+          const dt = lastTs ? Math.min(33, ts - lastTs) : 16;
+          lastTs = ts;
+          step(dt);
+        }
+
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+
+        const maxD = cfg.lineMaxDist;
+        const maxD2 = maxD * maxD;
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = cfg.lineColor;
+
+        for (let i = 0; i < nodes.length; i++){
+          const a = nodes[i];
+          for (let j = i + 1; j < nodes.length; j++){
+            const b = nodes[j];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const d2 = dx*dx + dy*dy;
+            if (d2 > maxD2) continue;
+            const t = 1 - d2 / maxD2;
+            ctx.globalAlpha = 0.08 + t * 0.45;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = cfg.nodeColor;
+        ctx.shadowColor = cfg.nodeGlowColor;
+        ctx.shadowBlur = 10;
+
+        for (let i = 0; i < nodes.length; i++){
+          const p = nodes[i];
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+
+        if (!reduceMotion) raf = requestAnimationFrame(drawFrame);
+      }
+
+      function onPointerMove(e){
+        if (coarsePointer) return;
+        mouse.active = true;
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      }
+      function onPointerLeave(){
+        mouse.active = false;
+      }
+
+      window.addEventListener('resize', resize, { passive: true });
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+      window.addEventListener('pointerleave', onPointerLeave, { passive: true });
+
+      resize();
+      if (!reduceMotion) raf = requestAnimationFrame(drawFrame);
+    })();
+
+    // Configuração inicial do intl-tel-input
+    const phoneInputField = document.getElementById("cadTelefone");
+    let telInput = null; 
+    
+    const countryAreaCodes = {
+        'br': '', 
+        'pt': '9', 
+        'us': '201', 
+        'gb': '7', 
+    };
+
+    function sanitizePhoneField() {
+        if (!phoneInputField) return;
+        if (phoneInputField.placeholder && phoneInputField.placeholder.toLowerCase().includes('undefined')) {
+            phoneInputField.placeholder = ' ';
+        }
+        if (phoneInputField.value && phoneInputField.value.toLowerCase().includes('undefined')) {
+            phoneInputField.value = phoneInputField.value.replace(/undefined/ig, '');
+            if (phoneInputField.value.replace(/[+\s]/g, '') === '') {
+                phoneInputField.value = '';
+            }
+        }
+    }
+
+    function initializeTelInput() {
+        if (phoneInputField && !telInput) {
+            telInput = window.intlTelInput(phoneInputField, {
+                preferredCountries: ["br", "us", "pt"],
+                excludeCountries: ["cf"],
+                initialCountry: "auto",
+                dropdownContainer: document.body,
+                geoIpLookup: function(callback) {
+                    fetch("https://ipapi.co/json")
+                        .then(res => res.json())
+                        .then(data => callback(data.country_code))
+                        .catch(() => callback("br")); // Fallback para Brasil
+                },
+            });
+            sanitizePhoneField();
+            phoneInputField.addEventListener("countrychange", () => {
+                updateAreaCode();
+                sanitizePhoneField();
+            });
+            updateAreaCode();
+        }
+    }
+
+    function updateAreaCode() {
+        if (!telInput) return;
+
+        const countryData = telInput.getSelectedCountryData();
+        const defaultAreaCode = countryAreaCodes[countryData.iso2] || '';
+        
+        const numberWithoutDialCode = telInput.getNumber().replace('+' + countryData.dialCode, '').replace(/\s/g, '');
+        
+        if (numberWithoutDialCode.length === 0 && defaultAreaCode) {
+             telInput.setNumber('+' + countryData.dialCode + defaultAreaCode);
+        } else if (!defaultAreaCode && numberWithoutDialCode.length < 2) {
+             telInput.setNumber('+' + countryData.dialCode);
+        }
+
+        sanitizePhoneField();
+        
+        setTimeout(() => {
+            const len = phoneInputField.value.length;
+            phoneInputField.setSelectionRange(len, len);
+        }, 0);
+    }
+    
+    if (phoneInputField) {
+        phoneInputField.addEventListener('focus', sanitizePhoneField);
+    }
+    
+    // Controles de Modal
+    const modalLogin = document.getElementById('modalLogin');
+    const modalCadastro = document.getElementById('modalCadastro');
+    const abrirLogin = document.getElementById('abrirLogin');
+    const abrirCadastro = document.getElementById('abrirCadastro');
+    const abrirCadastro2 = document.getElementById('abrirCadastro2');
+    const abrirCadastroLink = document.getElementById('abrirCadastroLink');
+    const abrirLoginFromCad = document.getElementById('abrirLoginFromCad');
+    const footerAbrirLogin = document.getElementById('footerAbrirLogin');
+    const footerAbrirCadastro = document.getElementById('footerAbrirCadastro');
+    const footerAbrirChat = document.getElementById('footerAbrirChat');
+    const fecharLogin = document.getElementById('fecharLogin');
+    const fecharCadastro = document.getElementById('fecharCadastro');
+    const modalReset = document.getElementById('modalReset');
+    const fecharReset = document.getElementById('fecharReset');
+    const resetFeedback = document.getElementById('resetFeedback');
+    const cadastroFeedback = document.getElementById('cadastroFeedback');
+    const userWidget = document.getElementById('userWidget');
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userLogoutAction = document.getElementById('userLogoutAction');
+
+    function openModal(modal) {
+      if (!modal) return;
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      if (modal === modalLogin) {
+        clearLoginInvalid();
+        setFeedback(loginFeedback, '');
+      }
+      if (modal === modalCadastro) {
+        cadastroFeedback.textContent = '';
+        initializeTelInput(); 
+      }
+      if (modal === modalReset) {
+        if (resetFeedback) setFeedback(resetFeedback, '');
+        const loginEmailEl = document.getElementById('loginEmail');
+        const resetEmailEl = document.getElementById('resetEmail');
+        if (loginEmailEl && resetEmailEl && !resetEmailEl.value) {
+          resetEmailEl.value = loginEmailEl.value;
+        }
+      }
+    }
+    function closeModal(modal) {
+      if (!modal) return;
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function isLogged() {
+      return sessionStorage.getItem('clickify_logged') === 'true';
+    }
+
+    function updateAuthUI() {
+      if (abrirLogin) {
+        if (isLogged()) {
+          abrirLogin.textContent = 'SAIR';
+          abrirLogin.setAttribute('aria-label', 'Sair da conta');
+        } else {
+          abrirLogin.textContent = 'LOGIN';
+          abrirLogin.setAttribute('aria-label', 'Abrir login');
+        }
+      }
+      if (userWidget && userNameDisplay) {
+        if (isLogged()) {
+          const user = JSON.parse(sessionStorage.getItem('clickify_user') || '{}') || {};
+          const name = user.name || user.email || 'Usuário';
+          userNameDisplay.textContent = name;
+          userWidget.style.display = '';
+          userWidget.setAttribute('aria-expanded', 'false');
+        } else {
+          userNameDisplay.textContent = 'Usuário';
+          userWidget.style.display = 'none';
+          userWidget.setAttribute('aria-expanded', 'false');
+        }
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('clickify_logged');
+      sessionStorage.removeItem('clickify_user');
+      updateAuthUI();
+      const feedbackEl = document.getElementById('loginFeedback');
+      if (feedbackEl) setFeedback(feedbackEl, 'Logout realizado com sucesso.');
+      closeModal(modalCadastro);
+      closeModal(modalReset);
+      openModal(modalLogin);
+    }
+
+    if (abrirLogin) {
+      abrirLogin.addEventListener('click', e => {
+        e.preventDefault();
+        if (isLogged()) {
+          handleLogout();
+        } else {
+          openModal(modalLogin);
+        }
+      });
+    }
+    if (abrirCadastro) abrirCadastro.addEventListener('click', e => { e.preventDefault(); openModal(modalCadastro); });
+    if (abrirCadastro2) abrirCadastro2.addEventListener('click', e => { e.preventDefault(); openModal(modalCadastro); });
+    if (abrirCadastroLink) abrirCadastroLink.addEventListener('click', e => { e.preventDefault(); closeModal(modalLogin); openModal(modalCadastro); });
+    if (abrirLoginFromCad) abrirLoginFromCad.addEventListener('click', e => { e.preventDefault(); closeModal(modalCadastro); openModal(modalLogin); });
+    if (footerAbrirLogin) footerAbrirLogin.addEventListener('click', e => { e.preventDefault(); if (abrirLogin) abrirLogin.click(); });
+    if (footerAbrirCadastro) footerAbrirCadastro.addEventListener('click', e => { e.preventDefault(); if (abrirCadastro) abrirCadastro.click(); });
+    if (footerAbrirChat) footerAbrirChat.addEventListener('click', e => { e.preventDefault(); const abrirChatBtn = document.getElementById('abrirChat'); if (abrirChatBtn) abrirChatBtn.click(); });
+
+    if (fecharLogin) fecharLogin.addEventListener('click', () => closeModal(modalLogin));
+    if (fecharCadastro) fecharCadastro.addEventListener('click', () => closeModal(modalCadastro));
+    if (fecharReset) fecharReset.addEventListener('click', () => closeModal(modalReset));
+
+    if (userLogoutAction) {
+      userLogoutAction.addEventListener('click', e => {
+        e.preventDefault();
+        if (isLogged()) handleLogout();
+        else openModal(modalLogin);
+      });
+    }
+    if (userWidget) {
+      userWidget.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (isLogged()) handleLogout();
+          else openModal(modalLogin);
+        }
+      });
+    }
+
+    window.addEventListener('click', e => {
+      if (e.target === modalLogin) closeModal(modalLogin);
+      if (e.target === modalCadastro) closeModal(modalCadastro);
+      if (e.target === modalReset) closeModal(modalReset);
+    });
+
+    const loginForm = document.getElementById('loginForm');
+    const loginFeedback = document.getElementById('loginFeedback');
+    const loginEmailGroup = document.getElementById('loginEmailGroup');
+    const loginSenhaGroup = document.getElementById('loginSenhaGroup');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+    function setFeedback(el, message) {
+      if (!el) return;
+      const text = (message || '').trim();
+      el.textContent = text;
+      el.classList.toggle('is-visible', Boolean(text));
+    }
+
+    function clearLoginInvalid() {
+      if (loginEmailGroup) loginEmailGroup.classList.remove('is-invalid');
+      if (loginSenhaGroup) loginSenhaGroup.classList.remove('is-invalid');
+    }
+
+    function markInvalid(groupEl) {
+      if (groupEl) groupEl.classList.add('is-invalid');
+    }
+
+    if (loginForm) {
+      ['input', 'change'].forEach(evt => {
+        loginForm.addEventListener(evt, () => {
+          clearLoginInvalid();
+          setFeedback(loginFeedback, '');
+        }, { passive: true });
+      });
+    }
+
+    if (forgotPasswordLink) {
+      forgotPasswordLink.addEventListener('click', e => {
+        e.preventDefault();
+        closeModal(modalLogin);
+        openModal(modalReset);
+      });
+    }
+
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+      const targetId = btn.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (!input) {
+        btn.style.display = 'none';
+        return;
+      }
+
+      input.type = 'password';
+
+      const iconEl = btn.querySelector('i') || btn;
+      iconEl.classList.remove('fa-eye-slash');
+      iconEl.classList.add('fa-eye');
+
+      function updateToggleVisibility() {
+        const active = document.activeElement === input || input.value.length > 0;
+        btn.style.opacity = active ? '1' : '0';
+        btn.style.pointerEvents = active ? 'auto' : 'none';
+      }
+
+      updateToggleVisibility();
+      input.addEventListener('focus', updateToggleVisibility);
+      input.addEventListener('blur', updateToggleVisibility);
+      input.addEventListener('input', updateToggleVisibility);
+
+      btn.addEventListener('click', () => {
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        iconEl.classList.toggle('fa-eye', !isPassword);
+        iconEl.classList.toggle('fa-eye-slash', isPassword);
+        btn.setAttribute('aria-pressed', String(isPassword));
+        btn.setAttribute('aria-label', isPassword ? 'Ocultar senha' : 'Mostrar senha');
+      });
+      
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+
+    // Funções de Autenticação (Mantidas)
+    function getUsers() {
+      try { return JSON.parse(localStorage.getItem('clickify_users') || '[]'); } catch(e) { return []; }
+    }
+    function setUsers(users) {
+      localStorage.setItem('clickify_users', JSON.stringify(users));
+    }
+    function findUserByEmail(email) {
+      const users = getUsers();
+      return users.find(u => u.email.toLowerCase() === (email || '').toLowerCase());
+    }
+    // Recuperação: código de verificação
+    function getResetMap() {
+      try { return JSON.parse(localStorage.getItem('clickify_resets') || '{}'); } catch(e) { return {}; }
+    }
+    function setResetMap(map) {
+      localStorage.setItem('clickify_resets', JSON.stringify(map));
+    }
+    function generateResetCode() {
+      return String(Math.floor(100000 + Math.random()*900000));
+    }
+
+    // Signup
+    const btnCadastrar = document.getElementById('btnCadastrar');
+    btnCadastrar.addEventListener('click', e => {
+      e.preventDefault();
+      cadastroFeedback.textContent = ''; 
+
+      const nome = document.getElementById('cadNome').value.trim();
+      const email = document.getElementById('cadEmail').value.trim();
+      const telefone = telInput ? telInput.getNumber() : document.getElementById('cadTelefone').value.trim(); 
+      const senha = document.getElementById('cadSenha').value;
+      const senhaConfirm = document.getElementById('cadSenhaConfirm').value;
+      const termos = document.getElementById('termos');
+      
+      const showFeedback = (message) => { cadastroFeedback.textContent = message; };
+
+      if (!nome || !email || !senha || !senhaConfirm || !telefone) {
+        showFeedback('Preencha todos os campos obrigatórios.');
+        return;
+      }
+      if (nome.length < 3) {
+        showFeedback('Por favor, informe seu nome completo.');
+        return;
+      }
+      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRe.test(email)) {
+        showFeedback('E-mail inválido.');
+        return;
+      }
+      if (!telInput || !telInput.isValidNumber()) {
+        showFeedback('Celular inválido. Verifique o código do país e o número.');
+        return;
+      }
+      if (senha.length < 6) {
+        showFeedback('A senha deve ter pelo menos 6 caracteres.');
+        return;
+      }
+      if (senha !== senhaConfirm) {
+        showFeedback('As senhas não coincidem.');
+        return;
+      }
+      if (!termos || !termos.checked) {
+        showFeedback('Você precisa aceitar os Termos de uso e Política de privacidade.');
+        return;
+      }
+      if (findUserByEmail(email)) {
+        showFeedback('Já existe um usuário cadastrado com esse e-mail.');
+        return;
+      }
+
+      const users = getUsers();
+      const user = { name: nome, email: email, phone: telefone, password: senha, createdAt: new Date().toISOString() };
+      users.push(user);
+      setUsers(users);
+
+      sessionStorage.setItem('clickify_logged', 'true');
+      sessionStorage.setItem('clickify_user', JSON.stringify(user));
+      updateAuthUI();
+
+      closeModal(modalCadastro);
+      alert('Cadastro realizado com sucesso! Um código de verificação será enviado para o seu número.'); 
+      document.getElementById('loginEmail').value = email;
+    });
+
+    const btnEntrar = document.getElementById('btnEntrar');
+    if (btnEntrar) {
+      btnEntrar.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+        const emailEl = document.getElementById('loginEmail');
+        const senhaEl = document.getElementById('loginSenha');
+        const feedbackEl = document.getElementById('loginFeedback');
+        const emailGroup = document.getElementById('loginEmailGroup');
+        const senhaGroup = document.getElementById('loginSenhaGroup');
+        
+        if (emailGroup) emailGroup.classList.remove('is-invalid');
+        if (senhaGroup) senhaGroup.classList.remove('is-invalid');
+        if (feedbackEl) setFeedback(feedbackEl, '');
+
+        const email = (emailEl ? emailEl.value : '').trim();
+        const senha = (senhaEl ? senhaEl.value : '').trim();
+
+        let hasError = false;
+        if (!email) {
+            if (emailGroup) emailGroup.classList.add('is-invalid');
+            hasError = true;
+        }
+        if (!senha) {
+            if (senhaGroup) senhaGroup.classList.add('is-invalid');
+            hasError = true;
+        }
+        
+        if (hasError) {
+            if (feedbackEl) setFeedback(feedbackEl, 'Preencha e-mail e senha para continuar.');
+            return;
+        }
+
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) {
+            if (emailGroup) emailGroup.classList.add('is-invalid');
+            if (feedbackEl) setFeedback(feedbackEl, 'Informe um e-mail válido.');
+            return;
+        }
+
+        btnEntrar.disabled = true;
+        btnEntrar.classList.add('loading');
+        const originalText = btnEntrar.textContent;
+        btnEntrar.textContent = ''; 
+
+        try {
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            const user = findUserByEmail(email);
+            if (!user) {
+                if (emailGroup) emailGroup.classList.add('is-invalid');
+                if (feedbackEl) setFeedback(feedbackEl, 'Usuário não encontrado. Crie uma conta.');
+                return;
+            }
+            if (user.password !== senha) {
+                if (senhaGroup) senhaGroup.classList.add('is-invalid');
+                if (feedbackEl) setFeedback(feedbackEl, 'Senha incorreta.');
+                return;
+            }
+
+            sessionStorage.setItem('clickify_logged', 'true');
+            sessionStorage.setItem('clickify_user', JSON.stringify(user));
+            updateAuthUI();
+            
+            closeModal(document.getElementById('modalLogin'));
+            alert('Login realizado com sucesso!');
+            
+        } catch (err) {
+            console.debug(err);
+        } finally {
+            if (btnEntrar) {
+                btnEntrar.disabled = false;
+                btnEntrar.classList.remove('loading');
+                btnEntrar.textContent = originalText;
+            }
+        }
+      });
+    }
+
+    // Fluxo de "Esqueceu a senha"
+    const btnEnviarCodigo = document.getElementById('btnEnviarCodigo');
+    const btnRedefinirSenha = document.getElementById('btnRedefinirSenha');
+    if (btnEnviarCodigo) {
+      btnEnviarCodigo.addEventListener('click', e => {
+        e.preventDefault();
+        const emailEl = document.getElementById('resetEmail');
+        const email = (emailEl ? emailEl.value : '').trim();
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) { 
+          setFeedback(resetFeedback, 'Informe um e-mail válido.');
+          const grp = document.getElementById('resetEmailGroup'); if (grp) grp.classList.add('is-invalid');
+          return; 
+        }
+        const user = findUserByEmail(email);
+        if (!user) {
+          setFeedback(resetFeedback, 'Usuário não encontrado.');
+          const grp = document.getElementById('resetEmailGroup'); if (grp) grp.classList.add('is-invalid');
+          return;
+        }
+        const code = generateResetCode();
+        const map = getResetMap();
+        map[email.toLowerCase()] = { code, exp: Date.now() + 10*60*1000 };
+        setResetMap(map);
+        setFeedback(resetFeedback, 'Enviamos um código de verificação para o seu e-mail. (Ambiente de testes)');
+        const hint = document.getElementById('devCodeHint'); const dev = document.getElementById('devCode');
+        if (hint && dev) { hint.style.display = 'block'; dev.textContent = code; }
+        const codeEl = document.getElementById('resetCode'); if (codeEl) codeEl.focus();
+      });
+    }
+    if (btnRedefinirSenha) {
+      btnRedefinirSenha.addEventListener('click', e => {
+        e.preventDefault();
+        const email = (document.getElementById('resetEmail')?.value || '').trim().toLowerCase();
+        const code = (document.getElementById('resetCode')?.value || '').trim();
+        const senha = document.getElementById('resetSenha')?.value || '';
+        const senha2 = document.getElementById('resetSenhaConfirm')?.value || '';
+        const map = getResetMap();
+        const rec = map[email];
+
+        if (!email || !code || !senha || !senha2) { setFeedback(resetFeedback, 'Preencha todos os campos.'); return; }
+        if (String(code).length !== 6) { setFeedback(resetFeedback, 'Código inválido.'); return; }
+        if (!rec || rec.exp < Date.now() || rec.code !== code) { setFeedback(resetFeedback, 'Código incorreto ou expirado.'); return; }
+        if (senha.length < 6) { setFeedback(resetFeedback, 'A nova senha deve ter pelo menos 6 caracteres.'); return; }
+        if (senha !== senha2) { setFeedback(resetFeedback, 'As senhas não coincidem.'); return; }
+
+        const users = getUsers();
+        const idx = users.findIndex(u => (u.email||'').toLowerCase() === email);
+        if (idx === -1) { setFeedback(resetFeedback, 'Usuário não encontrado.'); return; }
+        users[idx].password = senha;
+        setUsers(users);
+        delete map[email];
+        setResetMap(map);
+        setFeedback(resetFeedback, '');
+        alert('Senha redefinida com sucesso! Faça login com a nova senha.');
+        closeModal(modalReset);
+        openModal(modalLogin);
+        const loginEmailEl = document.getElementById('loginEmail');
+        if (loginEmailEl) loginEmailEl.value = email;
+      });
+    }
+
+    window.addEventListener('load', () => {
+      const logged = sessionStorage.getItem('clickify_logged') === 'true';
+      updateAuthUI();
+      if (logged) {
+        const user = JSON.parse(sessionStorage.getItem('clickify_user') || '{}') || {};
+        console.log('Usuário logado:', user.email || '—');
+      }
+      if (document.readyState === 'complete') {
+        initializeTelInput(); 
+      }
+      const cadNomeEl = document.getElementById('cadNome');
+      if (cadNomeEl) {
+        cadNomeEl.placeholder = 'Nome completo';
+        cadNomeEl.setAttribute('aria-label', 'Nome completo');
+        cadNomeEl.type = 'password';
+        cadNomeEl.autocomplete = 'off';
+        cadNomeEl.autocapitalize = 'off';
+        cadNomeEl.spellcheck = 'false';
+      }
+      const cadSenhaEl = document.getElementById('cadSenha');
+      const cadSenhaConfirmEl = document.getElementById('cadSenhaConfirm');
+      if (cadSenhaEl) {
+        cadSenhaEl.placeholder = 'Senha';
+        cadSenhaEl.setAttribute('aria-label', 'Senha');
+        cadSenhaEl.type = 'password';
+        cadSenhaEl.autocomplete = 'off';
+      }
+      if (cadSenhaConfirmEl) {
+        cadSenhaConfirmEl.placeholder = 'Confirmar senha';
+        cadSenhaConfirmEl.setAttribute('aria-label', 'Confirmar senha');
+        cadSenhaConfirmEl.type = 'password';
+        cadSenhaConfirmEl.autocomplete = 'off';
+      }
+    });
+
+    // Chat internal (Melhorado)
+    const abrirChatBtn = document.getElementById('abrirChat');
+    const chatWindow = document.getElementById('chatWindow');
+    const fecharChat = document.getElementById('fecharChat');
+    const chatMessages = document.getElementById('chatMessages');
+    const mensagemInput = document.getElementById('mensagemInput');
+    const enviarMensagemBtn = document.getElementById('enviarMensagem');
+
+    function showChat() { 
+        chatWindow.style.display = 'flex'; 
+        chatWindow.setAttribute('aria-hidden', 'false'); 
+        mensagemInput.focus(); 
+        chatMessages.scrollTop = chatMessages.scrollHeight; /* Rola para o final ao abrir */
+    }
+    function hideChat() { chatWindow.style.display = 'none'; chatWindow.setAttribute('aria-hidden', 'true'); abrirChatBtn.focus(); }
+
+    abrirChatBtn.addEventListener('click', () => { if (chatWindow.style.display === 'flex') hideChat(); else showChat(); });
+    fecharChat.addEventListener('click', hideChat);
+
+    function addMessage(text, cls) {
+      const el = document.createElement('div');
+      el.className = 'message ' + cls;
+      el.textContent = text;
+      chatMessages.appendChild(el);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function botReply(userText) {
+      const txt = (userText || '').toLowerCase();
+      
+      if (txt.includes('preço') || txt.includes('taxa')) { 
+        return '💰 Nossas taxas são:\n- Cartão: 3,4% + R$0,40\n- Pix: 1,5% (recebimento instantâneo)\n- Produto: 2% por venda.'; 
+      }
+      if (txt.includes('saque') || txt.includes('recebimento')) { 
+        return '💸 O valor das suas vendas fica disponível para saque em até 1 dia útil após a transação.'; 
+      }
+      if (txt.includes('oi') || txt.includes('olá') || txt.includes('ola')) { 
+        return '👋 Olá! Estou aqui para te ajudar a converter mais com a Clickify. Qual sua dúvida?'; 
+      }
+      if (txt.includes('cadastro') || txt.includes('entrar')) { 
+        return '📝 Você pode criar sua conta ou fazer login usando os botões no menu superior ou clicando no botão "Comece Agora".';
+      }
+      return '🤖 Agradeço sua mensagem. Sua solicitação foi registrada e um agente da Clickify entrará em contato em breve para dar suporte!';
+    }
+
+    function enviarMensagem() {
+      const texto = mensagemInput.value.trim();
+      if (!texto) return;
+      addMessage(texto, 'user');
+      mensagemInput.value = '';
+      setTimeout(() => {
+        const resposta = botReply(texto);
+        addMessage(resposta, 'bot');
+      }, 700);
+    }
+
+    enviarMensagemBtn.addEventListener('click', enviarMensagem);
+    mensagemInput.addEventListener('keydown', e => { if (e.key === 'Enter') enviarMensagem(); });
+
+    // ESC accessibility
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        if (chatWindow.style.display === 'flex') hideChat();
+        if (modalLogin && modalLogin.style.display === 'flex') closeModal(modalLogin);
+        if (modalCadastro.style.display === 'flex') closeModal(modalCadastro);
+      }
+    });
+  </script>
+  <script>
+    // Fixed Menu Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelector('.nav-links');
+      
+      if (navLinks) {
+        navLinks.addEventListener('click', (e) => {
+          // Check if clicking close button
+          if (e.target.closest('.close-menu-btn')) {
+            navLinks.classList.remove('fixed-active');
+            e.stopPropagation();
+            return;
+          }
+
+          // Check if clicking an interactive element (link/button)
+          if (e.target.closest('a') || e.target.closest('button')) {
+            return;
+          }
+
+          // Toggle fixed state
+          navLinks.classList.toggle('fixed-active');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
