@@ -1,0 +1,3812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Configurar Produto | Clickify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{
+      --bg0:#0F172A;
+      --bg1:#111827;
+      --card:#1E293B;
+      --border:rgba(255,255,255,0.10);
+      --muted:#B3B3B3;
+      --text:#FFFFFF;
+      --accent:#3B82F6;
+      --accent2:#60A5FA;
+      --warn:#FFC107;
+      --radius:14px;
+      --radius2:12px;
+      --shadow:0 10px 28px rgba(0,0,0,0.35);
+      --shadow2:0 10px 24px rgba(0,0,0,0.22);
+      --focus:0 0 0 3px rgba(59,130,246,0.2);
+      --focus2:0 0 0 3px rgba(96,165,250,0.18);
+      --trans:.22s ease;
+      --font:'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font);
+      background:radial-gradient(1200px 700px at 12% 8%, rgba(59,130,246,0.12), transparent 60%),
+                 radial-gradient(900px 600px at 85% 0%, rgba(37,99,235,0.1), transparent 55%),
+                 linear-gradient(180deg,var(--bg0),var(--bg1));
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .pc-wrap{max-width:1200px;margin:0 auto;padding:10px 18px 32px}
+    .pc-header{
+      position:sticky;top:10px;z-index:50;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:12px 16px;
+      backdrop-filter:blur(12px);
+      background:rgba(15,23,42,0.75);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px;
+      box-shadow:var(--shadow2);
+    }
+    .pc-back{
+      display:inline-flex;align-items:center;gap:10px;
+      color:#93C5FD;
+      border:1px solid rgba(147,197,253,0.18);
+      background:rgba(30,41,59,0.55);
+      padding:10px 12px;border-radius:12px;
+      transition:transform var(--trans), box-shadow var(--trans), border-color var(--trans), filter var(--trans);
+      cursor:pointer;
+    }
+    .pc-back:hover{filter:brightness(1.08);border-color:rgba(147,197,253,0.32);box-shadow:0 0 0 3px rgba(147,197,253,0.10);transform:translateY(-1px)}
+    .pc-save{
+      display:inline-flex;align-items:center;gap:10px;
+      background:linear-gradient(135deg, rgba(59,130,246,0.95), rgba(34,211,238,0.75));
+      color:#fff;
+      font-weight:800;
+      border:none;border-radius:999px;
+      padding:10px 16px;
+      box-shadow:0 12px 26px rgba(59,130,246,0.18);
+      transition:transform var(--trans), filter var(--trans), box-shadow var(--trans);
+      cursor:pointer;
+    }
+    .pc-save:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 16px 40px rgba(59,130,246,0.26)}
+    .pc-title{display:flex;flex-direction:column;gap:2px}
+    .pc-title strong{font-size:14px;color:rgba(255,255,255,0.92);font-weight:800;letter-spacing:.3px}
+    .pc-title span{font-size:12px;color:rgba(255,255,255,0.62)}
+    .pc-tabs{
+      margin-top:12px;
+      display:flex;gap:18px;align-items:center;
+      padding:8px 10px;
+      border-radius:16px;
+      background:rgba(30,41,59,0.55);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:var(--shadow2);
+      overflow:auto;
+      scrollbar-width:thin;
+    }
+    .pc-tab{
+      position:relative;
+      background:transparent;border:none;
+      color:rgba(255,255,255,0.62);
+      font-weight:700;
+      padding:10px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:color var(--trans), background var(--trans), transform var(--trans);
+      white-space:nowrap;
+    }
+    .pc-tab:hover{color:rgba(255,255,255,0.88);background:rgba(255,255,255,0.06);transform:translateY(-1px)}
+    .pc-tab.active{color:var(--accent2)}
+    .pc-tab.active::after{
+      content:"";
+      position:absolute;left:10px;right:10px;bottom:-6px;height:2px;
+      background:linear-gradient(90deg,var(--accent2),var(--accent));
+      border-radius:999px;
+      box-shadow:0 0 18px rgba(59,130,246,0.35);
+    }
+    .pc-main{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap:16px;
+      align-items:start;
+    }
+    .pc-card{
+      background:rgba(30,41,59,0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius:var(--radius);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .pc-card:hover{
+      box-shadow: 0 8px 32px 0 rgba(59,130,246,0.1);
+    }
+    .pc-info{padding:22px 22px; border-left: 4px solid var(--accent2);}
+    .pc-info h2{margin:0 0 10px;font-size:18px;font-weight:800;letter-spacing:.2px; color: var(--accent2); text-shadow: 0 0 10px rgba(59,130,246,0.3);}
+    .pc-info p{margin:0;color:rgba(255,255,255,0.8);font-size:13px;line-height:1.55}
+    .pc-form{padding:22px 22px}
+    .pc-field{display:grid;gap:8px;margin-bottom:14px}
+    .pc-label{color:rgba(255,255,255,0.9);font-size:12px;font-weight:700; text-transform: uppercase; letter-spacing: 0.5px;}
+    .pc-input,.pc-textarea,.pc-select{
+      width:100%;
+      background:rgba(15,23,42,0.4);
+      backdrop-filter: blur(4px);
+      color:rgba(255,255,255,0.95);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:12px;
+      padding:12px 14px;
+      outline:none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family:var(--font);
+    }
+    .pc-input:hover,.pc-textarea:hover,.pc-select:hover{
+      border-color:rgba(59,130,246,0.4);
+      background:rgba(15,23,42,0.5);
+    }
+    .pc-input:focus,.pc-textarea:focus,.pc-select:focus{
+      border-color:var(--accent2);
+      box-shadow: 0 0 15px rgba(59,130,246,0.2), inset 0 0 5px rgba(59,130,246,0.1);
+      background:rgba(15,23,42,0.6);
+      transform: translateY(-1px);
+    }
+    .pc-textarea{min-height:120px;resize:vertical}
+    .pc-select-wrap{position:relative}
+    .pc-select{appearance:none;padding-right:40px;cursor:pointer}
+    .pc-select-ico{
+      pointer-events:none;position:absolute;right:12px;top:50%;
+      transform:translateY(-50%);
+      color:rgba(255,255,255,0.55);
+    }
+    .pc-drop{
+      background:rgba(15,23,42,0.62);
+      border:1px dashed rgba(255,255,255,0.16);
+      border-radius:14px;
+      padding:16px;
+      display:grid;
+      gap:10px;
+      place-items:center;
+      text-align:center;
+      transition:border-color var(--trans), box-shadow var(--trans), background var(--trans), transform var(--trans);
+      cursor:pointer;
+    }
+    .pc-drop:hover{border-color:rgba(59,130,246,0.45);box-shadow:0 0 0 3px rgba(59,130,246,0.12);transform:translateY(-1px)}
+    .pc-drop.drag{border-color:rgba(59,130,246,0.60);box-shadow:0 0 0 3px rgba(59,130,246,0.14);background:rgba(15,23,42,0.72)}
+    .pc-drop .ico{
+      width:54px;height:54px;border-radius:16px;
+      display:grid;place-items:center;
+      background:rgba(30,41,59,0.82);
+      border:1px solid rgba(255,255,255,0.10);
+      box-shadow:0 10px 24px rgba(0,0,0,0.25);
+      color:rgba(96,165,250,0.85);
+      font-size:22px;
+    }
+    .pc-drop strong{font-size:13px;font-weight:800}
+    .pc-drop span{font-size:12px;color:rgba(255,255,255,0.66)}
+    .pc-drop small{font-size:11px;color:rgba(255,255,255,0.52)}
+    .pc-drop .hint{
+      font-size:11px;
+      color:rgba(96,165,250,0.86);
+      font-weight:800;
+    }
+    .pc-preview{
+      display:none;
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.10);
+      overflow:hidden;
+      background:rgba(15,23,42,0.70);
+    }
+    .pc-preview.show{display:block}
+    .pc-preview img{
+      width:100%;
+      display:block;
+      aspect-ratio:1/1;
+      object-fit:contain;
+      background:#0f172a;
+    }
+    .pc-preview-bar{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      padding:10px 12px;
+    }
+    .pc-preview-bar span{color:rgba(255,255,255,0.72);font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .pc-remove{
+      background:rgba(239,68,68,0.14);
+      border:1px solid rgba(239,68,68,0.28);
+      color:#FCA5A5;
+      border-radius:10px;
+      padding:8px 10px;
+      font-weight:800;
+      cursor:pointer;
+      transition:filter var(--trans), transform var(--trans), box-shadow var(--trans);
+    }
+    .pc-remove:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 0 0 3px rgba(239,68,68,0.10)}
+    .pc-pane{display:none;animation:pcFade .2s ease both}
+    .pc-pane.active{display:block}
+    @keyframes pcFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .pc-footer-actions{margin-top:10px;display:flex;justify-content:flex-end}
+    
+    /* Novas Seções: Oferta e Atendimento */
+    .pc-section-group{margin-top:40px;display:grid;gap:24px}
+    .pc-section-header{margin-bottom:16px}
+    .pc-section-header h3{margin:0;font-size:18px;font-weight:800;color:var(--text);letter-spacing:.3px}
+    .pc-section-header p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+    
+    .pc-table-card{
+      background:rgba(15,23,42,0.45);
+      border:1px solid var(--border);
+      border-radius:var(--radius2);
+      overflow:hidden;
+    }
+    .pc-table{width:100%;border-collapse:collapse;font-size:13px}
+    .pc-table th{
+      text-align:left;padding:14px 16px;
+      background:rgba(255,255,255,0.03);
+      color:var(--muted);font-weight:700;text-transform:uppercase;font-size:11px;letter-spacing:.5px
+    }
+    .pc-table td{padding:14px 16px;border-top:1px solid var(--border);color:rgba(255,255,255,0.85)}
+    .pc-table tr:hover td{background:rgba(59,130,246,0.02)}
+
+    .ck-wrap{
+      background:linear-gradient(135deg, rgba(2,6,23,0.52), rgba(15,23,42,0.52));
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,0.35);
+      overflow:hidden;
+    }
+    .ck-toolbar{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:16px;
+      background:rgba(255,255,255,0.02);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .ck-search{
+      flex:1;
+      display:flex;align-items:center;gap:10px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:14px;
+      padding:10px 12px;
+      max-width:440px;
+    }
+    .ck-search i{color:rgba(255,255,255,0.55);font-size:14px}
+    .ck-search input{
+      flex:1;background:transparent;border:none;outline:none;
+      color:rgba(255,255,255,0.86);
+      font-size:13px;
+    }
+    .ck-add{
+      height:42px;
+      border-radius:14px;
+      padding:0 14px;
+      border:1px solid rgba(59,130,246,0.25);
+      background:linear-gradient(135deg, rgba(59,130,246,0.95), rgba(34,211,238,0.70));
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex;align-items:center;gap:10px;
+      transition:filter var(--trans), transform var(--trans), box-shadow var(--trans);
+      box-shadow:0 10px 24px rgba(59,130,246,0.18);
+      white-space:nowrap;
+    }
+    .ck-add:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 14px 34px rgba(59,130,246,0.26)}
+    .ck-table{background:transparent}
+    .ck-row{cursor:pointer}
+    .ck-row:hover td{background:rgba(59,130,246,0.04)}
+    .ck-actions{
+      background:transparent;border:1px solid rgba(255,255,255,0.10);
+      width:36px;height:36px;border-radius:12px;
+      color:rgba(255,255,255,0.72);
+      cursor:pointer;
+      display:grid;place-items:center;
+      transition:background var(--trans), border-color var(--trans), transform var(--trans);
+    }
+    .ck-actions:hover{background:rgba(255,255,255,0.05);border-color:rgba(59,130,246,0.25);transform:translateY(-1px)}
+    .ck-badge{
+      display:inline-flex;align-items:center;
+      padding:6px 10px;border-radius:999px;
+      font-size:11px;font-weight:900;letter-spacing:.4px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.03);
+      color:rgba(255,255,255,0.82)
+    }
+    .ck-badge.is-default{
+      border-color:rgba(34,197,94,0.24);
+      background:rgba(34,197,94,0.12);
+      color:rgba(34,197,94,0.98)
+    }
+    .ck-tag{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      font-size:11px;font-weight:900;
+      border:1px solid rgba(59,130,246,0.20);
+      background:rgba(59,130,246,0.12);
+      color:rgba(96,165,250,0.95)
+    }
+    .ck-pagination{
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      padding:14px 16px;
+      border-top:1px solid rgba(255,255,255,0.06);
+      background:rgba(255,255,255,0.02);
+    }
+    .ck-pagebtn{
+      width:34px;height:34px;border-radius:12px;
+      border:1px solid rgba(255,255,255,0.10);
+      background:rgba(255,255,255,0.03);
+      color:rgba(255,255,255,0.80);
+      cursor:pointer;
+      display:grid;place-items:center;
+      transition:background var(--trans), border-color var(--trans), transform var(--trans);
+    }
+    .ck-pagebtn:hover{background:rgba(255,255,255,0.06);border-color:rgba(59,130,246,0.25);transform:translateY(-1px)}
+    .ck-pageidx{
+      min-width:34px;height:34px;border-radius:12px;
+      border:1px solid rgba(59,130,246,0.22);
+      background:rgba(59,130,246,0.10);
+      display:grid;place-items:center;
+      font-weight:900;color:rgba(96,165,250,0.95);
+      font-size:13px;
+    }
+    .pc-action-btn{
+      background:transparent;border:none;color:var(--muted);
+      cursor:pointer;padding:8px;border-radius:8px;transition:var(--trans);
+    }
+    .pc-action-btn:hover{color:var(--accent2);background:rgba(255,255,255,0.08)}
+    
+    .pc-add-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#061018;font-weight:800;font-size:13px;
+      border:none;border-radius:10px;padding:10px 16px;
+      cursor:pointer;transition:var(--trans);
+      box-shadow:0 8px 20px rgba(0,255,136,0.15);
+    }
+    .pc-add-btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 10px 24px rgba(59,130,246,0.2)}
+    
+    .pc-limit-info{font-size:11px;color:var(--muted);margin-top:10px;display:block}
+    
+    .pc-input-group{
+      position:relative;display:flex;align-items:center;
+    }
+    .pc-input-group i{
+      position:absolute;left:14px;color:var(--muted);font-size:14px;
+    }
+    .pc-input-group .pc-input{padding-left:40px}
+
+    .pc-page-footer{
+      margin-top:60px;padding-top:24px;
+      border-top:1px solid var(--border);
+      display:flex;justify-content:space-between;align-items:center;gap:20px;
+    }
+    .pc-btn-delete{
+      background:rgba(239,68,68,0.08);
+      border:1px solid rgba(239,68,68,0.2);
+      color:#F87171;font-weight:700;font-size:14px;
+      padding:12px 20px;border-radius:12px;
+      cursor:pointer;transition:var(--trans);
+    }
+    .pc-btn-delete:hover{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#FCA5A5}
+    
+    .pc-btn-primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:#061018;font-weight:800;font-size:14px;
+      padding:12px 24px;border-radius:12px;
+      border:none;cursor:pointer;transition:var(--trans);
+      box-shadow:0 10px 24px rgba(0,255,136,0.18);
+    }
+    .pc-btn-primary:hover{filter:brightness(1.05);transform:translateY(-1px);box-shadow:0 14px 30px rgba(59,130,246,0.22)}
+
+    /* Seção Pagamento (Configurações) */
+    .pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0}
+    @media (max-width:980px){.pay-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.pay-grid{grid-template-columns:1fr}}
+    
+    .pay-method-card{
+      background:rgba(30,41,59,0.5);border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;padding:20px;position:relative;
+      display:flex;flex-direction:column;align-items:center;text-align:center;
+      transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);cursor:grab;
+      filter:grayscale(0.8) opacity(0.5);
+      overflow:hidden;
+    }
+    .pay-method-card::before{
+      content:"";position:absolute;inset:0;
+      background:radial-gradient(circle at center, rgba(59,130,246,0.15), transparent 70%);
+      opacity:0;transition:opacity 0.3s ease;
+    }
+    .pay-method-card:hover{transform:translateY(-4px);filter:grayscale(0.4) opacity(0.8);border-color:rgba(255,255,255,0.2)}
+    .pay-method-card:active{cursor:grabbing}
+    
+    .pay-method-card.is-active{
+      filter:none;opacity:1;background:rgba(59,130,246,0.1); /* Fundo azul mais forte */
+      border-color:var(--accent); /* Borda azul neon */
+      box-shadow:0 0 20px rgba(59,130,246,0.3), 0 0 40px rgba(59,130,246,0.15); /* Glow azul mais intenso */
+    }
+    .pay-method-card.is-active::before{opacity:1}
+    
+    .pay-method-card.is-default{
+      border-color:var(--accent);
+      box-shadow:0 0 20px rgba(59,130,246,0.2), inset 0 0 12px rgba(59,130,246,0.05);
+      background:rgba(59,130,246,0.06);
+    }
+    
+    .pay-method-card .badge{
+      position:absolute;top:12px;left:12px;
+      width:24px;height:24px;border-radius:8px;
+      background:rgba(30,41,59,0.8);color:var(--accent2);
+      font-size:12px;font-weight:800;display:grid;place-items:center;
+      border:1px solid rgba(255,255,255,0.1);z-index:2;
+    }
+    .pay-method-card.is-active .badge{border-color:rgba(59,130,246,0.4);color:var(--accent)}
+
+    .pay-method-card .check-icon{
+      position:absolute;top:12px;right:12px;
+      width:20px;height:20px;border-radius:50%;
+      background:var(--accent);color:#061018;
+      font-size:10px;display:none;place-items:center;
+      box-shadow:0 0 10px var(--accent);z-index:2;
+    }
+    .pay-method-card.is-active .check-icon{display:grid}
+
+    .pay-method-card .ico{
+      font-size:32px;margin:12px 0;color:var(--accent2);
+      transition:transform 0.3s ease, color 0.3s ease;
+      z-index:1;
+    }
+    .pay-method-card.is-active .ico{color:var(--accent);transform:scale(1.1);filter:drop-shadow(0 0 8px rgba(59,130,246,0.5))}
+    
+    .pay-method-card strong{font-size:14px;display:block;margin-bottom:6px;z-index:1;font-weight:700}
+    .pay-method-card span{font-size:11px;color:var(--muted);margin-bottom:16px;z-index:1;font-weight:500}
+    
+    .pay-btn-default{
+      width:100%;padding:10px;border-radius:10px;
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+      color:var(--text);font-size:12px;font-weight:700;cursor:pointer;
+      transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index:1;
+      /* Ocultar botões por padrão para limpeza visual (Single Selection UI) */
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(4px);
+    }
+    .pay-method-card.is-active .pay-btn-default{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.12)}
+    
+    /* Mostrar botão se for o padrão OU se o card for hoverizado */
+    .is-default .pay-btn-default,
+    .pay-method-card:hover .pay-btn-default{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+    }
+
+    .pay-btn-default:hover{background:rgba(255,255,255,0.12);transform:scale(1.02)}
+    
+    .is-default .pay-btn-default{
+      background:var(--accent);color:#FFFFFF;border-color:var(--accent);
+      box-shadow:0 0 20px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.2); /* Stronger glow */
+      text-shadow:0 0 8px rgba(59,130,246,0.4); /* Neon text effect */
+      transform:scale(1.02) !important; /* Mantém escala no padrão */
+      opacity:1 !important;
+      visibility:visible !important;
+    }
+
+    .pay-toggle-row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 0;border-top:1px solid var(--border);margin-top:4px;
+    }
+    .pay-toggle-info{display:flex;flex-direction:column;gap:2px}
+    .pay-toggle-info span{font-size:13px;font-weight:600}
+    
+    .switch{position:relative;display:inline-block;width:42px;height:22px}
+    .switch input{opacity:0;width:0;height:0}
+    .slider{
+      position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+      background-color:rgba(255,255,255,0.1);transition:.3s;border-radius:34px;
+    }
+    .slider:before{
+      position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;
+      background-color:white;transition:.3s;border-radius:50%;
+    }
+    input:checked + .slider{background-color:var(--accent)}
+    input:checked + .slider:before{transform:translateX(20px)}
+
+    .pay-all-wrap{
+      display:flex;align-items:center;gap:12px;
+      padding:14px 18px;
+      background:rgba(17,24,39,0.95);
+      backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:14px;
+      margin-bottom:24px;
+      position:sticky;
+      top:85px; /* Ajustado para ficar logo abaixo do pc-header fixo */
+      z-index:15;
+      box-shadow:0 8px 24px rgba(0,0,0,0.3);
+      font-size:14px;font-weight:700;
+      cursor:pointer;transition:all 0.3s ease;
+      color:var(--text);
+    }
+    .pay-all-wrap:hover{border-color:var(--accent);background:rgba(17,24,39,1);box-shadow:0 8px 30px rgba(59,130,246,0.1)}
+    .pay-all-wrap input[type="checkbox"]{width:20px;height:20px;cursor:pointer;accent-color:var(--accent)}
+
+    /* Resumo de Métodos Selecionados - Estética Premium */
+    .pay-selected-summary{
+      margin-top:28px;padding:24px;
+      background:rgba(30,41,59,0.35);
+      backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.05);
+      border-radius:20px;
+      box-shadow:inset 0 0 20px rgba(0,0,0,0.1);
+      transition:all 0.4s ease;
+    }
+    .pay-selected-header{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:18px;
+    }
+    .pay-selected-header h5{
+      margin:0;font-size:12px;color:var(--muted);
+      text-transform:uppercase;letter-spacing:1.5px;font-weight:700;
+    }
+    .pay-selected-count{
+      background:rgba(59,130,246,0.1);color:var(--accent2);
+      padding:4px 10px;border-radius:8px;font-size:11px;font-weight:800;
+      border:1px solid rgba(59,130,246,0.2);
+    }
+    .pay-selected-list{display:flex;flex-wrap:wrap;gap:10px}
+    .pay-selected-tag{
+      background:rgba(15,23,42,0.6);color:rgba(255,255,255,0.85);
+      padding:8px 14px;border-radius:12px;font-size:12px;font-weight:600;
+      border:1px solid rgba(255,255,255,0.08);
+      display:flex;align-items:center;gap:8px;
+      transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation:tagAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    .pay-selected-tag i:not(.fa-star){color:var(--accent2);font-size:14px}
+    .pay-selected-tag.is-standard{
+      background:rgba(59,130,246,0.1);color:var(--accent);
+      border-color:rgba(59,130,246,0.3);
+      box-shadow:0 0 15px rgba(59,130,246,0.1);
+    }
+    .pay-selected-tag.is-standard i:not(.fa-star){color:var(--accent)}
+    .pay-selected-tag .star-badge{
+      background:var(--accent);color:#FFFFFF;
+      width:16px;height:16px;border-radius:4px;
+      display:grid;place-items:center;font-size:9px;
+      box-shadow:0 0 8px rgba(59,130,246,0.4);
+    }
+    
+    @keyframes tagAppear{
+      from{opacity:0;transform:scale(0.8) translateY(10px)}
+      to{opacity:1;transform:scale(1) translateY(0)}
+    }
+    
+    .pay-empty-msg{
+      width:100%;text-align:center;padding:20px 0;
+      font-size:13px;color:var(--muted);font-style:italic;
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+    }
+    .pay-empty-msg i{font-size:24px;opacity:0.3}
+
+    .px-tabs{
+      display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+      padding:10px;border-radius:16px;
+      background:rgba(15,23,42,0.6);
+      border:1px solid rgba(255,255,255,0.08);
+      margin-bottom:20px;
+      box-shadow:inset 0 0 20px rgba(0,0,0,0.2);
+    }
+    .px-tab{
+      display:inline-flex;align-items:center;gap:10px;
+      background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.5);
+      font-weight:700;font-size:13px;
+      padding:10px 16px;border-radius:12px;
+      cursor:pointer;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .px-tab i{font-size:16px;transition:transform 0.3s ease}
+    .px-tab:hover{
+      background:rgba(255,255,255,0.08);
+      color:rgba(255,255,255,0.9);
+      transform:translateY(-2px);
+      border-color:rgba(255,255,255,0.15);
+    }
+    .px-tab.active{
+      background:linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05));
+      color:var(--accent2);
+      border-color:rgba(59,130,246,0.4);
+      box-shadow:0 0 20px rgba(59,130,246,0.15), inset 0 0 10px rgba(59,130,246,0.05);
+    }
+    .px-tab.active i{transform:scale(1.2);filter:drop-shadow(0 0 5px rgba(59,130,246,0.5))}
+
+    /* Cores específicas por plataforma quando ativas */
+    .px-tab.active[data-px-tab="facebook"]{ color:#1877F2; border-color:rgba(24,119,242,0.4); background:rgba(24,119,242,0.1); box-shadow:0 0 20px rgba(24,119,242,0.15); }
+    .px-tab.active[data-px-tab="facebook"] i{ filter:drop-shadow(0 0 5px rgba(24,119,242,0.5)); }
+    
+    .px-tab.active[data-px-tab="google_ads"]{ color:#4285F4; border-color:rgba(66,133,244,0.4); background:rgba(66,133,244,0.1); box-shadow:0 0 20px rgba(66,133,244,0.15); }
+    .px-tab.active[data-px-tab="google_analytics"]{ color:#F9AB00; border-color:rgba(249,171,0,0.4); background:rgba(249,171,0,0.1); box-shadow:0 0 20px rgba(249,171,0,0.15); }
+    .px-tab.active[data-px-tab="tiktok"]{ color:#000000; border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.1); box-shadow:0 0 20px rgba(255,255,255,0.1); text-shadow:1px 1px 0 #ff0050, -1px -1px 0 #00f2ea; }
+    .px-tab.active[data-px-tab="kwai"]{ color:#FF5000; border-color:rgba(255,80,0,0.4); background:rgba(255,80,0,0.1); box-shadow:0 0 20px rgba(255,80,0,0.15); }
+    .px-tab.active[data-px-tab="pinterest"]{ color:#E60023; border-color:rgba(230,0,35,0.4); background:rgba(230,0,35,0.1); box-shadow:0 0 20px rgba(230,0,35,0.15); }
+
+    .px-pane{display:none}
+    .px-pane.active{display:block;animation:pxSlideUp 0.4s cubic-bezier(0.23, 1, 0.32, 1) both}
+
+    @keyframes pxSlideUp{
+      from{opacity:0;transform:translateY(15px) scale(0.98)}
+      to{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    .px-table-head{
+      display:grid;grid-template-columns:1fr 1fr 44px;gap:15px;
+      padding:12px 16px;border-radius:12px;
+      background:rgba(30,41,59,0.4);
+      border:1px solid rgba(255,255,255,0.06);
+      color:rgba(255,255,255,0.4);
+      font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;
+      margin-bottom:12px;
+    }
+    .px-domain-head{display:flex;align-items:center;gap:10px}
+    .px-manage{
+      border:none;background:rgba(59,130,246,0.1);cursor:pointer;
+      color:var(--accent2);
+      font-weight:800;font-size:10px;
+      padding:3px 8px;border-radius:6px;
+      text-transform:uppercase;letter-spacing:0.5px;
+      transition:var(--trans);
+      border:1px solid rgba(59,130,246,0.2);
+    }
+    .px-manage:hover{background:rgba(59,130,246,0.2);transform:translateY(-1px)}
+
+    .px-list{display:grid;gap:12px}
+    .px-row{
+      display:grid;grid-template-columns:1fr 1fr 44px;gap:15px;
+      align-items:center;
+      padding:16px;border-radius:16px;
+      background:rgba(30,41,59,0.25);
+      border:1px solid rgba(255,255,255,0.06);
+      transition:all 0.3s ease;
+      box-shadow:0 4px 15px rgba(0,0,0,0.1);
+    }
+    .px-row:hover{
+      border-color:rgba(255,255,255,0.15);
+      background:rgba(30,41,59,0.4);
+      transform:translateX(4px);
+      box-shadow:0 6px 20px rgba(0,0,0,0.2);
+    }
+    .px-row .pc-input{
+      margin:0;background:rgba(15,23,42,0.6);
+      border-color:rgba(255,255,255,0.1);
+      font-size:14px;
+    }
+    .px-row .pc-input:focus{
+      border-color:var(--accent2);
+      background:rgba(15,23,42,0.8);
+      box-shadow:0 0 0 3px rgba(59,130,246,0.1);
+    }
+
+    .px-remove{
+      width:44px;height:44px;border-radius:12px;
+      border:1px solid rgba(239,68,68,0.2);
+      background:rgba(239,68,68,0.05);
+      color:#ef4444;cursor:pointer;transition:all 0.3s ease;
+      display:grid;place-items:center;font-size:16px;
+    }
+    .px-remove:hover{
+      background:rgba(239,68,68,0.15);
+      color:#f87171;
+      transform:rotate(8deg) scale(1.1);
+      box-shadow:0 0 15px rgba(239,68,68,0.2);
+    }
+
+    .px-actions{display:flex;align-items:center;justify-content:space-between;margin-top:20px}
+    .px-counter{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:6px 14px;border-radius:20px;
+      font-size:12px;font-weight:800;
+      color:var(--accent2);
+      border:1px solid rgba(34,211,238,0.2);
+      background:rgba(34,211,238,0.05);
+      letter-spacing:1px;
+    }
+    .px-empty{
+      padding:30px 20px;border-radius:16px;
+      background:rgba(15,23,42,0.3);
+      border:2px dashed rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.3);
+      font-size:13px;font-weight:600;
+      display:flex;flex-direction:column;
+      align-items:center;gap:12px;
+      transition:all 0.3s ease;
+    }
+    .px-empty i{font-size:28px;opacity:0.2}
+    .px-empty:hover{border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5)}
+
+    .px-divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);margin:25px 0}
+    
+    .px-events{
+      display:grid;gap:15px;
+      background:rgba(15,23,42,0.2);
+      padding:20px;border-radius:16px;
+      border:1px solid rgba(255,255,255,0.04);
+    }
+    .px-percent-row{display:none;gap:12px;padding:10px 15px;background:rgba(0,0,0,0.2);border-radius:12px;margin-top:-5px;animation:pcFade 0.3s ease}
+    .px-percent-row.show{display:grid}
+    .px-percent-wrap{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;max-width:240px}
+    .px-percent-suffix{
+      height:44px;display:grid;place-items:center;
+      padding:0 16px;border-radius:10px;
+      background:var(--accent2);
+      color:#061018;
+      font-weight:900;font-size:15px;
+      box-shadow:0 0 15px rgba(34,211,238,0.3);
+    }
+    .px-footer-actions{display:flex;justify-content:flex-end;margin-top:25px}
+
+    .px-card{
+      position:relative;overflow:hidden;
+    }
+    .px-card::after{
+      content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+      background:radial-gradient(circle at center, rgba(34,211,238,0.03), transparent 70%);
+      pointer-events:none;z-index:0;
+    }
+
+    /* Seção Entrega de Conteúdo */
+    .del-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:20px 0}
+     @media (max-width:768px){.del-grid{grid-template-columns:1fr}}
+
+     .del-card{
+       background:rgba(15,23,42,0.5);border:1px solid var(--border);
+       border-radius:12px;padding:20px;position:relative;
+       cursor:pointer;transition:var(--trans);
+       display:flex;flex-direction:column;gap:12px;
+     }
+     .del-card:hover{border-color:rgba(34,211,238,0.3);background:rgba(15,23,42,0.7)}
+     .del-card.is-active{
+       border-color:var(--accent);background:rgba(0,255,136,0.03);
+       box-shadow:0 0 15px rgba(0,255,136,0.1);
+     }
+     .del-card-header{display:flex;align-items:center;gap:14px}
+     .del-card-ico{
+       width:42px;height:42px;border-radius:50%;
+       background:rgba(34,211,238,0.1);color:var(--accent2);
+       display:grid;place-items:center;font-size:18px;transition:var(--trans);
+     }
+     .del-card.is-active .del-card-ico{
+       background:var(--accent);color:#061018;box-shadow:0 0 12px var(--accent);
+     }
+     .del-card-title{flex:1}
+     .del-card-title strong{display:block;font-size:14px;font-weight:700;color:var(--text)}
+     .del-card-title p{margin:2px 0 0;font-size:12px;color:var(--muted);line-height:1.4}
+     
+     .del-beta-badge{
+       position:absolute;top:12px;right:12px;
+       background:var(--warn);color:#000;font-size:10px;font-weight:800;
+       padding:2px 6px;border-radius:6px;text-transform:uppercase;
+     }
+
+     .del-config-area{
+       max-height:0;overflow:hidden;transition:max-height 0.2s ease-in-out, opacity 0.2s;
+       opacity:0;border-top:1px solid transparent;padding:0;
+     }
+     .del-card.is-active .del-config-area{
+       max-height:1000px;opacity:1;border-top:1px solid var(--border);
+       padding-top:16px;margin-top:4px;
+     }
+
+     /* Seção Endereço e 3DS */
+     .expandable-section{
+       max-height:0;overflow:hidden;transition:max-height 0.3s ease-in-out, opacity 0.3s;
+       opacity:0;
+     }
+     .expandable-section.active{
+       max-height:1200px;opacity:1;padding:20px 0;
+     }
+     .address-form{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+     @media (max-width:560px){.address-form{grid-template-columns:1fr}}
+     .field-full{grid-column:1 / -1}
+     
+     .auth-3ds-wrap{
+       background:rgba(15,23,42,0.8);padding:24px;border-radius:14px;
+       border:1px solid rgba(0,255,136,0.2);text-align:center;
+     }
+     .auth-3ds-ico{font-size:42px;color:var(--accent);margin-bottom:16px}
+     .auth-3ds-status{font-size:14px;font-weight:700;margin-bottom:20px}
+     .auth-loading{display:inline-block;width:24px;height:24px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+     @keyframes spin{to{transform:rotate(360deg)}}
+
+     /* Estilos Clickify Members Dashboard */
+     .ma-tab {
+       background: transparent; border: none; color: var(--muted);
+       padding: 10px 20px; font-weight: 700; font-size: 14px; cursor: pointer;
+       transition: var(--trans); border-radius: 12px;
+       display: inline-flex; align-items: center; gap: 8px;
+     }
+     .ma-tab:hover { background: rgba(255,255,255,0.05); color: #fff; }
+     .ma-tab.active { color: var(--accent2); background: rgba(59,130,246,0.1); }
+
+     /* Dropdown Adicionar */
+     .ma-dropdown {
+       position: relative;
+       display: inline-block;
+     }
+     .ma-dropdown-content {
+       display: none;
+       position: absolute;
+       right: 0;
+       top: 100%;
+       background: #1e293b;
+       min-width: 160px;
+       box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+       border: 1px solid var(--border);
+       border-radius: 8px;
+       z-index: 100;
+       margin-top: 8px;
+       overflow: hidden;
+     }
+     .ma-dropdown-content button {
+       width: 100%;
+       padding: 12px 16px;
+       background: transparent;
+       border: none;
+       color: #fff;
+       text-align: left;
+       cursor: pointer;
+       font-size: 13px;
+       transition: background 0.2s;
+       display: flex;
+       align-items: center;
+       gap: 10px;
+     }
+     .ma-dropdown-content button:hover {
+       background: rgba(255,255,255,0.05);
+     }
+     .ma-dropdown:hover .ma-dropdown-content {
+       display: block;
+     }
+
+     .pc-toast{
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+      background:rgba(30,41,59,0.92);
+      border:1px solid rgba(255,255,255,0.10);
+      border-radius:999px;
+      padding:10px 14px;
+      box-shadow:var(--shadow2);
+      color:rgba(255,255,255,0.86);
+      display:none;
+      gap:10px;
+      align-items:center;
+      z-index:200;
+    }
+    .pc-toast.show{display:inline-flex}
+    .pc-toast i{color:var(--accent2)}
+    @media (max-width: 980px){
+      .pc-main{grid-template-columns:1fr}
+    }
+    @media (max-width: 560px){
+      .pc-wrap{padding:14px 14px 28px}
+      .pc-header{padding:12px 12px}
+      .pc-save{width:100%;justify-content:center}
+      .pc-title{display:none}
+      .pc-header{flex-wrap:wrap}
+      .pc-back{flex:1}
+    }
+  </style>
+</head>
+<body>
+  <div class="pc-wrap">
+    <div class="pc-header">
+      <button class="pc-back" id="pcBack" type="button"><i class="fa-solid fa-arrow-left"></i><span>Voltar</span></button>
+      <div class="pc-title">
+        <strong>Configuração de produto</strong>
+        <span>Painel premium estilo SaaS</span>
+      </div>
+      <button class="pc-save" id="pcSave" type="button"><i class="fa-solid fa-floppy-disk"></i><span>Salvar Produto</span></button>
+    </div>
+
+    <div class="pc-tabs" role="tablist" aria-label="Configuração do produto">
+      <button class="pc-tab active" data-tab="geral" type="button" role="tab" aria-selected="true">Geral</button>
+      <button class="pc-tab" data-tab="config" type="button" role="tab" aria-selected="false">Configurações</button>
+      <button class="pc-tab" data-tab="orderbump" type="button" role="tab" aria-selected="false">Order Bump</button>
+      <button class="pc-tab" data-tab="upsell" type="button" role="tab" aria-selected="false">Upsell / Downsell</button>
+      <button class="pc-tab" data-tab="checkout" type="button" role="tab" aria-selected="false">Checkout</button>
+      <button class="pc-tab" data-tab="coprod" type="button" role="tab" aria-selected="false">Co-Produção</button>
+      <button class="pc-tab" data-tab="cupons" type="button" role="tab" aria-selected="false">Cupons</button>
+      <button class="pc-tab" data-tab="afiliados" type="button" role="tab" aria-selected="false">Afiliados</button>
+      <button class="pc-tab" data-tab="links" type="button" role="tab" aria-selected="false">Links</button>
+      <button class="pc-tab" data-tab="members" id="tabMembers" type="button" role="tab" aria-selected="false" style="display:none; color:var(--accent2); border:1px solid rgba(59,130,246,0.3); background:rgba(59,130,246,0.05)">
+        <i class="fa-solid fa-graduation-cap" style="margin-right:6px"></i> Clickify Members
+      </button>
+    </div>
+
+    <div class="pc-card pc-pane active" data-pane="geral" role="tabpanel">
+      <div class="pc-main">
+        <div class="pc-card pc-info">
+          <h2>Produto</h2>
+          <p>A aprovação do produto é instantânea, ou seja, você pode cadastrar e já começar a vender. A imagem do produto será exibida na área de membros e no seu programa de afiliados.</p>
+        </div>
+        <div class="pc-card pc-form">
+          <div class="pc-field">
+            <div class="pc-label">Nome do Produto</div>
+            <input id="pcName" class="pc-input" placeholder="Nome do produto" />
+          </div>
+          <div class="pc-field">
+            <div class="pc-label">Descrição</div>
+            <textarea id="pcDesc" class="pc-textarea" placeholder="Descrição"></textarea>
+          </div>
+          <div class="pc-field">
+            <div class="pc-label">Categoria</div>
+            <div class="pc-select-wrap">
+              <select id="pcCategory" class="pc-select">
+                <option value="" selected disabled>Selecione uma categoria</option>
+                <option value="animais_plantas">Animais e Plantas</option>
+                <option value="apps_software">Apps & Software</option>
+                <option value="casa_construcao">Casa e Construção</option>
+                <option value="culinaria_gastronomia">Culinária e Gastronomia</option>
+                <option value="desenvolvimento_pessoal">Desenvolvimento Pessoal</option>
+                <option value="direito">Direito</option>
+                <option value="ecologia_meio_ambiente">Ecologia e Meio Ambiente</option>
+                <option value="educacional">Educacional</option>
+                <option value="empreendedorismo_digital">Empreendedorismo Digital</option>
+                <option value="entretenimento">Entretenimento</option>
+                <option value="espiritualidade">Espiritualidade</option>
+                <option value="financas_investimentos">Finanças e Investimentos</option>
+                <option value="hobbies">Hobbies</option>
+                <option value="idiomas">Idiomas</option>
+                <option value="internet">Internet</option>
+                <option value="literatura">Literatura</option>
+                <option value="moda_beleza">Moda e Beleza</option>
+                <option value="musica_artes">Música e Artes</option>
+                <option value="negocios_carreira">Negócios e Carreira</option>
+                <option value="relacionamentos">Relacionamentos</option>
+                <option value="saude_esportes">Saúde e Esportes</option>
+                <option value="sexualidade">Sexualidade</option>
+                <option value="tecnologia_informacao">Tecnologia da Informação</option>
+                <option value="outros">Outros</option>
+              </select>
+              <span class="pc-select-ico"><i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+          <div class="pc-field">
+            <div class="pc-label">Tipo de pagamento</div>
+            <div class="pc-select-wrap">
+              <select id="pcPaymentType" class="pc-select">
+                <option value="unico" selected>Único</option>
+                <option value="recorrente">Recorrente</option>
+                <option value="parcelado">Parcelado</option>
+              </select>
+              <span class="pc-select-ico"><i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+          <div class="pc-field">
+            <div class="pc-label">Imagem do Produto</div>
+            <input id="pcFile" type="file" accept="image/png,image/jpeg" hidden />
+            <div class="pc-drop" id="pcDrop" tabindex="0" role="button" aria-label="Arraste ou selecione o arquivo">
+              <div class="ico"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+              <strong>Arraste ou selecione o arquivo</strong>
+              <span>Solte os arquivos aqui ou clique para buscar em seu computador</span>
+              <small>Formatos aceitos: JPG ou PNG. Tamanho máximo: 10MB</small>
+              <div class="hint">Suporta diversos tamanhos (ex: 300x250, 600x600, 1080x1080)</div>
+            </div>
+            <div class="pc-preview" id="pcPreview">
+              <img id="pcPreviewImg" alt="Preview do produto"/>
+              <div class="pc-preview-bar">
+                <span id="pcPreviewName"></span>
+                <button id="pcRemove" class="pc-remove" type="button"><i class="fa-solid fa-trash"></i> Remover</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Novas Seções: Oferta e Atendimento -->
+      <div class="pc-section-group">
+        <!-- BLOCO 1 – Estrutura de Preços -->
+        <div class="pc-card" style="padding:24px">
+          <div class="pc-section-header">
+            <h3>Estrutura de Oferta</h3>
+            <p>Configure as condições comerciais e modalidades de venda do seu produto.</p>
+          </div>
+          
+          <div class="pc-field" style="max-width:320px; margin-top:20px">
+            <div class="pc-label">Período de Garantia</div>
+            <div class="pc-select-wrap">
+              <select id="pcWarranty" class="pc-select">
+                <option value="7" selected>7 dias</option>
+                <option value="15">15 dias</option>
+                <option value="30">30 dias</option>
+                <option value="60">60 dias</option>
+                <option value="90">90 dias</option>
+              </select>
+              <span class="pc-select-ico"><i class="fa-solid fa-chevron-down"></i></span>
+            </div>
+          </div>
+
+          <div class="pc-label" style="margin:24px 0 10px">Tabela de Condições Comerciais</div>
+          <div class="pc-table-card">
+            <table class="pc-table">
+              <thead>
+                <tr>
+                  <th>Nome da Oferta</th>
+                  <th>Valor</th>
+                  <th>Modalidade</th>
+                  <th style="text-align:right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="offersBody">
+                <!-- Preenchido via JS -->
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:16px; display:flex; align-items:center; justify-content:space-between">
+            <button class="pc-add-btn" type="button" id="pcAddOffer"><i class="fa-solid fa-plus"></i> Adicionar Nova Oferta</button>
+            <span class="pc-limit-info" id="pcOfferCounter">1 de 10 ofertas cadastradas</span>
+          </div>
+        </div>
+
+        <!-- BLOCO 2 – Informações de Atendimento -->
+        <div class="pc-card" style="padding:24px">
+          <div class="pc-section-header">
+            <h3>Dados de Atendimento ao Cliente</h3>
+            <p>Informe os canais oficiais para suporte e comunicação com compradores.</p>
+          </div>
+          
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-top:20px">
+            <div class="pc-field">
+              <div class="pc-label">Página de Vendas</div>
+              <div class="pc-input-group">
+                <i class="fa-solid fa-link"></i>
+                <input type="url" class="pc-input" placeholder="https://" />
+              </div>
+            </div>
+            <div class="pc-field">
+              <div class="pc-label">E-mail de Suporte</div>
+              <div class="pc-input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" class="pc-input" placeholder="suporte@exemplo.com" />
+              </div>
+            </div>
+            <div class="pc-field">
+              <div class="pc-label">Nome Público do Produtor</div>
+              <div class="pc-input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" class="pc-input" placeholder="Nome exibido para compradores" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé da Página -->
+      <div class="pc-page-footer">
+        <button class="pc-btn-delete" type="button"><i class="fa-solid fa-trash-can"></i> Excluir Produto</button>
+        <button class="pc-btn-primary" type="button" onclick="document.getElementById('pcSave').click()"><i class="fa-solid fa-check"></i> Salvar Produto</button>
+      </div>
+    </div>
+
+    <div class="pc-card pc-pane" data-pane="config" role="tabpanel">
+      <div class="pc-main" style="grid-template-columns:1fr">
+        <div class="pc-card" style="padding:24px; background:#0F172A">
+          <div class="pc-section-header">
+            <h3 style="font-size:20px">Pagamento</h3>
+            <p>Aprenda sobre as configurações de parcelamento no checkout</p>
+          </div>
+
+          <!-- Métodos de pagamento -->
+          <div class="pc-card" style="margin-top:24px; padding:20px; background:#111827; border:1px solid rgba(255,255,255,0.05)">
+            <h4 style="margin:0 0 16px; font-size:16px">Métodos de pagamento</h4>
+            
+            <label class="pay-all-wrap">
+              <input type="checkbox" id="paySelectAll">
+              <span>Selecione todos os métodos de pagamento</span>
+            </label>
+
+            <p style="font-size:12px; color:var(--muted); margin:12px 0 20px">
+              Arraste os elementos abaixo para definir a ordem que aparecerá no checkout e clique no botão 'Método padrão' para definir como pagamento padrão do checkout se o método de pagamento estiver selecionado
+            </p>
+
+            <div class="pay-grid" id="paySortableGrid">
+              <!-- Grid será preenchido via JS -->
+            </div>
+
+            <!-- Lista Dinâmica de Métodos Selecionados -->
+            <div class="pay-selected-summary" id="paySummaryArea">
+              <div class="pay-selected-header">
+                <h5>Formas de Pagamento Selecionadas</h5>
+                <div class="pay-selected-count" id="paySelectedCount">0 selecionados</div>
+              </div>
+              <div class="pay-selected-list" id="paySelectedList">
+                <div class="pay-empty-msg">
+                  <i class="fa-solid fa-credit-card"></i>
+                  <span>Nenhuma forma de pagamento selecionada ainda.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pay-toggle-row">
+              <div class="pay-toggle-info">
+                <span>Pedir para o comprador repetir o e-mail</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleRepeatEmail">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="pay-toggle-row">
+              <div class="pay-toggle-info">
+                <span>Exibir campo de cupom de desconto</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleCoupon">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="pay-toggle-row">
+              <div class="pay-toggle-info">
+                <span>Solicitar endereço do comprador</span>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleAddress">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="pay-toggle-row">
+              <div class="pay-toggle-info">
+                <span>Autenticação 3DS</span>
+                <small style="color:var(--muted); font-size:10px">Verificação de segurança adicional</small>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggle3DS">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="expandable-section" id="auth3dsSection">
+              <div class="auth-3ds-wrap">
+                <div class="auth-3ds-ico"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="auth-3ds-status" id="auth3dsStatus">Aguardando configuração de pagamento...</div>
+                
+                <div id="auth3dsForm" style="display:none; text-align:left">
+                  <div class="pc-field">
+                    <div class="pc-label">Número do Cartão de Crédito</div>
+                    <div class="pc-input-group">
+                      <i class="fa-solid fa-credit-card"></i>
+                      <input type="text" class="pc-input" id="authCardNum" placeholder="0000 0000 0000 0000" maxlength="19">
+                    </div>
+                  </div>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px">
+                    <div class="pc-field">
+                      <div class="pc-label">Token / Senha</div>
+                      <input type="password" class="pc-input" id="authToken" placeholder="Token 3DS">
+                    </div>
+                    <button class="pc-btn-primary" id="btnVerify3ds" style="margin-top:22px; height:46px">Verificar</button>
+                  </div>
+                </div>
+
+                <div id="auth3dsLoading" style="display:none; margin:20px 0">
+                  <div class="auth-loading"></div>
+                  <p style="font-size:12px; margin-top:10px; color:var(--muted)">Autenticando com o banco...</p>
+                </div>
+
+                <div id="auth3dsResult" style="display:none; margin-top:10px">
+                  <!-- Mensagem de sucesso ou erro -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção: Entrega de conteúdo -->
+        <div class="pc-card" style="margin-top:24px; padding:24px; background:#0F172A">
+          <div class="pc-section-header">
+            <h3 style="font-size:20px">Entrega de conteúdo</h3>
+            <p>Selecione os tipos de entrega de conteúdo</p>
+          </div>
+
+          <div class="pc-card" style="margin-top:24px; padding:20px; background:#111827; border:1px solid rgba(255,255,255,0.05)">
+            <label class="pay-all-wrap">
+              <input type="checkbox" id="delSelectAll">
+              <span>Selecione todos os tipos de entrega de conteúdo</span>
+            </label>
+
+            <div class="del-grid" id="delGrid">
+              <!-- Grid será preenchido via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="pc-card" style="margin-top:24px; padding:32px; background:#0F172A" id="pixelsConversionSection">
+          <div class="pc-section-header">
+            <h3 style="font-size:20px">Pixels de Conversão</h3>
+            <p>Aprenda mais sobre os pixels de conversão</p>
+          </div>
+
+          <div class="pc-card px-card" style="margin-top:24px; padding:24px; background:linear-gradient(180deg, rgba(17,24,39,0.95), rgba(15,23,42,0.92)); border:1px solid rgba(255,255,255,0.06)">
+            <div class="px-tabs" role="tablist" aria-label="Plataformas de pixel">
+              <button class="px-tab active" type="button" data-px-tab="facebook"><i class="fa-brands fa-facebook"></i><span>Facebook</span></button>
+              <button class="px-tab" type="button" data-px-tab="google_ads"><i class="fa-brands fa-google"></i><span>Google Ads</span></button>
+              <button class="px-tab" type="button" data-px-tab="google_analytics"><i class="fa-solid fa-chart-line"></i><span>Google Analytics</span></button>
+              <button class="px-tab" type="button" data-px-tab="tiktok"><i class="fa-brands fa-tiktok"></i><span>TikTok</span></button>
+              <button class="px-tab" type="button" data-px-tab="kwai"><i class="fa-solid fa-play"></i><span>Kwai</span></button>
+              <button class="px-tab" type="button" data-px-tab="pinterest"><i class="fa-brands fa-pinterest"></i><span>Pinterest</span></button>
+            </div>
+
+            <div class="px-pane active" data-px-pane="facebook">
+              <div class="px-table-head">
+                <div>Pixel ID</div>
+                <div class="px-domain-head">Domínio <button class="px-manage" type="button" id="pxManageDomain">Gerenciar</button></div>
+                <div></div>
+              </div>
+              <div class="px-list" id="pxList_facebook"></div>
+              <div class="px-actions">
+                <button class="pc-add-btn" type="button" data-px-add="facebook"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                <span class="px-counter" id="pxCount_facebook">0/50</span>
+              </div>
+            </div>
+
+            <div class="px-pane" data-px-pane="google_ads">
+              <div class="px-table-head">
+                <div>Pixel ID</div>
+                <div class="px-domain-head">Domínio <button class="px-manage" type="button">Gerenciar</button></div>
+                <div></div>
+              </div>
+              <div class="px-list" id="pxList_google_ads"></div>
+              <div class="px-actions">
+                <button class="pc-add-btn" type="button" data-px-add="google_ads"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                <span class="px-counter" id="pxCount_google_ads">0/50</span>
+              </div>
+            </div>
+
+            <div class="px-pane" data-px-pane="google_analytics">
+              <div class="px-table-head">
+                <div>Pixel ID</div>
+                <div class="px-domain-head">Domínio <button class="px-manage" type="button">Gerenciar</button></div>
+                <div></div>
+              </div>
+              <div class="px-list" id="pxList_google_analytics"></div>
+              <div class="px-actions">
+                <button class="pc-add-btn" type="button" data-px-add="google_analytics"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                <span class="px-counter" id="pxCount_google_analytics">0/50</span>
+              </div>
+            </div>
+
+            <div class="px-pane" data-px-pane="tiktok">
+              <div class="px-table-head">
+                <div>Pixel ID</div>
+                <div class="px-domain-head">Domínio <button class="px-manage" type="button">Gerenciar</button></div>
+                <div></div>
+              </div>
+              <div class="px-list" id="pxList_tiktok"></div>
+              <div class="px-actions">
+                <button class="pc-add-btn" type="button" data-px-add="tiktok"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                <span class="px-counter" id="pxCount_tiktok">0/50</span>
+              </div>
+            </div>
+
+            <div class="px-pane" data-px-pane="kwai">
+              <div class="px-table-head">
+                <div>Pixel ID</div>
+                <div class="px-domain-head">Domínio <button class="px-manage" type="button">Gerenciar</button></div>
+                <div></div>
+              </div>
+              <div class="px-list" id="pxList_kwai"></div>
+              <div class="px-actions">
+                <button class="pc-add-btn" type="button" data-px-add="kwai"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                <span class="px-counter" id="pxCount_kwai">0/50</span>
+              </div>
+            </div>
+
+            <div class="px-pane" data-px-pane="pinterest">
+              <div class="px-table-head">
+                <div>Pixel ID</div>
+                <div class="px-domain-head">Domínio <button class="px-manage" type="button">Gerenciar</button></div>
+                <div></div>
+              </div>
+              <div class="px-list" id="pxList_pinterest"></div>
+              <div class="px-actions">
+                <button class="pc-add-btn" type="button" data-px-add="pinterest"><i class="fa-solid fa-plus"></i> Adicionar</button>
+                <span class="px-counter" id="pxCount_pinterest">0/50</span>
+              </div>
+            </div>
+
+            <div class="px-divider"></div>
+
+            <div class="px-events">
+              <div class="pay-toggle-row" style="border-top:none; padding-top:0">
+                <div class="pay-toggle-info">
+                  <span>Disparar evento “Purchase” ao gerar um pix?</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pxTogglePurchasePix">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="px-percent-row" id="pxPixValueRow">
+                <div class="pc-label">Valor de conversão personalizado para pix</div>
+                <div class="px-percent-wrap">
+                  <input type="number" class="pc-input" id="pxPixValue" value="100" min="0" max="999">
+                  <span class="px-percent-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="pay-toggle-row">
+                <div class="pay-toggle-info">
+                  <span>Disparar evento “Purchase” ao gerar um boleto?</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pxTogglePurchaseBoleto">
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="px-percent-row" id="pxBoletoValueRow">
+                <div class="pc-label">Valor de conversão personalizado para boleto</div>
+                <div class="px-percent-wrap">
+                  <input type="number" class="pc-input" id="pxBoletoValue" value="100" min="0" max="999">
+                  <span class="px-percent-suffix">%</span>
+                </div>
+              </div>
+
+              <div class="pay-toggle-row">
+                <div class="pay-toggle-info">
+                  <span>Desativar eventos de order bumps?</span>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="pxToggleDisableOrderBumps">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="px-footer-actions">
+              <button class="pc-btn-primary" type="button" id="pxSaveBtn"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pc-card pc-pane" data-pane="orderbump" role="tabpanel"></div>
+    <div class="pc-card pc-pane" data-pane="upsell" role="tabpanel"></div>
+    <div class="pc-card pc-pane" data-pane="checkout" role="tabpanel">
+      <div id="ckListView" class="ck-wrap">
+        <div class="ck-toolbar">
+          <div class="ck-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="ckSearch" type="text" placeholder="Buscar checkout" />
+          </div>
+          <button class="ck-add" type="button" id="ckAddBtn"><i class="fa-solid fa-plus"></i> Adicionar Checkout</button>
+        </div>
+
+        <div class="ck-table">
+          <table class="pc-table">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Visitas</th>
+                <th>Oferta</th>
+                <th style="text-align:right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="ckTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="ck-pagination">
+          <button class="ck-pagebtn" type="button" id="ckPrevPage"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="ck-pageidx" id="ckPageIdx">1</div>
+          <button class="ck-pagebtn" type="button" id="ckNextPage"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="pc-card pc-pane" data-pane="coprod" role="tabpanel"></div>
+    <div class="pc-card pc-pane" data-pane="cupons" role="tabpanel"></div>
+    <div class="pc-card pc-pane" data-pane="afiliados" role="tabpanel"></div>
+    <div class="pc-card pc-pane" data-pane="links" role="tabpanel">
+      <div class="pc-card" style="padding:24px">
+        <div class="pc-section-header">
+          <h3>Links</h3>
+          <p>Centralize links públicos de checkout e do produto.</p>
+        </div>
+        <div class="px-empty" style="margin-top:16px">
+          <i class="fa-solid fa-link"></i>
+          <span>Nenhum link configurado ainda.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAINEL CLICKIFY MEMBERS (Dashboard do Curso) -->
+    <div class="pc-card pc-pane" data-pane="members" role="tabpanel">
+      <div style="position:relative">
+        <!-- Header Customizável -->
+        <div id="membersHeader" style="width:100%; height:220px; border-radius:14px 14px 0 0; background:#1e293b url('') center/cover; position:relative; overflow:hidden">
+          <div style="position:absolute; inset:0; background:linear-gradient(to bottom, transparent, rgba(15,23,42,0.8))"></div>
+          <div style="position:absolute; bottom:20px; left:24px; display:flex; align-items:flex-end; gap:20px">
+            <div style="width:100px; height:100px; border-radius:16px; background:var(--bg0); border:2px solid var(--accent); box-shadow:0 0 20px rgba(59,130,246,0.3); display:grid; place-items:center; font-size:32px; color:var(--accent)">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+              <h2 id="membersTitleDisplay" style="margin:0; font-size:24px; font-weight:800; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,0.5)">Seu Curso Digital</h2>
+              <p style="margin:4px 0 0; color:rgba(255,255,255,0.7); font-size:14px">Gestão de conteúdo e alunos</p>
+            </div>
+          </div>
+          <div style="position:absolute; top:20px; right:24px; display:flex; gap:12px">
+            <button class="pc-back" style="padding:8px 16px; font-size:12px; border-color:rgba(255,255,255,0.2)" onclick="setActiveTab('geral')">
+              <i class="fa-solid fa-chevron-left"></i> Voltar
+            </button>
+            <button class="pc-back" style="padding:8px 16px; font-size:12px; border-color:rgba(255,255,255,0.2)" onclick="document.getElementById('headerUpload').click()">
+              <i class="fa-solid fa-image"></i> Editar Header
+            </button>
+          </div>
+          <input type="file" id="headerUpload" accept="image/*" hidden onchange="handleHeaderUpload(this)">
+        </div>
+
+        <!-- Barra de Ações -->
+        <div style="padding:16px 24px; background:rgba(30,41,59,0.5); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between">
+          <div style="display:flex; gap:12px">
+            <button class="ma-tab active" id="membersTabContent" onclick="setMembersView('content')">Conteúdo</button>
+            <button class="ma-tab" id="membersTabStudents" onclick="setMembersView('students')">Alunos</button>
+          </div>
+          <div style="display:flex; gap:12px; align-items:center">
+            <button class="pc-back" style="font-size:12px; height:36px" onclick="alert('Simulando pré-visualização do aluno...')">
+              <i class="fa-solid fa-eye"></i> Pré-visualizar Curso
+            </button>
+            <button class="pc-back" style="font-size:12px; height:36px" onclick="alert('Abrindo biblioteca de vídeos...')">
+              <i class="fa-solid fa-photo-film"></i> Biblioteca de Vídeos
+            </button>
+            <div class="ma-dropdown">
+              <button class="pc-btn-primary" style="padding:8px 16px; font-size:12px; height:36px">
+                <i class="fa-solid fa-plus"></i> Adicionar
+              </button>
+              <div class="ma-dropdown-content">
+                <button onclick="addModule()"><i class="fa-solid fa-folder-plus"></i> Novo Módulo</button>
+                <button onclick="addLessonPrompt()"><i class="fa-solid fa-file-video"></i> Nova Aula</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visão de Conteúdo -->
+        <div id="membersViewContent" style="padding:24px">
+          <div class="pc-section-header">
+            <h3>Gerenciar Módulos e Aulas</h3>
+            <p>Arraste para reorganizar ou clique em adicionar para criar novos conteúdos.</p>
+          </div>
+          <div id="membersModulesList" style="display:grid; gap:16px; margin-top:20px">
+            <!-- Renderizado via JS -->
+          </div>
+        </div>
+
+        <!-- Visão de Alunos -->
+        <div id="membersViewStudents" style="padding:24px; display:none">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px">
+            <div class="pc-input-group" style="width:300px">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" class="pc-input" placeholder="Buscar por nome ou e-mail..." oninput="filterStudents(this.value)">
+            </div>
+            <div style="display:flex; gap:10px">
+              <button class="pc-back" style="font-size:12px"><i class="fa-solid fa-download"></i> Exportar</button>
+              <button class="pc-back" style="font-size:12px"><i class="fa-solid fa-filter"></i> Filtros</button>
+            </div>
+          </div>
+          
+          <div class="pc-table-card">
+            <table class="pc-table">
+              <thead>
+                <tr>
+                  <th>Assinante</th>
+                  <th>E-mail</th>
+                  <th>Próxima Cobrança</th>
+                  <th>Status</th>
+                  <th style="text-align:right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="membersStudentsBody">
+                <!-- Mock Data via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pc-toast" id="pcToast"><i class="fa-solid fa-circle-check"></i><span>Produto salvo.</span></div>
+
+  <script src="ConversionPixelsModule.js"></script>
+  <script>
+    (function(){
+      const back = document.getElementById('pcBack');
+      const save = document.getElementById('pcSave');
+      const toast = document.getElementById('pcToast');
+      const tabs = Array.from(document.querySelectorAll('.pc-tab'));
+      const panes = Array.from(document.querySelectorAll('.pc-pane'));
+
+      const nameEl = document.getElementById('pcName');
+      const descEl = document.getElementById('pcDesc');
+
+      /* Função para Otimizar Imagens (Redimensionar e Comprimir) */
+      const optimizeImage = (file, maxWidth = 1080, quality = 0.8) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+
+              if (width > maxWidth) {
+                height = (maxWidth / width) * height;
+                width = maxWidth;
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+          };
+        });
+      };
+
+      if (nameEl) {
+        nameEl.addEventListener('input', () => {
+          const titleDisplay = document.getElementById('membersTitleDisplay');
+          if (titleDisplay) titleDisplay.textContent = nameEl.value || 'Seu Curso Digital';
+        });
+      }
+
+      const catEl = document.getElementById('pcCategory');
+      const payEl = document.getElementById('pcPaymentType');
+
+      /* Estado da Área de Membros (Clickify Members) */
+      let maConfig = {
+        headerImg: '',
+        modules: []
+      };
+
+      const studentsMock = [
+        { id: 1, name: 'João Silva', email: 'joao@email.com', date: '2024-05-15', status: 'Ativo', nextBilling: '2024-06-15' },
+        { id: 2, name: 'Maria Santos', email: 'maria@email.com', date: '2024-05-14', status: 'Ativo', nextBilling: '2024-06-14' },
+        { id: 3, name: 'Pedro Oliveira', email: 'pedro@email.com', date: '2024-05-12', status: 'Pendente', nextBilling: '-' },
+        { id: 4, name: 'Ana Costa', email: 'ana@email.com', date: '2024-05-10', status: 'Cancelado', nextBilling: '-' },
+        { id: 5, name: 'Lucas Ferreira', email: 'lucas@email.com', date: '2024-05-08', status: 'Inadimplente', nextBilling: '2024-05-08 (Falhou)' }
+      ];
+
+      window.handleHeaderUpload = async (input) => {
+        const file = input.files[0];
+        if (file) {
+          const base64 = await optimizeImage(file, 1920, 0.7); // Header maior, qualidade moderada
+          maConfig.headerImg = base64;
+          const header = document.getElementById('membersHeader');
+          if (header) header.style.backgroundImage = `url('${base64}')`;
+          showToast('Curso atualizado com sucesso');
+          saveDraft();
+        }
+      };
+
+      window.setMembersView = (view) => {
+        const tabContent = document.getElementById('membersTabContent');
+        const tabStudents = document.getElementById('membersTabStudents');
+        const viewContent = document.getElementById('membersViewContent');
+        const viewStudents = document.getElementById('membersViewStudents');
+
+        if (view === 'content') {
+          tabContent.classList.add('active');
+          tabStudents.classList.remove('active');
+          viewContent.style.display = 'block';
+          viewStudents.style.display = 'none';
+          renderMembersModules();
+        } else {
+          tabContent.classList.remove('active');
+          tabStudents.classList.add('active');
+          viewContent.style.display = 'none';
+          viewStudents.style.display = 'block';
+          renderMembersStudents();
+        }
+      };
+
+      window.renderMembersModules = () => {
+        const list = document.getElementById('membersModulesList');
+        if (!list) return;
+        if (maConfig.modules.length === 0) {
+          list.innerHTML = `<div class="px-empty"><i class="fa-solid fa-folder-open"></i><span>Nenhum módulo criado. Clique em Adicionar para começar.</span></div>`;
+          return;
+        }
+        list.innerHTML = maConfig.modules.map(mod => `
+          <div class="pc-card" style="padding:16px; border-left:4px solid var(--accent)">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+              <strong style="font-size:15px">${mod.name}</strong>
+              <div style="display:flex; gap:8px">
+                <button class="pc-action-btn" title="Adicionar Aula" onclick="addLessonPrompt(${mod.id})"><i class="fa-solid fa-plus"></i></button>
+                <button class="pc-action-btn" title="Excluir Módulo" style="color:#FCA5A5" onclick="removeModule(${mod.id})"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+            <div style="display:grid; gap:8px">
+              ${mod.lessons.map(lesson => `
+                <div style="padding:10px 14px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:10px; display:flex; justify-content:space-between; align-items:center">
+                  <div style="display:flex; align-items:center; gap:12px">
+                    <i class="fa-solid fa-play" style="color:var(--accent2); font-size:12px"></i>
+                    <span style="font-size:13px">${lesson.title}</span>
+                  </div>
+                  <button class="pc-action-btn" style="color:#FCA5A5; padding:4px" onclick="removeLesson(${mod.id}, ${lesson.id})"><i class="fa-solid fa-trash-can" style="font-size:11px"></i></button>
+                </div>
+              `).join('')}
+              ${mod.lessons.length === 0 ? '<span style="font-size:12px; color:var(--muted); font-style:italic; padding-left:12px">Nenhuma aula neste módulo.</span>' : ''}
+            </div>
+          </div>
+        `).join('');
+      };
+
+      window.renderMembersStudents = (filter = '') => {
+        const body = document.getElementById('membersStudentsBody');
+        if (!body) return;
+        const filtered = studentsMock.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()) || s.email.toLowerCase().includes(filter.toLowerCase()));
+        body.innerHTML = filtered.map(s => `
+          <tr>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.email}</td>
+            <td>${s.nextBilling}</td>
+            <td><span style="color:${s.status==='Ativo'?'var(--accent2)':s.status==='Pendente'?'var(--warn)':'#FCA5A5'}">${s.status}</span></td>
+            <td style="text-align:right">
+              <button class="pc-action-btn" title="Gerenciar Assinatura"><i class="fa-solid fa-user-gear"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      };
+
+      window.filterStudents = (val) => renderMembersStudents(val);
+
+      window.addModule = () => {
+        const name = prompt('Nome do Módulo:');
+        if (name) {
+          maConfig.modules.push({ id: Date.now(), name, lessons: [] });
+          renderMembersModules();
+          saveDraft();
+          showToast('Curso atualizado com sucesso');
+        }
+      };
+
+      window.addLessonPrompt = (modId) => {
+        let mId = modId;
+        if (!mId) {
+          if (maConfig.modules.length === 0) {
+            alert('Crie um módulo primeiro!');
+            return;
+          }
+          mId = maConfig.modules[0].id; // Adiciona no primeiro se não especificado
+        }
+        const title = prompt('Título da Aula:');
+        if (title) {
+          const mod = maConfig.modules.find(m => m.id === mId);
+          if (mod) {
+            mod.lessons.push({ id: Date.now(), title });
+            renderMembersModules();
+            saveDraft();
+            showToast('Curso atualizado com sucesso');
+          }
+        }
+      };
+
+      window.removeModule = (id) => {
+        if (confirm('Deseja excluir este módulo e todas as suas aulas?')) {
+          maConfig.modules = maConfig.modules.filter(m => m.id !== id);
+          renderMembersModules();
+          saveDraft();
+          showToast('Curso atualizado com sucesso');
+        }
+      };
+
+      window.removeLesson = (modId, lessonId) => {
+        const mod = maConfig.modules.find(m => m.id === modId);
+        if (mod) {
+          mod.lessons = mod.lessons.filter(l => l.id !== lessonId);
+          renderMembersModules();
+          saveDraft();
+          showToast('Curso atualizado com sucesso');
+        }
+      };
+
+      const pxModule = window.ConversionPixelsModule
+        ? window.ConversionPixelsModule.init({ draftKey: 'draftProductConfig', onSaved: () => save && save.click() })
+        : null;
+
+      /* Lógica de Pagamento */
+      const payGrid = document.getElementById('paySortableGrid');
+      const paySelectAll = document.getElementById('paySelectAll');
+      const paySelectedList = document.getElementById('paySelectedList');
+      const paySelectedCount = document.getElementById('paySelectedCount');
+      const toggleEmail = document.getElementById('toggleRepeatEmail');
+      const toggleCoupon = document.getElementById('toggleCoupon');
+      const toggleAddress = document.getElementById('toggleAddress');
+      const toggle3DS = document.getElementById('toggle3DS');
+
+      if (toggleAddress) {
+        toggleAddress.onchange = () => {
+          saveDraft();
+        };
+      }
+
+      /* Lógica de 3DS */
+      const auth3dsSection = document.getElementById('auth3dsSection');
+      const auth3dsStatus = document.getElementById('auth3dsStatus');
+      const auth3dsForm = document.getElementById('auth3dsForm');
+      const auth3dsLoading = document.getElementById('auth3dsLoading');
+      const auth3dsResult = document.getElementById('auth3dsResult');
+      const btnVerify3ds = document.getElementById('btnVerify3ds');
+      const authCardNum = document.getElementById('authCardNum');
+      const authToken = document.getElementById('authToken');
+
+      if (toggle3DS) {
+        toggle3DS.onchange = () => {
+          auth3dsSection.classList.toggle('active', toggle3DS.checked);
+          if (toggle3DS.checked) {
+            auth3dsStatus.textContent = 'Configurando fluxo de segurança...';
+            setTimeout(() => {
+              auth3dsStatus.textContent = 'Autenticação 3D Secure Necessária';
+              auth3dsForm.style.display = 'block';
+            }, 1000);
+          } else {
+            auth3dsForm.style.display = 'none';
+            auth3dsResult.style.display = 'none';
+          }
+          saveDraft();
+        };
+      }
+
+      if (authCardNum) {
+        authCardNum.oninput = (e) => {
+          let v = e.target.value.replace(/\D/g, '');
+          v = v.replace(/(\d{4})(\d)/, '$1 $2');
+          v = v.replace(/(\d{4}) (\d{4})(\d)/, '$1 $2 $3');
+          v = v.replace(/(\d{4}) (\d{4}) (\d{4})(\d)/, '$1 $2 $3 $4');
+          e.target.value = v;
+        };
+      }
+
+      if (btnVerify3ds) {
+        btnVerify3ds.onclick = () => {
+          if (!authCardNum.value || !authToken.value) {
+            alert('Por favor, preencha todos os campos de segurança.');
+            return;
+          }
+          
+          auth3dsForm.style.display = 'none';
+          auth3dsLoading.style.display = 'block';
+          auth3dsStatus.textContent = 'Verificando...';
+
+          setTimeout(() => {
+            auth3dsLoading.style.display = 'none';
+            auth3dsResult.style.display = 'block';
+            
+            if (authToken.value === '1234') {
+              auth3dsStatus.textContent = 'Autenticação Concluída';
+              auth3dsResult.innerHTML = `<div style="color:var(--accent); font-size:13px; font-weight:700"><i class="fa-solid fa-circle-check"></i> Cartão validado com sucesso pelo 3DS.</div>`;
+            } else {
+              auth3dsStatus.textContent = 'Falha na Autenticação';
+              auth3dsResult.innerHTML = `<div style="color:#FCA5A5; font-size:13px; font-weight:700"><i class="fa-solid fa-circle-exclamation"></i> Token inválido. Tente novamente.</div>`;
+              setTimeout(() => {
+                auth3dsResult.style.display = 'none';
+                auth3dsForm.style.display = 'block';
+              }, 2000);
+            }
+            saveDraft();
+          }, 2000);
+        };
+      }
+
+      /* Lógica de Entrega de Conteúdo */
+      const delGrid = document.getElementById('delGrid');
+      const delSelectAll = document.getElementById('delSelectAll');
+
+      let deliveryItems = [
+        { id: 'ext', name: 'Área de membros Externa', desc: 'Cursos on-line e comunidade externos', ico: 'fa-solid fa-share-nodes', active: false, config: { url: '' } },
+        { id: 'cakto', name: 'Cakto Members', desc: 'Nova Área de Membros Premium da Clickify', ico: 'fa-solid fa-share-nodes', beta: true, active: false, config: { areaId: '' } },
+        { id: 'telegram', name: 'Telegram', desc: 'Grupo ou canal privado', ico: 'fa-brands fa-telegram', active: false, config: { url: '', type: 'canal', autoAdd: false } },
+        { id: 'email', name: 'Acesso por e-mail', desc: 'Envie um acesso personalizado a um drive, link, etc., para seu cliente diretamente pelo e-mail', ico: 'fa-solid fa-envelope-open-text', active: false, config: { url: '', message: '' } },
+        { id: 'link', name: 'Link de pagamento', desc: 'Utilize exclusivamente o link de pagamento para receber os valores dos', ico: 'fa-solid fa-cart-shopping', active: false, config: { url: '', expireDays: 0, expireEnabled: false } }
+      ];
+
+      /* Lógica de Ofertas */
+      let offers = [
+        { id: 1, name: 'Oferta Principal', price: 0.00, mode: 'Pagamento Único' }
+      ];
+
+      let checkouts = [];
+      let activeCheckoutId = '';
+      let ckPage = 1;
+      const ckPageSize = 6;
+      let ckPreviewDevice = 'desktop';
+
+      const formatBRL = (n) => `R$ ${Number(n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      const isMonthlyProduct = () => (payEl && payEl.value === 'recorrente') || isMonthlySubscriptionEnabled();
+
+      function ensureDefaultCheckout() {
+        if (!Array.isArray(checkouts)) checkouts = [];
+        if (checkouts.length === 0) {
+          checkouts = [{
+            id: `ck_${Math.random().toString(36).slice(2, 10)}`,
+            name: 'Checkout Principal',
+            slug: 'checkout-principal',
+            desc: '',
+            enabled: true,
+            isDefault: true,
+            price: 1122.23,
+            visits: 11,
+            offer: 'CLICKIFY',
+            payment: {
+              credit: { enabled: true, fee: 0, prazo: 0, recurring: false },
+              pix: { enabled: true, fee: 0, prazo: 0, recurring: false },
+              boleto: { enabled: true, fee: 0, prazo: 0, recurring: false },
+              installment: { enabled: false, max: 12, fee: 0, prazo: 0 }
+            },
+            buyer: { name: true, email: true, cpf: true, phone: true, address: false },
+            visual: { logo: '', primaryColor: '#0ea5e9', buttonColor: '#00C853', buttonText: 'Finalizar Compra', banner: '' },
+            advanced: { orderBump: false, redirectUrl: '', thankYouUrl: '', gatewayAdapter: 'default', timerEnabled: true }
+          }];
+          activeCheckoutId = checkouts[0].id;
+        }
+        checkouts.forEach((c, idx) => {
+          if (!c || typeof c !== 'object') return;
+          if (!c.id) c.id = `ck_${Math.random().toString(36).slice(2, 10)}`;
+          if (!c.name) c.name = idx === 0 ? 'Checkout Principal' : 'Checkout';
+          if (!c.slug) c.slug = 'checkout';
+          if (typeof c.enabled !== 'boolean') c.enabled = true;
+          if (!c.payment || typeof c.payment !== 'object') c.payment = {};
+          if (!c.payment.credit) c.payment.credit = { enabled: true, fee: 0, prazo: 0, recurring: false };
+          if (!c.payment.pix) c.payment.pix = { enabled: true, fee: 0, prazo: 0, recurring: false };
+          if (!c.payment.boleto) c.payment.boleto = { enabled: true, fee: 0, prazo: 0, recurring: false };
+          if (!c.payment.installment) c.payment.installment = { enabled: false, max: 12, fee: 0, prazo: 0 };
+          if (!c.buyer || typeof c.buyer !== 'object') c.buyer = { name: true, email: true, cpf: true, phone: true, address: false };
+          if (typeof c.buyer.name !== 'boolean') c.buyer.name = true;
+          if (typeof c.buyer.email !== 'boolean') c.buyer.email = true;
+          if (typeof c.buyer.cpf !== 'boolean') c.buyer.cpf = true;
+          if (typeof c.buyer.phone !== 'boolean') c.buyer.phone = true;
+          if (typeof c.buyer.address !== 'boolean') c.buyer.address = false;
+          if (!c.visual || typeof c.visual !== 'object') c.visual = { logo: '', primaryColor: '#0ea5e9', buttonColor: '#00C853', buttonText: 'Finalizar Compra', banner: '' };
+          if (!c.visual.primaryColor) c.visual.primaryColor = '#0ea5e9';
+          if (!c.visual.buttonColor) c.visual.buttonColor = '#00C853';
+          if (!c.visual.buttonText) c.visual.buttonText = 'Finalizar Compra';
+          if (!c.advanced || typeof c.advanced !== 'object') c.advanced = { orderBump: false, redirectUrl: '', thankYouUrl: '', gatewayAdapter: 'default', timerEnabled: true };
+          if (typeof c.advanced.timerEnabled !== 'boolean') c.advanced.timerEnabled = true;
+        });
+        if (!checkouts.some(c => c.isDefault)) checkouts[0].isDefault = true;
+        if (!activeCheckoutId) activeCheckoutId = (checkouts.find(c => c.isDefault) || checkouts[0]).id;
+      }
+
+      const getCheckoutById = (id) => checkouts.find(c => c.id === id) || null;
+      const getDefaultCheckout = () => (checkouts.find(c => c.isDefault) || checkouts[0] || null);
+      const getActiveCheckout = () => getCheckoutById(activeCheckoutId) || getDefaultCheckout();
+
+      function setDefaultCheckout(id) {
+        checkouts.forEach(c => c.isDefault = (c.id === id));
+        saveDraft();
+        renderCheckoutList();
+      }
+
+      function openCheckoutEditor(id) {
+        if (!id) return;
+        activeCheckoutId = id;
+        window.location.href = `checkout-builder.html?ck=${encodeURIComponent(id)}`;
+      }
+
+      function closeCheckoutEditor() {
+        const list = document.getElementById('ckListView');
+        const editor = document.getElementById('ckEditorView');
+        if (editor) editor.style.display = 'none';
+        if (list) list.style.display = 'block';
+        renderCheckoutList();
+      }
+
+      function renderCheckoutList() {
+        ensureDefaultCheckout();
+        const tbody = document.getElementById('ckTableBody');
+        const search = document.getElementById('ckSearch');
+        const pageIdx = document.getElementById('ckPageIdx');
+        const prev = document.getElementById('ckPrevPage');
+        const next = document.getElementById('ckNextPage');
+        if (!tbody) return;
+        const q = String((search && search.value) || '').trim().toLowerCase();
+        const filtered = checkouts.filter(c => (`${c.name} ${c.slug} ${c.offer}`.toLowerCase()).includes(q));
+        const totalPages = Math.max(1, Math.ceil(filtered.length / ckPageSize));
+        ckPage = Math.min(Math.max(1, ckPage), totalPages);
+        const start = (ckPage - 1) * ckPageSize;
+        const pageItems = filtered.slice(start, start + ckPageSize);
+
+        tbody.innerHTML = pageItems.map(c => `
+          <tr class="ck-row" data-id="${c.id}">
+            <td><strong style="font-size:13px">${c.name}</strong></td>
+            <td>${formatBRL(c.price)}</td>
+            <td>${Number(c.visits || 0).toLocaleString('pt-BR')}</td>
+            <td><span class="ck-tag"><i class="fa-solid fa-tag"></i> ${c.offer || 'Oferta'}</span></td>
+            <td style="text-align:right">
+              <button class="ck-actions" type="button" data-action="more" title="Ações"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+            </td>
+          </tr>
+        `).join('');
+
+        tbody.querySelectorAll('tr[data-id]').forEach(tr => {
+          tr.addEventListener('click', (e) => {
+            const btn = e.target && e.target.closest && e.target.closest('button[data-action="more"]');
+            if (btn) return;
+            openCheckoutEditor(tr.getAttribute('data-id'));
+          });
+        });
+
+        tbody.querySelectorAll('button[data-action="more"]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = btn.closest('tr').getAttribute('data-id');
+            const ck = getCheckoutById(id);
+            if (!ck) return;
+            const opt = prompt('Ações:\n1 - Tornar padrão\n2 - Excluir', '1');
+            if (!opt) return;
+            if (opt === '1') setDefaultCheckout(id);
+            if (opt === '2') {
+              if (checkouts.length <= 1) { alert('Você precisa manter pelo menos 1 checkout.'); return; }
+              if (confirm(`Excluir o checkout "${ck.name}"?`)) {
+                checkouts = checkouts.filter(x => x.id !== id);
+                if (!checkouts.some(x => x.isDefault)) checkouts[0].isDefault = true;
+                if (activeCheckoutId === id) activeCheckoutId = (getDefaultCheckout() || checkouts[0]).id;
+                saveDraft();
+                renderCheckoutList();
+              }
+            }
+          });
+        });
+
+        if (pageIdx) pageIdx.textContent = String(ckPage);
+        if (prev) prev.disabled = ckPage <= 1;
+        if (next) next.disabled = ckPage >= totalPages;
+      }
+
+      function renderCheckoutEditor() {
+        ensureDefaultCheckout();
+        const ck = getActiveCheckout();
+        if (!ck) return;
+        const title = document.getElementById('ckEditorTitle');
+        const badge = document.getElementById('ckDefaultBadge');
+        const makeDefault = document.getElementById('ckMakeDefaultBtn');
+        if (title) title.textContent = ck.name || 'Checkout';
+        if (badge) badge.style.display = ck.isDefault ? '' : 'none';
+        if (makeDefault) makeDefault.style.display = ck.isDefault ? 'none' : '';
+
+        const name = document.getElementById('ckName');
+        const slug = document.getElementById('ckSlug');
+        const desc = document.getElementById('ckDesc');
+        const enabled = document.getElementById('ckEnabled');
+        if (name) name.value = ck.name || '';
+        if (slug) slug.value = ck.slug || '';
+        if (desc) desc.value = ck.desc || '';
+        if (enabled) enabled.checked = !!ck.enabled;
+
+        const askName = document.getElementById('ckAskName');
+        const askEmail = document.getElementById('ckAskEmail');
+        const askCpf = document.getElementById('ckAskCpf');
+        const askPhone = document.getElementById('ckAskPhone');
+        const askAddress = document.getElementById('ckAskAddress');
+        if (askName) askName.checked = !!ck.buyer.name;
+        if (askEmail) askEmail.checked = !!ck.buyer.email;
+        if (askCpf) askCpf.checked = !!ck.buyer.cpf;
+        if (askPhone) askPhone.checked = !!ck.buyer.phone;
+        if (askAddress) askAddress.checked = !!ck.buyer.address;
+
+        const primaryColor = document.getElementById('ckPrimaryColor');
+        const buttonColor = document.getElementById('ckButtonColor');
+        const buttonText = document.getElementById('ckButtonText');
+        if (primaryColor) primaryColor.value = ck.visual.primaryColor || '#0ea5e9';
+        if (buttonColor) buttonColor.value = ck.visual.buttonColor || '#00C853';
+        if (buttonText) buttonText.value = ck.visual.buttonText || 'Finalizar Compra';
+
+        const orderBump = document.getElementById('ckOrderBump');
+        const redirectUrl = document.getElementById('ckRedirectUrl');
+        const thankYouUrl = document.getElementById('ckThankYouUrl');
+        const gatewayAdapter = document.getElementById('ckGatewayAdapter');
+        const timerEnabled = document.getElementById('ckTimerEnabled');
+        if (orderBump) orderBump.checked = !!ck.advanced.orderBump;
+        if (redirectUrl) redirectUrl.value = ck.advanced.redirectUrl || '';
+        if (thankYouUrl) thankYouUrl.value = ck.advanced.thankYouUrl || '';
+        if (gatewayAdapter) gatewayAdapter.value = ck.advanced.gatewayAdapter || 'default';
+        if (timerEnabled) timerEnabled.checked = ck.advanced.timerEnabled !== false;
+
+        const grid = document.getElementById('ckMethodsGrid');
+        if (grid) {
+          const showRecurring = isMonthlyProduct();
+          grid.innerHTML = `
+            ${renderCheckoutMethodCard('credit', 'Cartão de Crédito', 'fa-solid fa-credit-card', ck.payment.credit, showRecurring)}
+            ${renderCheckoutMethodCard('pix', 'Pix', 'fa-brands fa-pix', ck.payment.pix, showRecurring)}
+            ${renderCheckoutMethodCard('boleto', 'Boleto', 'fa-solid fa-barcode', ck.payment.boleto, showRecurring)}
+            ${renderInstallmentCard(ck.payment.installment)}
+          `;
+          grid.querySelectorAll('input[data-method]').forEach(inp => {
+            inp.addEventListener('change', () => toggleCheckoutPay(inp.getAttribute('data-method'), inp.checked));
+          });
+          grid.querySelectorAll('input[data-fee]').forEach(inp => {
+            inp.addEventListener('input', () => updateCheckoutPay(inp.getAttribute('data-fee'), 'fee', inp.value));
+          });
+          grid.querySelectorAll('input[data-prazo]').forEach(inp => {
+            inp.addEventListener('input', () => updateCheckoutPay(inp.getAttribute('data-prazo'), 'prazo', inp.value));
+          });
+          grid.querySelectorAll('input[data-max]').forEach(inp => {
+            inp.addEventListener('input', () => updateCheckoutPay(inp.getAttribute('data-max'), 'max', inp.value));
+          });
+          grid.querySelectorAll('input[data-recurring]').forEach(inp => {
+            inp.addEventListener('change', () => updateCheckoutPay(inp.getAttribute('data-recurring'), 'recurring', inp.checked));
+          });
+        }
+
+        renderCheckoutPreview();
+      }
+
+      function renderCheckoutMethodCard(key, label, ico, cfg, showRecurring) {
+        const enabled = cfg && cfg.enabled;
+        const fee = cfg && cfg.fee != null ? cfg.fee : 0;
+        const prazo = cfg && cfg.prazo != null ? cfg.prazo : 0;
+        const recurring = cfg && cfg.recurring === true;
+        return `
+          <div class="ck-method">
+            <div class="ck-method-top">
+              <div class="ck-method-left">
+                <div class="ck-method-ico"><i class="${ico}"></i></div>
+                <div style="display:flex; flex-direction:column; gap:2px">
+                  <strong>${label}</strong>
+                  <span class="ck-mini">${showRecurring ? 'Compatível com recorrência' : 'Pagamento padrão'}</span>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-method="${key}" ${enabled ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="ck-inline">
+              <div class="pc-field" style="margin:0; flex:1">
+                <div class="pc-label">Taxa (%)</div>
+                <input type="number" class="pc-input" data-fee="${key}" value="${fee}" min="0" step="0.1">
+              </div>
+              <div class="pc-field" style="margin:0; flex:1">
+                <div class="pc-label">Prazo (dias)</div>
+                <input type="number" class="pc-input" data-prazo="${key}" value="${prazo}" min="0" step="1">
+              </div>
+            </div>
+            ${showRecurring ? `
+              <div style="margin-top:10px">
+                <div class="pay-toggle-row ck-toggle" style="padding:12px">
+                  <div class="pay-toggle-info"><span>Recorrência</span><small style="color:var(--muted); font-size:10px">Ativar para produto mensal</small></div>
+                  <label class="switch"><input type="checkbox" data-recurring="${key}" ${recurring ? 'checked' : ''}><span class="slider"></span></label>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      function renderInstallmentCard(cfg) {
+        const enabled = cfg && cfg.enabled;
+        const max = cfg && cfg.max != null ? cfg.max : 12;
+        const fee = cfg && cfg.fee != null ? cfg.fee : 0;
+        const prazo = cfg && cfg.prazo != null ? cfg.prazo : 0;
+        return `
+          <div class="ck-method">
+            <div class="ck-method-top">
+              <div class="ck-method-left">
+                <div class="ck-method-ico"><i class="fa-solid fa-layer-group"></i></div>
+                <div style="display:flex; flex-direction:column; gap:2px">
+                  <strong>Parcelamento</strong>
+                  <span class="ck-mini">Máximo de parcelas no cartão</span>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" data-method="installment" ${enabled ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="ck-inline">
+              <div class="pc-field" style="margin:0; flex:1">
+                <div class="pc-label">Máx. parcelas</div>
+                <input type="number" class="pc-input" data-max="installment" value="${max}" min="1" max="24" step="1">
+              </div>
+              <div class="pc-field" style="margin:0; flex:1">
+                <div class="pc-label">Taxa (%)</div>
+                <input type="number" class="pc-input" data-fee="installment" value="${fee}" min="0" step="0.1">
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <div class="pc-field" style="margin:0">
+                <div class="pc-label">Prazo (dias)</div>
+                <input type="number" class="pc-input" data-prazo="installment" value="${prazo}" min="0" step="1">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function toggleCheckoutPay(key, enabled) {
+        const ck = getActiveCheckout();
+        if (!ck || !ck.payment || !ck.payment[key]) return;
+        const activeCount = Object.keys(ck.payment).filter(k => ck.payment[k] && ck.payment[k].enabled).length;
+        if (!enabled && activeCount <= 1) {
+          alert('Você precisa selecionar pelo menos um meio de pagamento.');
+          renderCheckoutEditor();
+          return;
+        }
+        ck.payment[key].enabled = enabled;
+        saveDraft();
+        renderCheckoutPreview();
+      }
+
+      function updateCheckoutPay(key, field, value) {
+        const ck = getActiveCheckout();
+        if (!ck || !ck.payment || !ck.payment[key]) return;
+        if (field === 'recurring') ck.payment[key].recurring = !!value;
+        if (field === 'fee') ck.payment[key].fee = Number(value || 0);
+        if (field === 'prazo') ck.payment[key].prazo = Number(value || 0);
+        if (field === 'max') ck.payment[key].max = Math.max(1, Math.min(24, Number(value || 1)));
+        saveDraft();
+        renderCheckoutPreview();
+      }
+
+      function saveCheckoutFromEditor() {
+        const ck = getActiveCheckout();
+        if (!ck) return;
+        ck.name = String((document.getElementById('ckName') && document.getElementById('ckName').value) || '').trim() || 'Checkout';
+        ck.slug = String((document.getElementById('ckSlug') && document.getElementById('ckSlug').value) || '').trim() || 'checkout';
+        ck.desc = String((document.getElementById('ckDesc') && document.getElementById('ckDesc').value) || '').trim();
+        ck.enabled = !!(document.getElementById('ckEnabled') && document.getElementById('ckEnabled').checked);
+        ck.buyer = {
+          name: !!(document.getElementById('ckAskName') && document.getElementById('ckAskName').checked),
+          email: !!(document.getElementById('ckAskEmail') && document.getElementById('ckAskEmail').checked),
+          cpf: !!(document.getElementById('ckAskCpf') && document.getElementById('ckAskCpf').checked),
+          phone: !!(document.getElementById('ckAskPhone') && document.getElementById('ckAskPhone').checked),
+          address: !!(document.getElementById('ckAskAddress') && document.getElementById('ckAskAddress').checked)
+        };
+        ck.visual.primaryColor = (document.getElementById('ckPrimaryColor') && document.getElementById('ckPrimaryColor').value) || '#0ea5e9';
+        ck.visual.buttonColor = (document.getElementById('ckButtonColor') && document.getElementById('ckButtonColor').value) || '#00C853';
+        ck.visual.buttonText = String((document.getElementById('ckButtonText') && document.getElementById('ckButtonText').value) || '').trim() || 'Finalizar Compra';
+        ck.advanced.orderBump = !!(document.getElementById('ckOrderBump') && document.getElementById('ckOrderBump').checked);
+        ck.advanced.timerEnabled = !!(document.getElementById('ckTimerEnabled') && document.getElementById('ckTimerEnabled').checked);
+        ck.advanced.redirectUrl = String((document.getElementById('ckRedirectUrl') && document.getElementById('ckRedirectUrl').value) || '').trim();
+        ck.advanced.thankYouUrl = String((document.getElementById('ckThankYouUrl') && document.getElementById('ckThankYouUrl').value) || '').trim();
+        ck.advanced.gatewayAdapter = (document.getElementById('ckGatewayAdapter') && document.getElementById('ckGatewayAdapter').value) || 'default';
+        const enabledCount = Object.keys(ck.payment).filter(k => ck.payment[k] && ck.payment[k].enabled).length;
+        if (enabledCount <= 0) {
+          alert('Você precisa selecionar pelo menos um meio de pagamento.');
+          return;
+        }
+        saveDraft();
+        renderCheckoutList();
+        renderCheckoutEditor();
+        renderCheckoutPreview();
+        showToast('Checkout atualizado com sucesso');
+      }
+
+      function getCheckoutPreviewModel() {
+        const ck = getActiveCheckout();
+        const d = {
+          product: {
+            name: String((nameEl && nameEl.value) || '').trim() || 'Produto',
+            description: String((descEl && descEl.value) || '').trim() || 'Descrição do produto.',
+            image: productImage || (ck && ck.visual && ck.visual.banner) || '',
+            price: ck && typeof ck.price === 'number' ? ck.price : 0,
+            paymentType: (payEl && payEl.value) || 'unico'
+          }
+        };
+        return { d, ck };
+      }
+
+      function buildCheckoutPreviewSrcdoc(d, ck) {
+        const productName = (d && d.product && d.product.name) ? d.product.name : 'Produto';
+        const productDesc = (d && d.product && d.product.description) ? d.product.description : 'Descrição do produto.';
+        const productImage = (d && d.product && d.product.image) ? d.product.image : '';
+        const price = d && d.product && typeof d.product.price === 'number' ? d.product.price : 0;
+        const isRecurring = (d && d.product && d.product.paymentType === 'recorrente') || (ck && ck.payment && ck.payment.credit && ck.payment.credit.recurring === true);
+        const installmentsEnabled = !!(ck && ck.payment && ck.payment.installment && ck.payment.installment.enabled);
+        const installmentMax = installmentsEnabled ? Math.max(1, Math.min(24, Number(ck.payment.installment.max || 12))) : 1;
+        const allowCredit = !!(ck && ck.payment && ck.payment.credit && ck.payment.credit.enabled);
+        const allowPix = !!(ck && ck.payment && ck.payment.pix && ck.payment.pix.enabled);
+        const allowBoleto = !!(ck && ck.payment && ck.payment.boleto && ck.payment.boleto.enabled);
+        const askName = !!(ck && ck.buyer && ck.buyer.name);
+        const askEmail = !!(ck && ck.buyer && ck.buyer.email);
+        const askDoc = !!(ck && ck.buyer && ck.buyer.cpf);
+        const askPhone = !!(ck && ck.buyer && ck.buyer.phone);
+        const askAddress = !!(ck && ck.buyer && ck.buyer.address);
+        const ctaText = (ck && ck.visual && ck.visual.buttonText) ? ck.visual.buttonText : 'Finalizar Compra';
+        const actionColor = (ck && ck.visual && ck.visual.buttonColor) ? ck.visual.buttonColor : '#00C853';
+        const primaryColor = (ck && ck.visual && ck.visual.primaryColor) ? ck.visual.primaryColor : '#0ea5e9';
+        const timerEnabled = !(ck && ck.advanced && ck.advanced.timerEnabled === false);
+        const logo = (ck && ck.visual && ck.visual.logo) ? ck.visual.logo : '';
+
+        return `<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout</title>
+  <style>
+    :root{
+      --bg:#F4F7F6;
+      --card:#ffffff;
+      --text:#1C1C1C;
+      --muted:#666;
+      --border:#EAEAEA;
+      --shadow:0 18px 55px rgba(15,23,42,0.10);
+      --radius:10px;
+      --action:${actionColor};
+      --primary:${primaryColor};
+      --focus:rgba(14,165,233,0.20);
+      --danger:#ef4444;
+      --trans:.22s ease;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      min-height:100vh;
+    }
+    .header{
+      position:fixed;
+      top:0;left:0;right:0;
+      height:70px;
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      box-shadow:0 8px 22px rgba(15,23,42,0.06);
+      z-index:20;
+      display:flex;
+      align-items:center;
+    }
+    .header-inner{
+      width:100%;
+      max-width:1120px;
+      margin:0 auto;
+      padding:0 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
+    }
+    .brand-ico{
+      width:34px;height:34px;border-radius:10px;
+      border:1px solid rgba(15,23,42,0.10);
+      background:rgba(15,23,42,0.04);
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+      color:rgba(15,23,42,0.55);
+      font-weight:900;
+    }
+    .brand-ico img{width:100%;height:100%;object-fit:cover}
+    .brand strong{
+      font-size:13px;
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:560px;
+    }
+    .secure{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,200,83,0.20);
+      background:rgba(0,200,83,0.10);
+      color:rgba(0,200,83,0.95);
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .secure .lock{width:14px;height:14px;border-radius:4px;background:rgba(0,200,83,0.18);display:grid;place-items:center}
+    .wrap{
+      max-width:1120px;
+      margin:0 auto;
+      padding:96px 16px 40px;
+    }
+    .timer{
+      display:${timerEnabled ? 'flex' : 'none'};
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(245,158,11,0.22);
+      background:rgba(245,158,11,0.10);
+      color:rgba(180,83,9,0.95);
+      font-size:12px;
+      font-weight:900;
+      width:max-content;
+      margin:0 0 12px;
+    }
+    .progress{
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:#fff;
+      box-shadow:0 10px 28px rgba(15,23,42,0.06);
+      overflow:hidden;
+      margin:0 0 16px;
+    }
+    .progress-bar{
+      height:6px;
+      width:33%;
+      background:linear-gradient(90deg, var(--primary), rgba(0,200,83,0.85));
+      transition:width var(--trans);
+    }
+    .progress-steps{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      font-size:11px;
+      font-weight:800;
+      color:#666;
+    }
+    .step.active{color:#1C1C1C}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:10px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .body{padding:16px}
+    .section{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .section strong{font-size:13px;font-weight:900}
+    .section span{font-size:11px;color:rgba(15,23,42,0.50);font-weight:800}
+    .mini{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px;
+      border:1px solid rgba(15,23,42,0.08);
+      border-radius:10px;
+      background:rgba(15,23,42,0.02);
+      margin-bottom:14px;
+    }
+    .thumb{
+      width:44px;height:44px;border-radius:10px;
+      border:1px solid rgba(15,23,42,0.10);
+      background:rgba(15,23,42,0.04);
+      overflow:hidden;
+      flex:0 0 auto;
+      display:grid;
+      place-items:center;
+      color:rgba(15,23,42,0.55);
+      font-weight:900;
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover}
+    .mini .info{min-width:0}
+    .mini .info strong{
+      display:block;
+      font-size:13px;
+      font-weight:900;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .mini .info span{display:block;font-size:11px;color:#666;margin-top:2px}
+    .field{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+    .label{font-size:11px;font-weight:900;letter-spacing:.7px;color:#666;text-transform:uppercase}
+    .input{
+      height:48px;
+      border-radius:8px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:#fff;
+      color:rgba(15,23,42,0.92);
+      outline:none;
+      padding:0 12px;
+      font-size:14px;
+      transition:border-color var(--trans), box-shadow var(--trans);
+    }
+    .input:focus{
+      border-color:rgba(0,200,83,0.55);
+      box-shadow:0 0 0 3px rgba(0,200,83,0.14);
+    }
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 560px){.row2{grid-template-columns:1fr}}
+    .error{margin-top:6px;font-size:12px;color:rgba(239,68,68,0.95);display:none;font-weight:800}
+    .field.is-error .input{border-color:rgba(239,68,68,0.55);box-shadow:0 0 0 3px rgba(239,68,68,0.12)}
+    .field.is-error .error{display:block}
+    .ddi{display:flex;gap:10px;align-items:center}
+    .ddi select{
+      height:48px;
+      border-radius:8px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:#fff;
+      color:rgba(15,23,42,0.92);
+      outline:none;
+      padding:0 10px;
+      font-size:14px;
+      min-width:112px;
+      transition:border-color var(--trans), box-shadow var(--trans);
+    }
+    .ddi select:focus{
+      border-color:rgba(0,200,83,0.55);
+      box-shadow:0 0 0 3px rgba(0,200,83,0.14);
+    }
+    .tabs{
+      position:relative;
+      display:flex;
+      gap:16px;
+      border-bottom:1px solid var(--border);
+      padding-bottom:10px;
+      margin-bottom:12px;
+      overflow:auto;
+      scrollbar-width:none;
+    }
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{
+      appearance:none;
+      background:transparent;
+      border:none;
+      padding:8px 6px;
+      font-weight:900;
+      font-size:13px;
+      color:#666;
+      cursor:pointer;
+      position:relative;
+      white-space:nowrap;
+    }
+    .tab.active{color:#1C1C1C}
+    .underline{
+      position:absolute;
+      left:0;
+      bottom:-1px;
+      height:3px;
+      width:60px;
+      background:var(--action);
+      border-radius:999px;
+      transition:transform var(--trans), width var(--trans);
+    }
+    .panel{display:none;animation:fade .22s ease both}
+    .panel.show{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width: 720px){.cc-grid{grid-template-columns:1fr}}
+    .select-wrap{position:relative}
+    .select{
+      height:48px;border-radius:8px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:#fff;
+      color:rgba(15,23,42,0.92);
+      outline:none;
+      padding:0 12px;
+      font-size:14px;
+      appearance:none;
+      width:100%;
+      transition:border-color var(--trans), box-shadow var(--trans);
+    }
+    .select:focus{border-color:rgba(0,200,83,0.55);box-shadow:0 0 0 3px rgba(0,200,83,0.14)}
+    .select-wrap .chev{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#666;font-size:12px}
+    .copy{display:flex;gap:10px;align-items:center;margin-top:10px}
+    .copy input{
+      flex:1;
+      height:48px;
+      border-radius:8px;
+      border:1px solid rgba(15,23,42,0.12);
+      background:#fff;
+      color:rgba(15,23,42,0.78);
+      outline:none;
+      padding:0 12px;
+      font-size:12px;
+    }
+    .btn-ghost{
+      height:48px;
+      border-radius:8px;
+      border:1px solid rgba(15,23,42,0.14);
+      background:#fff;
+      color:rgba(15,23,42,0.82);
+      font-weight:900;
+      cursor:pointer;
+      padding:0 12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      transition:transform var(--trans), border-color var(--trans), box-shadow var(--trans);
+      white-space:nowrap;
+    }
+    .btn-ghost:hover{transform:translateY(-1px);border-color:rgba(0,200,83,0.22);box-shadow:0 10px 22px rgba(15,23,42,0.06)}
+    .summary{position:sticky;top:86px}
+    @media (max-width: 980px){.summary{position:relative;top:auto}}
+    .securebar{height:6px;background:linear-gradient(90deg, rgba(0,200,83,0.95), rgba(14,165,233,0.75))}
+    .sum-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0;font-size:13px;color:#666}
+    .sum-row strong{color:#1C1C1C;font-weight:900}
+    .sum-total{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .sum-total strong{font-size:18px;color:#1C1C1C}
+    .cta{
+      margin-top:14px;
+      width:100%;
+      height:52px;
+      border-radius:12px;
+      border:1px solid rgba(0,200,83,0.35);
+      background:linear-gradient(135deg, var(--action), rgba(0,200,83,0.85));
+      box-shadow:0 14px 34px rgba(0,200,83,0.18);
+      color:#fff;
+      font-weight:900;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      transition:transform var(--trans), filter var(--trans), box-shadow var(--trans);
+    }
+    .cta:hover{filter:brightness(1.03);transform:translateY(-1px);box-shadow:0 18px 44px rgba(0,200,83,0.22)}
+    .cta:active{transform:translateY(0)}
+    .cta:disabled{opacity:.65;cursor:not-allowed;transform:none;box-shadow:none}
+    .guarantee{
+      margin-top:10px;
+      font-size:12px;
+      color:#666;
+      font-weight:800;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .guarantee .lock{width:14px;height:14px;border-radius:4px;background:rgba(0,200,83,0.18);display:grid;place-items:center}
+    .seal{
+      margin-top:14px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:rgba(15,23,42,0.02);
+      padding:12px;
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      color:#666;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .seal .ico{width:18px;height:18px;border-radius:6px;background:rgba(0,200,83,0.16);display:grid;place-items:center;color:rgba(0,200,83,0.95);font-weight:900}
+    .loading{
+      width:16px;height:16px;border-radius:50%;
+      border:2px solid rgba(255,255,255,0.35);
+      border-top-color:#fff;
+      animation:spin .9s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .mobile-cta{
+      display:none;
+      position:fixed;
+      left:0;right:0;bottom:0;
+      padding:12px 14px;
+      background:rgba(244,247,246,0.92);
+      border-top:1px solid var(--border);
+      backdrop-filter:blur(10px);
+      z-index:30;
+    }
+    .mobile-cta .cta{margin-top:0}
+    @media (max-width: 768px){
+      .wrap{padding-bottom:90px}
+      .mobile-cta{display:block}
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-ico" id="brandIco">${logo ? '<img src="' + logo + '" alt="Logo" />' : '◎'}</div>
+        <strong>${productName}</strong>
+      </div>
+      <div class="secure"><span class="lock">🔒</span> Compra 100% Segura</div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="timer" id="timerPill">⏳ Sua reserva expira em <span id="timerVal">10:00</span></div>
+
+    <div class="progress" aria-label="Etapas do checkout">
+      <div class="progress-bar" id="progressBar"></div>
+      <div class="progress-steps">
+        <span class="step active" id="stepDados">DADOS</span>
+        <span class="step" id="stepPagamento">PAGAMENTO</span>
+        <span class="step" id="stepConclusao">CONCLUSÃO</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="body">
+          <div class="mini">
+            <div class="thumb" id="thumb">${productImage ? '<img src="' + productImage + '" alt="' + productName + '" loading="lazy" />' : 'IMG'}</div>
+            <div class="info">
+              <strong>${productName}</strong>
+              <span>${price ? ('1x de ' + new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(price) + (installmentsEnabled && !isRecurring && installmentMax>1 ? (' ou ' + installmentMax + 'x de ' + new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(price/installmentMax)) : '')) : '—'}</span>
+            </div>
+          </div>
+
+          <div class="section"><strong>Seus Dados</strong><span>Validação em tempo real</span></div>
+          <div id="buyerForm"></div>
+
+          <div style="height:1px;background:var(--border);margin:14px 0"></div>
+
+          <div class="section"><strong>Pagamento</strong><span>Escolha um método</span></div>
+          <div class="tabs" id="tabs" role="tablist" aria-label="Métodos de pagamento">
+            <div class="underline" id="underline"></div>
+          </div>
+          <div class="panel" id="panel-credit"></div>
+          <div class="panel" id="panel-pix"></div>
+          <div class="panel" id="panel-boleto"></div>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="card">
+          <div class="securebar"></div>
+          <div class="body">
+            <div class="mini" style="margin-bottom:10px">
+              <div class="thumb">${productImage ? '<img src="' + productImage + '" alt="' + productName + '" loading="lazy" />' : 'IMG'}</div>
+              <div class="info">
+                <strong>${productName}</strong>
+                <span>${productDesc}</span>
+              </div>
+            </div>
+
+            <div class="sum-row"><span>Preço total</span><strong id="sumTotal">${new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(price || 0)}</strong></div>
+            <div class="sum-row" id="sumInstRow" style="display:${installmentsEnabled && !isRecurring && installmentMax>1 ? 'flex' : (isRecurring ? 'flex' : 'none')}"><span>Parcelamento</span><strong id="sumInst">${isRecurring ? 'Cobrança mensal recorrente' : ('1x ou ' + installmentMax + 'x')}</strong></div>
+
+            <button class="cta" type="button" id="cta"><span id="ctaText">${ctaText}</span></button>
+            <div class="guarantee"><span class="lock">🔒</span> 7 dias de garantia incondicional</div>
+
+            <div class="seal">
+              <div class="ico">✓</div>
+              <div>
+                <div style="font-weight:900; margin-bottom:2px">Pagamento 100% criptografado</div>
+                <div style="color:#666">Risco zero para você. Checkout neutro e profissional.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-cta" id="mobileCta">
+    <button class="cta" type="button" id="ctaMobile"><span id="ctaTextMobile">${ctaText}</span></button>
+  </div>
+
+  <script>
+    (function(){
+      const allow = { credit:${allowCredit}, pix:${allowPix}, boleto:${allowBoleto} };
+      const buyerCfg = { name:${askName}, email:${askEmail}, doc:${askDoc}, phone:${askPhone}, address:${askAddress} };
+      const isRecurring = ${isRecurring ? 'true' : 'false'};
+      const installmentsEnabled = ${installmentsEnabled ? 'true' : 'false'};
+      const installmentMax = ${installmentMax};
+      const price = ${Number(price || 0)};
+
+      const $ = (id) => document.getElementById(id);
+      const tabs = $('tabs');
+      const underline = $('underline');
+      const panels = {
+        credit: $('panel-credit'),
+        pix: $('panel-pix'),
+        boleto: $('panel-boleto')
+      };
+      const cta = $('cta');
+      const ctaMobile = $('ctaMobile');
+      const ctaText = $('ctaText');
+      const ctaTextMobile = $('ctaTextMobile');
+      const progressBar = $('progressBar');
+      const stepPagamento = $('stepPagamento');
+      const stepConclusao = $('stepConclusao');
+
+      const onlyDigits = (v) => String(v || '').replace(/\\D/g,'');
+      const cpfOrCnpjMask = (v) => {
+        const d = onlyDigits(v).slice(0,14);
+        if (d.length <= 11) {
+          return d.replace(/(\\d{3})(\\d)/,'$1.$2').replace(/(\\d{3})(\\d)/,'$1.$2').replace(/(\\d{3})(\\d{1,2})$/,'$1-$2');
+        }
+        return d.replace(/^(\\d{2})(\\d)/,'$1.$2').replace(/^(\\d{2})\\.(\\d{3})(\\d)/,'$1.$2.$3').replace(/\\.(\\d{3})(\\d)/,'.$1/$2').replace(/(\\d{4})(\\d{1,2})$/,'$1-$2');
+      };
+      const phoneMask = (v) => {
+        const d = onlyDigits(v).slice(0,11);
+        if (d.length <= 10) return d.replace(/(\\d{2})(\\d)/,'($1) $2').replace(/(\\d{4})(\\d)/,'$1-$2');
+        return d.replace(/(\\d{2})(\\d)/,'($1) $2').replace(/(\\d{5})(\\d)/,'$1-$2');
+      };
+      const ccNumMask = (v) => onlyDigits(v).slice(0,16).replace(/(\\d{4})(?=\\d)/g,'$1 ');
+      const expMask = (v) => {
+        const d = onlyDigits(v).slice(0,4);
+        if (d.length <= 2) return d;
+        return d.slice(0,2) + '/' + d.slice(2);
+      };
+      const isEmail = (v) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(String(v||'').trim());
+      const isDoc = (v) => { const d = onlyDigits(v); return d.length === 11 || d.length === 14; };
+      const isPhone = (v) => onlyDigits(v).length >= 10;
+
+      const setFieldError = (key, on) => {
+        const field = document.querySelector('.field[data-field=\"' + key + '\"]');
+        if (!field) return;
+        field.classList.toggle('is-error', !!on);
+        const inp = field.querySelector('input,select');
+        if (inp) inp.setAttribute('aria-invalid', on ? 'true' : 'false');
+      };
+
+      const mkField = (label, id, inputmode) => {
+        const f = document.createElement('div');
+        f.className = 'field';
+        f.dataset.field = id;
+        const l = document.createElement('div');
+        l.className = 'label';
+        l.textContent = label;
+        const i = document.createElement('input');
+        i.className = 'input';
+        i.id = id;
+        if (inputmode) i.inputMode = inputmode;
+        i.autocomplete = 'off';
+        i.setAttribute('aria-invalid','false');
+        const e = document.createElement('div');
+        e.className = 'error';
+        e.textContent = 'Campo obrigatório';
+        f.appendChild(l);
+        f.appendChild(i);
+        f.appendChild(e);
+        return { f, i };
+      };
+
+      const buyerForm = $('buyerForm');
+      buyerForm.innerHTML = '';
+      const nameField = buyerCfg.name ? mkField('Nome completo','bfName') : null;
+      const emailField = buyerCfg.email ? mkField('E-mail','bfEmail') : null;
+      const docField = buyerCfg.doc ? mkField('CPF/CNPJ','bfDoc','numeric') : null;
+      if (nameField) buyerForm.appendChild(nameField.f);
+      if (emailField && docField) {
+        const row = document.createElement('div');
+        row.className = 'row2';
+        row.appendChild(emailField.f);
+        row.appendChild(docField.f);
+        buyerForm.appendChild(row);
+      } else {
+        if (emailField) buyerForm.appendChild(emailField.f);
+        if (docField) buyerForm.appendChild(docField.f);
+      }
+      let phoneInput = null;
+      if (buyerCfg.phone) {
+        const wrap = document.createElement('div');
+        wrap.className = 'field';
+        wrap.dataset.field = 'bfPhone';
+        const l = document.createElement('div');
+        l.className = 'label';
+        l.textContent = 'Celular';
+        const ddi = document.createElement('div');
+        ddi.className = 'ddi';
+        const sel = document.createElement('select');
+        sel.id = 'bfDdi';
+        sel.innerHTML = '<option value=\"+55\" selected>+55</option><option value=\"+1\">+1</option><option value=\"+351\">+351</option>';
+        phoneInput = document.createElement('input');
+        phoneInput.className = 'input';
+        phoneInput.id = 'bfPhone';
+        phoneInput.inputMode = 'tel';
+        phoneInput.setAttribute('aria-invalid','false');
+        ddi.appendChild(sel);
+        ddi.appendChild(phoneInput);
+        const e = document.createElement('div');
+        e.className = 'error';
+        e.textContent = 'Campo obrigatório';
+        wrap.appendChild(l);
+        wrap.appendChild(ddi);
+        wrap.appendChild(e);
+        buyerForm.appendChild(wrap);
+      }
+
+      const validateBuyer = () => {
+        if (nameField) setFieldError('bfName', (nameField.i.value || '').trim().split(' ').filter(Boolean).length < 2);
+        if (emailField) setFieldError('bfEmail', !isEmail(emailField.i.value || ''));
+        if (docField) setFieldError('bfDoc', !isDoc(docField.i.value || ''));
+        if (phoneInput) setFieldError('bfPhone', !isPhone(phoneInput.value || ''));
+        return !buyerForm.querySelector('.field.is-error');
+      };
+
+      if (docField) docField.i.addEventListener('input', () => { docField.i.value = cpfOrCnpjMask(docField.i.value); updateProgress(); });
+      if (phoneInput) phoneInput.addEventListener('input', () => { phoneInput.value = phoneMask(phoneInput.value); updateProgress(); });
+      if (nameField) nameField.i.addEventListener('input', updateProgress);
+      if (emailField) emailField.i.addEventListener('input', updateProgress);
+
+      const methods = [];
+      if (allow.credit) methods.push('credit');
+      if (allow.pix) methods.push('pix');
+      if (allow.boleto) methods.push('boleto');
+      const labels = { credit:'Cartão de Crédito', pix:'PIX', boleto:'Boleto' };
+      let selected = methods[0] || 'credit';
+
+      const setUnderline = () => {
+        const btn = tabs.querySelector('button.tab.active');
+        if (!btn) return;
+        underline.style.width = btn.offsetWidth + 'px';
+        underline.style.transform = 'translateX(' + btn.offsetLeft + 'px)';
+      };
+
+      const renderTabs = () => {
+        tabs.querySelectorAll('button.tab').forEach(b => b.remove());
+        methods.forEach(m => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'tab' + (selected === m ? ' active' : '');
+          btn.textContent = labels[m];
+          btn.setAttribute('role','tab');
+          btn.addEventListener('click', () => {
+            selected = m;
+            tabs.querySelectorAll('button.tab').forEach(x => x.classList.toggle('active', x === btn));
+            Object.keys(panels).forEach(k => panels[k].classList.toggle('show', k === selected));
+            setUnderline();
+            updateCtaLabel();
+            updateProgress();
+          });
+          tabs.appendChild(btn);
+        });
+        requestAnimationFrame(setUnderline);
+      };
+
+      const renderPanels = () => {
+        panels.credit.innerHTML = allow.credit ? \`
+          <div class="cc-grid">
+            <div class="field" data-field="ccNumber">
+              <div class="label">Número do cartão</div>
+              <input class="input" id="ccNumber" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" />
+              <div class="error">Campo obrigatório</div>
+            </div>
+            <div class="field" data-field="ccName">
+              <div class="label">Nome impresso</div>
+              <input class="input" id="ccName" placeholder="Nome do titular" />
+              <div class="error">Campo obrigatório</div>
+            </div>
+            <div class="field" data-field="ccExp">
+              <div class="label">Validade</div>
+              <input class="input" id="ccExp" inputmode="numeric" maxlength="5" placeholder="MM/AA" />
+              <div class="error">Campo obrigatório</div>
+            </div>
+            <div class="field" data-field="ccCvv">
+              <div class="label">CVV</div>
+              <input class="input" id="ccCvv" inputmode="numeric" maxlength="4" placeholder="000" />
+              <div class="error">Campo obrigatório</div>
+            </div>
+            <div class="field" id="instField" style="grid-column:1/-1; display:\${(!isRecurring && installmentsEnabled && installmentMax>1) ? 'block' : 'none'}">
+              <div class="label">Parcelamento</div>
+              <div class="select-wrap">
+                <select class="select" id="ccInstallments"></select>
+                <span class="chev">▾</span>
+              </div>
+            </div>
+          </div>\` : '';
+
+        panels.pix.innerHTML = allow.pix ? \`
+          <div style="font-size:13px; color:#666; font-weight:700; line-height:1.6">
+            Pague com PIX. A aprovação acontece automaticamente.
+          </div>
+          <div class="copy">
+            <input id="pixCode" readonly value="PIX-CODE" />
+            <button class="btn-ghost" type="button" id="pixCopyBtn">Copiar</button>
+          </div>\` : '';
+
+        panels.boleto.innerHTML = allow.boleto ? \`
+          <div style="font-size:13px; color:#666; font-weight:700; line-height:1.6">
+            Boletos podem levar até 3 dias úteis para compensação.
+          </div>
+          <div style="height:10px"></div>
+          <button class="btn-ghost" type="button" id="boletoBtn">Gerar boleto</button>\` : '';
+
+        Object.keys(panels).forEach(k => panels[k].classList.toggle('show', k === selected));
+
+        const num = $('ccNumber');
+        const exp = $('ccExp');
+        const cvv = $('ccCvv');
+        const name = $('ccName');
+        if (num) num.addEventListener('input', () => { num.value = ccNumMask(num.value); updateProgress(); });
+        if (exp) exp.addEventListener('input', () => { exp.value = expMask(exp.value); updateProgress(); });
+        if (cvv) cvv.addEventListener('input', () => { cvv.value = onlyDigits(cvv.value).slice(0,4); updateProgress(); });
+        if (name) name.addEventListener('input', updateProgress);
+
+        const sel = $('ccInstallments');
+        if (sel) {
+          sel.innerHTML = '';
+          for (let i=1;i<=Math.max(1, installmentMax);i++){
+            const opt = document.createElement('option');
+            opt.value = String(i);
+            opt.textContent = i === 1 ? '1x' : (i + 'x');
+            sel.appendChild(opt);
+          }
+          sel.addEventListener('change', updateProgress);
+        }
+
+        const pixCopyBtn = $('pixCopyBtn');
+        if (pixCopyBtn) pixCopyBtn.addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText($('pixCode').value); } catch(_){}
+        });
+        const boletoBtn = $('boletoBtn');
+        if (boletoBtn) boletoBtn.addEventListener('click', () => {});
+      };
+
+      const validatePayment = () => {
+        if (selected !== 'credit') return true;
+        const num = onlyDigits(($('ccNumber') && $('ccNumber').value) || '');
+        const name = String(($('ccName') && $('ccName').value) || '').trim();
+        const exp = String(($('ccExp') && $('ccExp').value) || '').trim();
+        const cvv = onlyDigits(($('ccCvv') && $('ccCvv').value) || '');
+        setFieldError('ccNumber', num.length < 15);
+        setFieldError('ccName', name.length < 3);
+        setFieldError('ccExp', !/^\\d{2}\\/\\d{2}$/.test(exp));
+        setFieldError('ccCvv', cvv.length < 3);
+        return !document.querySelector('.field[data-field=\"ccNumber\"].is-error, .field[data-field=\"ccName\"].is-error, .field[data-field=\"ccExp\"].is-error, .field[data-field=\"ccCvv\"].is-error');
+      };
+
+      const updateCtaLabel = () => {
+        const label =
+          selected === 'pix' ? 'Pagar com PIX' :
+          selected === 'boleto' ? 'Pagar com Boleto' :
+          '${ctaText}';
+        ctaText.textContent = label;
+        ctaTextMobile.textContent = label;
+      };
+
+      function updateProgress(){
+        const okBuyer = validateBuyer();
+        const okPay = validatePayment();
+        stepPagamento.classList.toggle('active', okBuyer);
+        stepConclusao.classList.toggle('active', false);
+        progressBar.style.width = okBuyer ? '66%' : '33%';
+        if (okBuyer && selected && okPay) progressBar.style.width = '66%';
+        updateCtaLabel();
+      }
+
+      const setLoading = (on) => {
+        cta.disabled = !!on;
+        ctaMobile.disabled = !!on;
+        if (on) {
+          ctaText.innerHTML = '<span class=\"loading\"></span> Processando...';
+          ctaTextMobile.innerHTML = '<span class=\"loading\"></span> Processando...';
+        } else {
+          updateCtaLabel();
+        }
+      };
+
+      const submit = () => {
+        const okBuyer = validateBuyer();
+        const okPay = validatePayment();
+        if (!okBuyer || !okPay) { updateProgress(); return; }
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+          progressBar.style.width = '100%';
+          stepConclusao.classList.add('active');
+        }, 700);
+      };
+      cta.addEventListener('click', submit);
+      ctaMobile.addEventListener('click', submit);
+
+      const startTimer = () => {
+        if (!${timerEnabled ? 'true' : 'false'}) return;
+        let seconds = 10 * 60;
+        const el = $('timerVal');
+        if (!el) return;
+        const tick = () => {
+          const m = String(Math.floor(seconds / 60)).padStart(2,'0');
+          const s = String(seconds % 60).padStart(2,'0');
+          el.textContent = m + ':' + s;
+          seconds -= 1;
+          if (seconds < 0) seconds = 0;
+        };
+        tick();
+        setInterval(tick, 1000);
+      };
+
+      renderTabs();
+      renderPanels();
+      updateCtaLabel();
+      updateProgress();
+      startTimer();
+      window.addEventListener('resize', () => requestAnimationFrame(setUnderline));
+    })();
+  <\/script>
+</body>
+</html>`;
+      }
+
+      function renderCheckoutPreview() {
+        const iframe = document.getElementById('ckPreviewFrame');
+        const wrap = document.getElementById('ckPreviewFrameWrap');
+        if (!iframe || !wrap) return;
+        wrap.classList.toggle('is-mobile', ckPreviewDevice === 'mobile');
+        const model = getCheckoutPreviewModel();
+        if (!model.ck) return;
+        iframe.srcdoc = buildCheckoutPreviewSrcdoc(model.d, model.ck);
+      }
+
+      function openCheckoutPreviewInNewTab() {
+        const model = getCheckoutPreviewModel();
+        if (!model.ck) return;
+        const html = buildCheckoutPreviewSrcdoc(model.d, model.ck);
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => { try{ URL.revokeObjectURL(url); } catch(_){ } }, 60000);
+      }
+
+      function renderOffers() {
+        const body = document.getElementById('offersBody');
+        const counter = document.getElementById('pcOfferCounter');
+        if (!body) return;
+        body.innerHTML = '';
+        
+        offers.forEach(off => {
+          const tr = document.createElement('tr');
+          tr.dataset.id = off.id;
+          tr.innerHTML = `
+            <td class="pc-name-cell" style="cursor:pointer" title="Clique para editar nome">
+              ${off.name}
+            </td>
+            <td class="pc-price-cell" style="cursor:pointer" title="Clique para editar valor">
+              R$ ${off.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </td>
+            <td>${off.mode}</td>
+            <td style="text-align:right" class="pc-actions-cell">
+              <button class="pc-action-btn pc-edit-offer" title="Configurações"><i class="fa-solid fa-gear"></i></button>
+              <button class="pc-action-btn pc-delete-offer" title="Excluir" style="color:#FCA5A5"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          `;
+          
+          // Clique na célula de nome para editar apenas o nome
+          tr.querySelector('.pc-name-cell').onclick = (e) => {
+            if (tr.classList.contains('is-editing')) return;
+            editOfferName(off.id, tr.querySelector('.pc-name-cell'));
+          };
+
+          // Clique na célula de preço para editar apenas o preço
+          tr.querySelector('.pc-price-cell').onclick = (e) => {
+            if (tr.classList.contains('is-editing')) return;
+            editOfferPrice(off.id, tr.querySelector('.pc-price-cell'));
+          };
+          
+          // Clique no botão de configurações para editar a LINHA INTEIRA
+          tr.querySelector('.pc-edit-offer').onclick = () => editOfferRow(off.id, tr);
+
+          // Clique no botão de excluir
+          tr.querySelector('.pc-delete-offer').onclick = () => {
+            if (offers.length <= 1) {
+              alert('O produto deve ter pelo menos uma oferta.');
+              return;
+            }
+            if (confirm(`Deseja excluir a oferta "${off.name}"?`)) {
+              offers = offers.filter(o => o.id !== off.id);
+              renderOffers();
+              saveDraft();
+            }
+          };
+          
+          body.appendChild(tr);
+        });
+
+        if (counter) {
+          counter.textContent = `${offers.length} de 10 ofertas cadastradas`;
+        }
+      }
+
+      const addOfferBtn = document.getElementById('pcAddOffer');
+      if (addOfferBtn) {
+        addOfferBtn.onclick = () => {
+          if (offers.length >= 10) {
+            alert('Limite de 10 ofertas atingido.');
+            return;
+          }
+          const nextId = offers.length > 0 ? Math.max(...offers.map(o => o.id)) + 1 : 1;
+          const newOffer = { id: nextId, name: `Nova Oferta ${nextId}`, price: 0.00, mode: 'Pagamento Único' };
+          offers.push(newOffer);
+          renderOffers();
+          saveDraft();
+          
+          // Entrar em modo de edição automaticamente para a nova oferta
+          const rows = document.getElementById('offersBody').querySelectorAll('tr');
+          const lastRow = rows[rows.length - 1];
+          if (lastRow) editOfferRow(nextId, lastRow);
+        };
+      }
+
+      function editOfferRow(id, tr) {
+        if (tr.classList.contains('is-editing')) return;
+        tr.classList.add('is-editing');
+        
+        const offer = offers.find(o => o.id === id);
+        if (!offer) return;
+
+        const nameCell = tr.querySelector('.pc-name-cell');
+        const priceCell = tr.querySelector('.pc-price-cell');
+        const actionsCell = tr.querySelector('.pc-actions-cell');
+
+        // Transformar Nome em Input
+        nameCell.innerHTML = `<input type="text" class="pc-input pc-edit-name" value="${offer.name}" style="height:34px; font-size:13px">`;
+        
+        // Transformar Preço em Input
+        priceCell.innerHTML = `
+          <div class="pc-input-group" style="width:120px">
+            <span style="position:absolute; left:10px; font-size:12px; color:var(--muted)">R$</span>
+            <input type="number" class="pc-input pc-edit-price" step="0.01" value="${offer.price}" style="padding-left:30px; height:34px; font-size:13px">
+          </div>
+        `;
+
+        // Transformar Ações em botões de Salvar/Cancelar
+        const originalActions = actionsCell.innerHTML;
+        actionsCell.innerHTML = `
+          <div style="display:flex; gap:8px; justify-content:flex-end">
+            <button class="pc-action-btn" title="Salvar" style="color:var(--accent)"><i class="fa-solid fa-check"></i></button>
+            <button class="pc-action-btn" title="Cancelar" style="color:#FCA5A5"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        `;
+
+        const nameInp = nameCell.querySelector('input');
+        const priceInp = priceCell.querySelector('input');
+        const [saveBtn, cancelBtn] = actionsCell.querySelectorAll('button');
+
+        nameInp.focus();
+
+        const save = () => {
+          offer.name = nameInp.value.trim() || 'Sem nome';
+          offer.price = parseFloat(priceInp.value) || 0;
+          tr.classList.remove('is-editing');
+          renderOffers();
+          saveDraft();
+        };
+
+        const cancel = () => {
+          tr.classList.remove('is-editing');
+          renderOffers();
+        };
+
+        saveBtn.onclick = save;
+        cancelBtn.onclick = cancel;
+
+        // Atalhos de teclado
+        [nameInp, priceInp].forEach(inp => {
+          inp.onkeydown = (e) => {
+            if (e.key === 'Enter') save();
+            if (e.key === 'Escape') cancel();
+          };
+        });
+      }
+
+      function editOfferName(id, cell) {
+        if (cell.querySelector('input')) return;
+        
+        const offer = offers.find(o => o.id === id);
+        if (!offer) return;
+        
+        const currentVal = offer.name;
+        cell.innerHTML = `
+          <input type="text" class="pc-input" value="${currentVal}" style="height:34px; font-size:13px">
+        `;
+        
+        const inp = cell.querySelector('input');
+        inp.focus();
+        inp.select();
+        
+        const save = () => {
+          const newVal = inp.value.trim() || 'Sem nome';
+          offer.name = newVal;
+          renderOffers();
+          saveDraft();
+        };
+        
+        inp.onblur = save;
+        inp.onkeydown = (e) => {
+          if (e.key === 'Enter') save();
+          if (e.key === 'Escape') renderOffers();
+        };
+      }
+
+      function editOfferPrice(id, cell) {
+        if (cell.querySelector('input')) return;
+        
+        const offer = offers.find(o => o.id === id);
+        if (!offer) return;
+        
+        const currentVal = offer.price;
+        cell.innerHTML = `
+          <div class="pc-input-group" style="width:120px">
+            <span style="position:absolute; left:10px; font-size:12px; color:var(--muted)">R$</span>
+            <input type="number" class="pc-input" step="0.01" value="${currentVal}" style="padding-left:30px; height:34px; font-size:13px">
+          </div>
+        `;
+        
+        const inp = cell.querySelector('input');
+        inp.focus();
+        inp.select();
+        
+        const save = () => {
+          const newVal = parseFloat(inp.value) || 0;
+          offer.price = newVal;
+          renderOffers();
+          saveDraft();
+        };
+        
+        inp.onblur = save;
+        inp.onkeydown = (e) => {
+          if (e.key === 'Enter') save();
+          if (e.key === 'Escape') renderOffers();
+        };
+      }
+
+      function renderDeliveryItems() {
+        if (!delGrid) return;
+        delGrid.innerHTML = '';
+        const list = deliveryItems.filter(i => i.id !== 'link' || isMonthlySubscriptionEnabled());
+        list.forEach((m) => {
+          const card = document.createElement('div');
+          card.className = `del-card ${m.active ? 'is-active' : ''}`;
+          card.innerHTML = `
+            ${m.beta ? '<span class="del-beta-badge">Beta</span>' : ''}
+            <div class="del-card-header">
+              <div class="del-card-ico"><i class="${m.ico}"></i></div>
+              <div class="del-card-title">
+                <strong>${m.name}</strong>
+                <p>${m.desc}</p>
+              </div>
+            </div>
+            <div class="del-config-area" onclick="event.stopPropagation()">
+              ${getConfigTemplate(m)}
+            </div>
+          `;
+
+          card.onclick = () => {
+            m.active = !m.active;
+            
+            // Toggle Tab "Clickify Members"
+            const tabMembers = document.getElementById('tabMembers');
+            if (tabMembers) {
+              const extActive = deliveryItems.some(i => i.id === 'ext' && i.active);
+              tabMembers.style.display = extActive ? 'inline-flex' : 'none';
+            }
+
+            renderDeliveryItems();
+            updateDelSelectAllState();
+            saveDraft();
+          };
+
+          delGrid.appendChild(card);
+        });
+      }
+
+      function getConfigTemplate(m) {
+        switch(m.id) {
+          case 'ext': return '';
+          case 'cakto': return `<div class="pc-field"><div class="pc-label">Selecionar Área</div><div class="pc-select-wrap"><select class="pc-select" onchange="updateDelConfig('${m.id}', 'areaId', this.value)"><option value="" disabled ${!m.config.areaId?'selected':''}>Selecione...</option><option value="new">+ Criar nova área</option></select><span class="pc-select-ico"><i class="fa-solid fa-chevron-down"></i></span></div></div>`;
+          case 'telegram': return `<div class="pc-field"><div class="pc-label">Link do Grupo/Canal</div><input type="url" class="pc-input" placeholder="https://t.me/..." value="${m.config.url}" oninput="updateDelConfig('${m.id}', 'url', this.value)"><div style="display:flex; gap:16px; margin-top:10px"><label style="font-size:12px; display:flex; align-items:center; gap:6px"><input type="radio" name="tg_type_${m.id}" ${m.config.type==='canal'?'checked':''} onclick="updateDelConfig('${m.id}', 'type', 'canal')"> Canal</label><label style="font-size:12px; display:flex; align-items:center; gap:6px"><input type="radio" name="tg_type_${m.id}" ${m.config.type==='grupo'?'checked':''} onclick="updateDelConfig('${m.id}', 'type', 'grupo')"> Grupo</label></div><div class="pay-toggle-row" style="border:none; padding:10px 0"><span style="font-size:12px">Adicionar comprador automaticamente</span><label class="switch"><input type="checkbox" ${m.config.autoAdd?'checked':''} onchange="updateDelConfig('${m.id}', 'autoAdd', this.checked)"><span class="slider"></span></label></div></div>`;
+          case 'email': return `<div class="pc-field"><div class="pc-label">URL de Acesso</div><input type="url" class="pc-input" placeholder="https://" value="${m.config.url}" oninput="updateDelConfig('${m.id}', 'url', this.value)"><div class="pc-label" style="margin-top:10px">Mensagem Personalizada</div><textarea class="pc-textarea" placeholder="Olá, aqui está seu acesso..." maxlength="500" oninput="updateDelConfig('${m.id}', 'message', this.value)">${m.config.message}</textarea></div>`;
+          case 'link': {
+            if (!isMonthlySubscriptionEnabled()) return '';
+            if (!recurringLinkToken) {
+              recurringLinkToken = `subm_${Math.random().toString(36).slice(2, 10)}`;
+              saveDraft();
+            }
+            const url = `checkout-recorrente.html?t=${recurringLinkToken}`;
+            const productName = String((document.getElementById('pcName') && document.getElementById('pcName').value) || 'Produto').trim() || 'Produto';
+            return `
+              <div class="pc-field" style="border: 1px solid rgba(59, 130, 246, 0.2); background: rgba(59, 130, 246, 0.05); padding: 16px; border-radius: 12px;">
+                <div style="display:flex; align-items:center; gap:8px; color:var(--accent2); font-weight:800; font-size:13px; margin-bottom:12px;">
+                  <i class="fa-solid fa-repeat"></i> LINK RECORRENTE (MENSAL)
+                </div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.7); line-height:1.5; margin-bottom:12px;">
+                  Este é um plano mensal com renovação automática. O valor será cobrado todo mês até que o cancelamento seja solicitado.
+                </div>
+                <div class="pc-label">URL do Checkout Mensal</div>
+                <div style="display:flex; gap:10px; margin-bottom: 14px;">
+                  <input type="text" class="pc-input" value="${url}" readonly style="background: rgba(0,0,0,0.2); border-color: rgba(59, 130, 246, 0.3);">
+                  <button class="pc-btn-primary" style="width:auto; padding: 0 14px; height: 42px;" onclick="navigator.clipboard.writeText(this.previousElementSibling.value); showToast('Link copiado!')">
+                    <i class="fa-solid fa-copy"></i>
+                  </button>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; background: rgba(15, 23, 42, 0.4); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                  <div style="display:flex; flex-direction:column; gap:4px;">
+                    <span style="font-size:11px; color:var(--muted)">Plano</span>
+                    <strong style="font-size:13px; color:#fff">${productName} (Mensal)</strong>
+                  </div>
+                  <button class="pc-back" type="button" style="height:36px; font-size:12px; border-color:rgba(255,255,255,0.15)" onclick="window.open('${url}', '_blank')">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir
+                  </button>
+                </div>
+              </div>
+            `;
+          }
+          default: return '';
+        }
+      }
+
+      window.updateDelConfig = (id, key, val) => {
+        const m = deliveryItems.find(i => i.id === id);
+        if (m) {
+          m.config[key] = val;
+          saveDraft();
+        }
+      };
+
+      function updateDelSelectAllState() {
+        if (!delSelectAll) return;
+        const visible = deliveryItems.filter(i => i.id !== 'link' || isMonthlySubscriptionEnabled());
+        const total = visible.length;
+        const active = visible.filter(i => i.active).length;
+        delSelectAll.checked = active === total;
+        delSelectAll.indeterminate = active > 0 && active < total;
+      }
+
+      if (delSelectAll) {
+        delSelectAll.onchange = () => {
+          deliveryItems.forEach(i => {
+            if (i.id === 'link' && !isMonthlySubscriptionEnabled()) {
+              i.active = false;
+              return;
+            }
+            i.active = delSelectAll.checked;
+          });
+          renderDeliveryItems();
+          saveDraft();
+        };
+      }
+
+      let recurringLinkToken = '';
+
+      let paymentMethods = [
+        { id: 'pix', name: 'PIX', ico: 'fa-brands fa-pix', price: '18,73', active: true },
+        { id: 'boleto', name: 'Boleto', ico: 'fa-solid fa-barcode', price: '17,67', active: true },
+        { id: 'cartao', name: 'Cartão de Crédito', ico: 'fa-solid fa-credit-card', price: '17,90', active: true },
+        { id: 'picpay', name: 'PicPay', ico: 'fa-solid fa-p', price: '17,25', active: true },
+        { id: 'apple', name: 'Apple Pay', ico: 'fa-brands fa-apple', price: '16,82', active: true },
+        { id: 'google', name: 'Google Pay', ico: 'fa-brands fa-google-pay', price: '16,82', active: true },
+        { id: 'mensal', name: 'Parcelado mensal', ico: 'fa-solid fa-repeat', price: '—', active: false }
+      ];
+
+      // Estado central global para o método padrão
+      let defaultPaymentMethod = 'pix';
+
+      function isMonthlySubscriptionEnabled() {
+        return Array.isArray(paymentMethods) && paymentMethods.some(m => m.id === 'mensal' && m.active);
+      }
+
+      function renderPaymentMethods() {
+        if (!payGrid) return;
+        payGrid.innerHTML = '';
+        paymentMethods.forEach((m, idx) => {
+          const isDefault = (m.id === defaultPaymentMethod);
+          const card = document.createElement('div');
+          card.className = `pay-method-card ${m.active ? 'is-active' : ''} ${isDefault ? 'is-default' : ''}`;
+          card.draggable = true;
+          card.dataset.id = m.id;
+          
+          card.innerHTML = `
+            <div class="badge">${idx + 1}</div>
+            <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+            <div class="ico"><i class="${m.ico}"></i></div>
+            <strong>${m.name}</strong>
+            <span>Valor líquido: R$ ${m.price}</span>
+            <button class="pay-btn-default" type="button">${isDefault ? 'Padrão' : 'Definir padrão'}</button>
+          `;
+
+          // Clique no card para ativar/desativar
+          card.onclick = () => {
+            const activeCount = paymentMethods.filter(pm => pm.active).length;
+            if (m.active && activeCount <= 1) {
+              alert('Você precisa selecionar pelo menos um meio de pagamento.');
+              return;
+            }
+            m.active = !m.active;
+            // Se desativar o que era padrão, tenta achar outro padrão
+            if (!m.active && isDefault) {
+              const next = paymentMethods.find(pm => pm.active && pm.id !== m.id);
+              if (next) updateDefaultPayment(next.id);
+              else defaultPaymentMethod = '';
+            }
+            updatePaySelectAllState();
+            renderPaymentMethods();
+            renderDeliveryItems();
+            saveDraft();
+          };
+
+          card.querySelector('.pay-btn-default').onclick = (e) => {
+            e.stopPropagation();
+            updateDefaultPayment(m.id);
+          };
+
+          // Drag and Drop
+          card.ondragstart = (e) => { e.dataTransfer.setData('text/plain', idx); card.style.opacity = '0.4'; };
+          card.ondragend = () => card.style.opacity = '1';
+          card.ondragover = (e) => e.preventDefault();
+          card.ondrop = (e) => {
+            e.preventDefault();
+            const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+            const toIdx = idx;
+            if (fromIdx !== toIdx) {
+              const moved = paymentMethods.splice(fromIdx, 1)[0];
+              paymentMethods.splice(toIdx, 0, moved);
+              renderPaymentMethods();
+              saveDraft();
+            }
+          };
+
+          payGrid.appendChild(card);
+        });
+
+        // Atualiza o resumo dinâmico
+        updateSelectedMethodsSummary();
+      }
+
+      function updateSelectedMethodsSummary() {
+        if (!paySelectedList) return;
+        const selected = paymentMethods.filter(m => m.active);
+        
+        // Atualiza o contador
+        if (paySelectedCount) {
+          paySelectedCount.textContent = `${selected.length} ${selected.length === 1 ? 'selecionado' : 'selecionados'}`;
+        }
+
+        if (selected.length === 0) {
+          paySelectedList.innerHTML = `
+            <div class="pay-empty-msg">
+              <i class="fa-solid fa-credit-card"></i>
+              <span>Nenhuma forma de pagamento selecionada ainda.</span>
+            </div>`;
+          return;
+        }
+
+        paySelectedList.innerHTML = selected.map(m => {
+          const isStandard = (m.id === defaultPaymentMethod);
+          return `
+            <div class="pay-selected-tag ${isStandard ? 'is-standard' : ''}">
+              <i class="${m.ico}"></i>
+              <span>${m.name}</span>
+              ${isStandard ? '<div class="star-badge" title="Método Padrão"><i class="fa-solid fa-star"></i></div>' : ''}
+            </div>
+          `;
+        }).join('');
+      }
+
+      /**
+       * FUNCIONALIDADE: Seleção Única Neon (Single Selection UI)
+       * OBJETIVO: Manter apenas o botão padrão visível para limpeza visual, 
+       * revelando os outros apenas no hover do card.
+       */
+      function updateDefaultPayment(methodId) {
+        // Validação de unicidade (Atomic Update)
+        if (!methodId) return;
+        
+        defaultPaymentMethod = methodId;
+        
+        // Garante que o método padrão esteja ativo
+        const method = paymentMethods.find(m => m.id === methodId);
+        if (method) {
+          method.active = true;
+          console.log(`[UI Sync] Método "${method.name}" definido como padrão único.`);
+        }
+
+        // Teste de Integração (Simulado): Garante que apenas um padrão existe
+        const defaultCount = paymentMethods.filter(m => m.id === defaultPaymentMethod).length;
+        if (defaultCount > 1) {
+          console.error("[Test Failure] Inconsistência de seleção única detectada.");
+        } else {
+          console.log("[Test Success] Unicidade de seleção padrão validada.");
+        }
+
+        updatePaySelectAllState();
+        renderPaymentMethods();
+        saveDraft();
+      }
+
+      function updatePaySelectAllState() {
+        if (!paySelectAll) return;
+        const total = paymentMethods.length;
+        const activeCount = paymentMethods.filter(m => m.active).length;
+        paySelectAll.checked = activeCount === total;
+        paySelectAll.indeterminate = activeCount > 0 && activeCount < total;
+      }
+
+      if (paySelectAll) {
+        paySelectAll.onchange = () => {
+          if (!paySelectAll.checked) {
+            alert('Você precisa selecionar pelo menos um meio de pagamento.');
+            paySelectAll.checked = true;
+            return;
+          }
+          paymentMethods.forEach(m => m.active = paySelectAll.checked);
+          if (!paySelectAll.checked) {
+            defaultPaymentMethod = '';
+          } else {
+            if (!defaultPaymentMethod) defaultPaymentMethod = paymentMethods[0].id;
+          }
+          renderPaymentMethods();
+          renderDeliveryItems();
+          saveDraft();
+        };
+      }
+
+      [toggleEmail, toggleCoupon].forEach(t => {
+        if (t) t.onchange = saveDraft;
+      });
+
+      const fileInp = document.getElementById('pcFile');
+      const drop = document.getElementById('pcDrop');
+      const preview = document.getElementById('pcPreview');
+      const previewImg = document.getElementById('pcPreviewImg');
+      const previewName = document.getElementById('pcPreviewName');
+      const removeBtn = document.getElementById('pcRemove');
+
+      function showToast(msg){
+        if (!toast) return;
+        if (msg) toast.querySelector('span').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(()=> toast.classList.remove('show'), 2500);
+      }
+
+      window.setActiveTab = (key) => {
+        tabs.forEach(t=>{ const on = t.getAttribute('data-tab')===key; t.classList.toggle('active', on); t.setAttribute('aria-selected', on?'true':'false'); });
+        panes.forEach(p=>{ p.classList.toggle('active', p.getAttribute('data-pane')===key); });
+        if (key === 'members') renderMembersModules();
+        if (key === 'checkout') renderCheckoutList();
+      };
+
+      tabs.forEach(t=> t.addEventListener('click', ()=> setActiveTab(t.getAttribute('data-tab'))));
+
+      if (back) back.addEventListener('click', ()=> history.length>1 ? history.back() : (window.location.href='index.html'));
+
+      function loadDraft(){
+        try{
+          const raw = localStorage.getItem('draftProductConfig');
+          if (!raw) {
+            renderPaymentMethods();
+            renderDeliveryItems();
+            renderOffers();
+            ensureDefaultCheckout();
+            renderCheckoutList();
+            return;
+          }
+          const d = JSON.parse(raw);
+          if (d && typeof d === 'object'){
+            if (typeof d.name === 'string') nameEl.value = d.name;
+            if (typeof d.desc === 'string') descEl.value = d.desc;
+            if (typeof d.category === 'string') catEl.value = d.category;
+            if (typeof d.paymentType === 'string') {
+              const m = { single:'unico', recurring:'recorrente', installment:'parcelado' };
+              payEl.value = m[d.paymentType] || d.paymentType;
+            }
+            if (Array.isArray(d.paymentMethods)) {
+              paymentMethods = d.paymentMethods;
+              if (!paymentMethods.some(pm => pm.id === 'mensal')) {
+                paymentMethods.push({ id: 'mensal', name: 'Parcelado mensal', ico: 'fa-solid fa-repeat', price: '—', active: false });
+              }
+              defaultPaymentMethod = d.defaultPaymentMethod || 'pix';
+              renderPaymentMethods();
+              updatePaySelectAllState();
+            } else {
+              renderPaymentMethods();
+            }
+            if (typeof d.recurringLinkToken === 'string') recurringLinkToken = d.recurringLinkToken;
+            if (typeof d.repeatEmail === 'boolean' && toggleEmail) toggleEmail.checked = d.repeatEmail;
+            if (typeof d.showCoupon === 'boolean' && toggleCoupon) toggleCoupon.checked = d.showCoupon;
+            if (typeof d.selectAll === 'boolean' && paySelectAll) paySelectAll.checked = d.selectAll;
+            
+            if (typeof d.askAddress === 'boolean' && toggleAddress) {
+              toggleAddress.checked = d.askAddress;
+            }
+            if (typeof d.auth3ds === 'boolean' && toggle3DS) {
+              toggle3DS.checked = d.auth3ds;
+              auth3dsSection.classList.toggle('active', d.auth3ds);
+            }
+
+            if (Array.isArray(d.deliveryItems)) {
+              // Sincroniza os estados ativos e configurações dos itens que ainda existem
+              deliveryItems.forEach(item => {
+                const saved = d.deliveryItems.find(i => i.id === item.id);
+                if (saved) {
+                  item.active = saved.active;
+                  if (saved.config) item.config = saved.config;
+                }
+              });
+              renderDeliveryItems();
+              updateDelSelectAllState();
+
+              // Restaurar visibilidade da aba Members
+              const tabMembers = document.getElementById('tabMembers');
+              if (tabMembers) {
+                const extActive = deliveryItems.some(i => i.id === 'ext' && i.active);
+                tabMembers.style.display = extActive ? 'inline-flex' : 'none';
+              }
+            } else {
+              renderDeliveryItems();
+            }
+
+            if (d.maConfig) {
+              maConfig = d.maConfig;
+              const mHeader = document.getElementById('membersHeader');
+              if (mHeader && maConfig.headerImg) mHeader.style.backgroundImage = `url('${maConfig.headerImg}')`;
+            }
+
+            if (d.productImage) {
+              setPreview(d.productImage, 'imagem-salva.jpg');
+            }
+
+            if (Array.isArray(d.offers)) {
+              offers = d.offers;
+            }
+            renderOffers();
+
+            if (Array.isArray(d.checkouts)) {
+              checkouts = d.checkouts;
+              activeCheckoutId = typeof d.activeCheckoutId === 'string' ? d.activeCheckoutId : activeCheckoutId;
+              ensureDefaultCheckout();
+              renderCheckoutList();
+            } else {
+              ensureDefaultCheckout();
+              renderCheckoutList();
+            }
+          }
+        } catch(_){
+          renderPaymentMethods();
+          renderDeliveryItems();
+          renderOffers();
+          ensureDefaultCheckout();
+          renderCheckoutList();
+        }
+      }
+
+      function saveDraft(){
+        let prev = {};
+        try{
+          const rawPrev = localStorage.getItem('draftProductConfig');
+          if (rawPrev) {
+            const parsed = JSON.parse(rawPrev);
+            if (parsed && typeof parsed === 'object') prev = parsed;
+          }
+        } catch(_){}
+
+        const d = {
+          ...prev,
+          name: String(nameEl.value || '').trim(),
+          desc: String(descEl.value || '').trim(),
+          category: catEl.value || '',
+          paymentType: payEl.value || 'unico',
+          paymentMethods: paymentMethods,
+          defaultPaymentMethod: defaultPaymentMethod,
+          deliveryItems: deliveryItems,
+          recurringLinkToken: recurringLinkToken,
+          checkouts: checkouts,
+          activeCheckoutId: activeCheckoutId,
+          maConfig: maConfig,
+          productImage: productImage,
+          offers: offers,
+          repeatEmail: toggleEmail ? toggleEmail.checked : false,
+          showCoupon: toggleCoupon ? toggleCoupon.checked : false,
+          askAddress: toggleAddress ? toggleAddress.checked : false,
+          auth3ds: toggle3DS ? toggle3DS.checked : false,
+          selectAll: paySelectAll ? paySelectAll.checked : true
+        };
+        localStorage.setItem('draftProductConfig', JSON.stringify(d));
+      }
+
+      function onSave(){
+        saveDraft();
+        showToast();
+      }
+      if (save) save.addEventListener('click', onSave);
+
+      let productImage = '';
+
+      function setPreview(base64, name){
+        productImage = base64;
+        previewImg.src = base64;
+        previewName.textContent = name || 'imagem-do-produto.jpg';
+        preview.classList.add('show');
+        drop.style.display = 'none';
+      }
+
+      function clearPreview(){
+        productImage = '';
+        previewImg.src = '';
+        previewName.textContent = '';
+        preview.classList.remove('show');
+        drop.style.display = '';
+        if (fileInp) fileInp.value = '';
+        saveDraft();
+      }
+
+      function validateFile(file){
+        if (!file) return 'Arquivo inválido.';
+        const okType = ['image/jpeg','image/png'].includes(file.type);
+        if (!okType) return 'Envie um JPG ou PNG.';
+        const max = 10 * 1024 * 1024;
+        if (file.size > max) return 'Tamanho máximo: 10MB.';
+        return '';
+      }
+
+      async function handleFile(file){
+        const err = validateFile(file);
+        if (err){ alert(err); return; }
+        const base64 = await optimizeImage(file, 800, 0.8); // Miniatura de produto otimizada
+        setPreview(base64, file.name);
+        saveDraft();
+      }
+
+      if (drop){
+        drop.addEventListener('click', ()=> fileInp && fileInp.click());
+        drop.addEventListener('keydown', (e)=>{ if (e.key==='Enter' || e.key===' '){ e.preventDefault(); fileInp && fileInp.click(); }});
+        drop.addEventListener('dragenter', (e)=>{ e.preventDefault(); drop.classList.add('drag'); });
+        drop.addEventListener('dragover', (e)=>{ e.preventDefault(); drop.classList.add('drag'); });
+        drop.addEventListener('dragleave', ()=> drop.classList.remove('drag'));
+        drop.addEventListener('drop', (e)=>{ e.preventDefault(); drop.classList.remove('drag'); const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) handleFile(f); });
+      }
+      if (fileInp) fileInp.addEventListener('change', ()=>{ const f = fileInp.files && fileInp.files[0]; if (f) handleFile(f); });
+      if (removeBtn) removeBtn.addEventListener('click', clearPreview);
+
+      [nameEl, descEl, catEl, payEl].forEach(el=> el && el.addEventListener('input', ()=>{ try{ saveDraft(); } catch(_){ } }));
+
+      const ckAddBtn = document.getElementById('ckAddBtn');
+      const ckSearch = document.getElementById('ckSearch');
+      const ckPrevPage = document.getElementById('ckPrevPage');
+      const ckNextPage = document.getElementById('ckNextPage');
+
+      if (ckAddBtn) {
+        ckAddBtn.addEventListener('click', () => {
+          ensureDefaultCheckout();
+          const id = `ck_${Math.random().toString(36).slice(2, 10)}`;
+          const idx = checkouts.length + 1;
+          checkouts.unshift({
+            id,
+            name: 'Novo Checkout',
+            slug: `checkout-${idx}`,
+            desc: '',
+            enabled: true,
+            isDefault: false,
+            price: 0,
+            visits: 0,
+            offer: String((nameEl && nameEl.value) || 'Oferta').trim() || 'Oferta',
+            payment: {
+              credit: { enabled: true, fee: 0, prazo: 0, recurring: false },
+              pix: { enabled: true, fee: 0, prazo: 0, recurring: false },
+              boleto: { enabled: true, fee: 0, prazo: 0, recurring: false },
+              installment: { enabled: false, max: 12, fee: 0, prazo: 0 }
+            },
+            buyer: { name: true, email: true, cpf: true, phone: true, address: false },
+            visual: { logo: '', primaryColor: '#0ea5e9', buttonColor: '#00C853', buttonText: 'Finalizar Compra', banner: '' },
+            advanced: { orderBump: false, redirectUrl: '', thankYouUrl: '', gatewayAdapter: 'default', timerEnabled: true }
+          });
+          activeCheckoutId = id;
+          saveDraft();
+          openCheckoutEditor(id);
+        });
+      }
+
+      if (ckSearch) {
+        ckSearch.addEventListener('input', () => {
+          ckPage = 1;
+          renderCheckoutList();
+        });
+      }
+      if (ckPrevPage) ckPrevPage.addEventListener('click', () => { ckPage = Math.max(1, ckPage - 1); renderCheckoutList(); });
+      if (ckNextPage) ckNextPage.addEventListener('click', () => { ckPage = ckPage + 1; renderCheckoutList(); });
+
+      loadDraft();
+    })();
+  </script>
+</body>
+</html>

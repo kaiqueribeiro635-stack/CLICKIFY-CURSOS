@@ -429,6 +429,52 @@ body {
   color: var(--text-muted);
 }
 
+.product-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.product-price:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.product-price-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.product-price-input {
+  width: 100px;
+  background: var(--dark-bg);
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  outline: none;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+/* Chrome, Safari, Edge, Opera - Remove arrows */
+.product-price-input::-webkit-outer-spin-button,
+.product-price-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Firefox - Remove arrows */
+.product-price-input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 /* Quick Actions */
 .quick-actions {
   display: grid;

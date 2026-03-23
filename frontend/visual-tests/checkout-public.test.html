@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teste - Checkout UI</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#fff}
+    .top{display:flex;gap:10px;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;background:rgba(11,18,32,0.92);backdrop-filter:blur(10px)}
+    button{height:38px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.06);color:#fff;font-weight:800;padding:0 12px;cursor:pointer}
+    button:hover{background:rgba(255,255,255,0.10)}
+    .ok{color:#22c55e;font-weight:900}
+    .bad{color:#ef4444;font-weight:900}
+    pre{margin:0;padding:12px 14px;white-space:pre-wrap;word-break:break-word;color:rgba(255,255,255,0.86)}
+    iframe{width:100%;height:940px;border:none;background:#fff}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <button id="runBtn" type="button">Rodar testes</button>
+    <div id="status"></div>
+  </div>
+  <pre id="out"></pre>
+  <iframe id="frame" title="Checkout"></iframe>
+
+  <script>
+    const out = document.getElementById('out');
+    const statusEl = document.getElementById('status');
+    const log = (s) => { out.textContent += s + '\n'; };
+    const ok = (s) => log('✅ ' + s);
+    const bad = (s) => log('❌ ' + s);
+    const assert = (cond, msg) => { if (!cond) throw new Error(msg); };
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    const seed = () => {
+      const d = {
+        name: 'CLICKIFY',
+        desc: 'Descrição',
+        productImage: '',
+        checkouts: [{
+          id: 'ck_visual',
+          name: 'Checkout Principal',
+          isDefault: true,
+          price: 1122.23,
+          payment: {
+            credit: { enabled: true, fee: 0, prazo: 0, recurring: false },
+            pix: { enabled: true, fee: 0, prazo: 0, recurring: false },
+            boleto: { enabled: true, fee: 0, prazo: 0, recurring: false },
+            installment: { enabled: true, max: 12, fee: 0, prazo: 0 }
+          },
+          buyer: { name: true, email: true, cpf: true, phone: true, address: false },
+          visual: { banner: '' },
+          page: {
+            blocks: [],
+            settings: {
+              theme: { primary:'#0ea5e9', action:'#00C853', font:'Inter' },
+              security: { text:'Compra segura' },
+              coupon: { enabled:false },
+              timer: { enabled:false },
+              orderBump: { enabled:false },
+              legal: { text:'Clickify está processando este pagamento para o vendedor • Política de privacidade • Termos de serviço' },
+              header: { bannerEnabled:false, bannerText:'', bannerBg:'#0ea5e9', bannerFg:'#ffffff' },
+              vendor: { contactLabel:'Veja o contato do vendedor', contactUrl:'' },
+              address: { enabled:false },
+              custom: { pixels:'', scripts:'' }
+            }
+          }
+        }]
+      };
+      localStorage.setItem('draftProductConfig', JSON.stringify(d));
+    };
+
+    const run = async () => {
+      out.textContent = '';
+      statusEl.textContent = '';
+      seed();
+      const iframe = document.getElementById('frame');
+      iframe.src = '../checkout-public.html?ck=ck_visual';
+
+      await new Promise((resolve, reject) => {
+        const t = setTimeout(() => reject(new Error('Timeout ao carregar iframe')), 9000);
+        iframe.onload = () => { clearTimeout(t); resolve(); };
+      });
+
+      const doc = iframe.contentDocument;
+      const w = iframe.contentWindow;
+      assert(doc && w, 'Sem acesso ao iframe');
+
+      assert(!!doc.getElementById('buyerForm'), 'Form não encontrado');
+      assert(!!doc.getElementById('payGrid'), 'Grid de pagamento não encontrado');
+      assert(!!doc.getElementById('boletoInline'), 'Aviso do boleto não encontrado');
+      assert(!!doc.querySelector('.help-link'), 'Link "porque pedimos" não encontrado');
+      ok('Estrutura base renderizada');
+
+      assert(!doc.querySelector('.field.is-error'), 'Não deve mostrar erro antes de tocar/enviar');
+      ok('Sem erros antes de interação');
+
+      const boleto = doc.querySelector('.pay-item[data-method="boleto"]');
+      assert(!!boleto, 'Método boleto não encontrado');
+      assert(boleto.classList.contains('active'), 'Boleto deve estar selecionado por padrão');
+      ok('Boleto selecionado por padrão');
+
+      const pix = doc.querySelector('.pay-item[data-method="pix"]');
+      pix.dispatchEvent(new w.MouseEvent('click', { bubbles:true }));
+      await sleep(80);
+      const pix2 = doc.querySelector('.pay-item[data-method="pix"]');
+      assert(pix2 && pix2.classList.contains('active'), 'PIX deve ficar ativo ao clicar');
+      ok('Seleção de método altera estado ativo');
+
+      doc.getElementById('ctaBtn').dispatchEvent(new w.MouseEvent('click', { bubbles:true }));
+      await sleep(120);
+      assert(!!doc.querySelector('.field.is-error'), 'Após enviar, deve exibir erros');
+      ok('Erros aparecem após tentativa de envio');
+    };
+
+    document.getElementById('runBtn').addEventListener('click', async () => {
+      try{
+        statusEl.innerHTML = '<span style="color:rgba(255,255,255,0.78);font-weight:900">Executando…</span>';
+        await run();
+        statusEl.innerHTML = '<span class="ok">OK</span>';
+      } catch (e){
+        bad(String(e && e.message || e));
+        statusEl.innerHTML = '<span class="bad">FALHOU</span>';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,4817 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Builder - Clickify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --primary: #00B37E; /* Cakto Green */
+      --primary-dark: #008f65;
+      --primary-light: #00d696;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --accent-green: #00B37E;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --border-radius: 8px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* Layout Principal do Builder */
+    .builder-layout {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      height: auto;
+      overflow: visible;
+    }
+
+    /* ===== BARRA SUPERIOR ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .builder-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+
+    .view-toggle {
+      display: flex;
+      background: var(--gray-100);
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .view-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--gray-500);
+      transition: var(--transition);
+    }
+
+    .view-btn:hover {
+      color: var(--gray-700);
+    }
+
+    .view-btn.active {
+      background: var(--white);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-preview {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .btn-preview:hover {
+      background: var(--gray-200);
+    }
+
+    .btn-save {
+      background: var(--accent-green);
+      color: var(--white);
+    }
+
+    .btn-save:hover {
+      background: #16a34a;
+    }
+
+    .btn-capture {
+      background: var(--white);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-capture:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-300);
+    }
+
+    /* ===== ÁREA CENTRAL ===== */
+    .builder-main {
+      display: flex;
+      flex: 1;
+      overflow: visible;
+    }
+
+    /* Canvas de Edição */
+    .canvas-area {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+      overflow: visible;
+      background: var(--gray-100);
+    }
+
+    .canvas-container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Área de Drop */
+    .drop-zone {
+      background: #f9fafb;
+      border: 1px dashed #d9d9d9;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      max-height: 220px;
+      height: clamp(180px, 22vw, 220px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+    .drop-zone .canvas-components{
+      width:100%;
+      flex: 1 1 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:12px;
+    }
+
+    .drop-zone:hover {
+      border-color: var(--primary);
+      background: rgba(26, 95, 74, 0.02);
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--primary);
+      background: rgba(26, 95, 74, 0.05);
+      border-style: solid;
+    }
+
+    .drop-zone.has-components {
+      text-align: left;
+      justify-content: flex-start;
+      overflow: visible;
+    }
+    .drop-zone.has-components i,
+    .drop-zone.has-components p {
+      display: none;
+    }
+
+    .drop-zone i {
+      font-size: 32px;
+      color: var(--gray-400);
+      margin-bottom: 12px;
+    }
+
+    .drop-zone p {
+      color: var(--gray-500);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    @media (max-width: 480px){
+      .drop-zone{height:160px; max-height:180px}
+    }
+
+    /* Checkout Preview Container */
+    .checkout-preview {
+      background: var(--gray-50);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+      overflow: visible;
+      transition: var(--transition);
+      position: relative;
+      max-height: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .checkout-preview.mobile-view {
+      max-width: 375px;
+      margin: 0 auto;
+      border: 1px solid var(--gray-200);
+    }
+
+    /* Checkout Grid */
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      min-height: 600px;
+      height: auto;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .checkout-preview.mobile-view .checkout-grid {
+      grid-template-columns: 1fr;
+    }
+
+    /* Coluna Esquerda - Formulário */
+    .checkout-form {
+      padding: 32px 40px;
+      border-right: 1px solid var(--gray-200);
+      overflow: visible;
+      max-height: none;
+      background: var(--white);
+    }
+    .checkout-form::-webkit-scrollbar{width:0;height:0}
+
+    .checkout-injected-components{
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+    .checkout-injected-components .image-block{
+      width: min(100%, 320px);
+      aspect-ratio: 1 / 1;
+      height:auto;
+      margin: 0 auto;
+      border:none;
+      background:transparent;
+      padding:0;
+      min-height:0;
+    }
+    .checkout-injected-components .image-block.align-left{margin-left:0; margin-right:auto}
+    .checkout-injected-components .image-block.align-center{margin-left:auto; margin-right:auto}
+    .checkout-injected-components .image-block.align-right{margin-left:auto; margin-right:0}
+    .checkout-injected-components .image-block-inner{
+      width:100%;
+      height:100%;
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px;
+      background: transparent;
+    }
+    .checkout-injected-components .image-block-inner.align-left{justify-content:flex-start}
+    .checkout-injected-components .image-block-inner.align-center{justify-content:center}
+    .checkout-injected-components .image-block-inner.align-right{justify-content:flex-end}
+    .checkout-injected-components .image-link{
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      text-decoration:none;
+    }
+    .checkout-injected-components .image-content{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:6px;
+    }
+    .checkout-injected-components .component-actions{
+      display:none !important;
+    }
+    .checkout-injected-components .canvas-component{
+      cursor: default;
+    }
+
+    .order-summary{
+      position: sticky;
+      top: 20px;
+      align-self: start;
+      height: fit-content;
+    }
+    .checkout-preview.mobile-view .order-summary{
+      position: static;
+      top: auto;
+    }
+
+    .checkout-preview.mobile-view .checkout-form {
+      border-right: none;
+      padding: 16px 10px 22px;
+      background: transparent;
+    }
+    .mobile-checkout-card{display: contents}
+    .checkout-preview.mobile-view .mobile-checkout-card{
+      display:block;
+      max-width: 400px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 16px 44px rgba(2,6,23,0.10);
+      padding: 20px;
+    }
+    .checkout-preview.mobile-view{
+      max-width: 400px;
+      margin: 0 auto;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+    .checkout-preview.mobile-view .checkout-grid{
+      background: transparent;
+      border-radius: 0;
+      overflow: visible;
+      min-height: 0;
+    }
+    .checkout-preview.mobile-view .order-summary{display:none}
+    .checkout-preview.mobile-view .product-card{
+      padding: 0;
+      border: none;
+      background: transparent;
+      margin: 14px 0 18px;
+      gap: 14px;
+    }
+    .checkout-preview.mobile-view .product-image{
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      overflow:hidden;
+    }
+    .checkout-preview.mobile-view .product-details h3{
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      margin-bottom: 2px;
+    }
+    .checkout-preview.mobile-view .product-details .price-main{
+      font-size: 14px;
+      font-weight: 800;
+      color: #111827;
+    }
+    .checkout-preview.mobile-view .product-details .price-secondary{
+      font-size: 12px;
+      color: rgba(17,24,39,0.52);
+    }
+
+    .checkout-preview.mobile-view .mobile-checkout-banner{
+      width: 100%;
+      border-radius: 16px;
+      background: #f3f4f6;
+      padding: 14px 14px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-banner-stage{
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-banner-stage::after{
+      content:'';
+      position:absolute;
+      inset:-40%;
+      background: radial-gradient(closest-side, rgba(31,143,106,0.12), rgba(31,143,106,0.00) 70%);
+      transform: rotate(-12deg);
+      pointer-events:none;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone{
+      width: 88%;
+      max-width: 310px;
+      position: relative;
+      z-index: 1;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone .image-block{
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin: 0;
+      border:none;
+      padding:0;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone .image-block-inner{
+      width:100%;
+      height:100%;
+      border-radius: 12px;
+      border: 1px dashed rgba(148,163,184,0.40);
+      background: rgba(255,255,255,0.80);
+      overflow:hidden;
+      padding: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone .image-link{
+      width: 100%;
+      height: 100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone .image-content{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      display:block;
+      border-radius: 0;
+      background: #ffffff;
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone .image-placeholder{
+      width: 100%;
+      height: 100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      color: rgba(17,24,39,0.56);
+    }
+    .checkout-preview.mobile-view .mobile-checkout-clone .image-placeholder i{font-size: 22px; color: rgba(17,24,39,0.40)}
+    .checkout-preview.mobile-view .mobile-checkout-clone .ph-text{font-size: 12px; font-weight: 800; text-align:center}
+    .checkout-preview.mobile-view .mobile-checkout-clone .ph-text small{display:block; margin-top: 4px; font-weight: 600; color: rgba(17,24,39,0.42)}
+
+    .checkout-preview.mobile-view .form-section{margin-bottom: 18px}
+    .checkout-preview.mobile-view .form-section-title{
+      font-size: 14px;
+      font-weight: 900;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+    .checkout-preview.mobile-view .form-section-title i{color: rgba(17,24,39,0.70)}
+    .checkout-preview.mobile-view .form-group input{
+      height: 48px;
+      border-radius: 12px;
+      background: #f3f4f6;
+      border: 1px solid rgba(148,163,184,0.45);
+      font-size: 14px;
+    }
+    .checkout-preview.mobile-view .form-group label{
+      font-size: 12px;
+      color: rgba(17,24,39,0.62);
+      font-weight: 800;
+    }
+    .checkout-preview.mobile-view .form-grid{gap: 14px}
+    .checkout-preview.mobile-view .form-help{
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(17,24,39,0.46);
+    }
+
+    .checkout-preview.mobile-view .phone-input{
+      height: 48px;
+      border-radius: 12px;
+      background: #f3f4f6;
+      border: 1px solid rgba(148,163,184,0.45);
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 0 12px;
+    }
+    .checkout-preview.mobile-view .phone-flag{
+      width: 22px;
+      height: 16px;
+      border-radius: 3px;
+      background: linear-gradient(180deg, #1e9a4a 0%, #0b7a36 100%);
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.10);
+      flex: 0 0 auto;
+    }
+    .checkout-preview.mobile-view .phone-flag::after{
+      content:'';
+      width: 10px;
+      height: 10px;
+      background: #facc15;
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%) rotate(45deg);
+      border-radius: 2px;
+      opacity: 0.92;
+    }
+    .checkout-preview.mobile-view .phone-code{
+      font-size: 13px;
+      font-weight: 900;
+      color: rgba(17,24,39,0.62);
+      flex: 0 0 auto;
+    }
+    .checkout-preview.mobile-view .phone-input input{
+      height: 46px;
+      border: none;
+      background: transparent;
+      padding: 0;
+      outline:none;
+    }
+
+    .checkout-preview.mobile-view #paymentSection{
+      margin-bottom: 0;
+      padding-top: 2px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods{
+      gap: 14px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-method{
+      transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease, transform .2s ease;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary{
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method{
+      height: 88px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.36);
+      background: #ffffff;
+      padding: 12px 10px;
+      gap: 10px;
+      box-shadow: 0 10px 22px rgba(2,6,23,0.06);
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method:hover{
+      background: #f3f4f6;
+      border-color: rgba(148,163,184,0.45);
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method i{
+      font-size: 24px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method span{
+      font-size: 12px;
+      font-weight: 800;
+      opacity: 0.82;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method .pix-icon{
+      width: 34px;
+      height: 34px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method .pix-icon svg{
+      width: 34px;
+      height: 34px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method.selected{
+      background: #00ff00;
+      border-color: #00ff00;
+      color: #0b1220;
+      box-shadow: 0 16px 30px rgba(0,255,0,0.22);
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method.selected i,
+    .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method.selected span{
+      color: #0b1220;
+      opacity: 1;
+    }
+
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding-top: 0;
+      justify-content: stretch;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method{
+      height: 44px;
+      padding: 0 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.30);
+      background: #ffffff;
+      flex-direction: row;
+      gap: 8px;
+      min-width: 0;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method i{
+      font-size: 18px;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method span{
+      font-size: 12px;
+      font-weight: 800;
+      opacity: 0.72;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method.selected{
+      background: #00ff00;
+      border-color: #00ff00;
+      color: #0b1220;
+      box-shadow: 0 14px 26px rgba(0,255,0,0.18);
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method.selected i,
+    .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method.selected span{
+      color: #0b1220;
+      opacity: 1;
+    }
+    .checkout-preview.mobile-view #paymentSection .gpay-pill,
+    .checkout-preview.mobile-view #paymentSection .nubank-mark{
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+    }
+    .checkout-preview.mobile-view #paymentSection .gpay-pill .gpay-g,
+    .checkout-preview.mobile-view #paymentSection .gpay-pill .gpay-pay{
+      font-size: 11px;
+    }
+
+    .checkout-preview.mobile-view #paymentSection .pix-info-box{
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.26);
+      background: #f8fafc;
+      padding: 12px;
+      margin: 12px 0 12px;
+    }
+    .checkout-preview.mobile-view #paymentSection .pix-info-item{
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(17,24,39,0.62);
+      line-height: 1.35;
+    }
+    .checkout-preview.mobile-view #paymentSection .payment-button{
+      height: 54px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 414px){
+      .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method{height: 84px}
+      .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method{height: 42px}
+    }
+    @media (max-width: 375px){
+      .checkout-preview.mobile-view #paymentSection .payment-methods-primary{gap: 10px}
+      .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method{height: 80px; padding: 11px 9px}
+      .checkout-preview.mobile-view #paymentSection .payment-methods-secondary{gap: 10px}
+      .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method{height: 42px}
+    }
+    @media (max-width: 320px){
+      .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method{height: 76px; padding: 10px 8px}
+      .checkout-preview.mobile-view #paymentSection .payment-methods-primary .payment-method i{font-size: 22px}
+      .checkout-preview.mobile-view #paymentSection .payment-methods-secondary .payment-method{height: 40px; padding: 0 10px}
+    }
+
+    @media (max-width: 420px){
+      .checkout-preview.mobile-view .checkout-form{padding: 14px 10px 18px}
+      .checkout-preview.mobile-view .mobile-checkout-card{padding: 18px}
+      .checkout-preview.mobile-view .mobile-checkout-clone{width: 86%}
+    }
+
+    /* Card do Produto (Header Mobile/Desktop) */
+    .product-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--border-radius);
+      margin-bottom: 32px;
+    }
+
+    .product-image {
+      width: 64px;
+      height: 64px;
+      border-radius: 6px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-size: 24px;
+      font-weight: 700;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .product-image img { width: 100%; height: 100%; object-fit: cover; }
+
+    .product-details h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .product-details .price-main {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .product-details .price-secondary {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+
+    /* Seção do Formulário */
+    .form-section {
+      margin-bottom: 32px;
+    }
+
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 20px;
+    }
+
+    .form-section-title i {
+      color: var(--primary);
+      font-size: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .form-group input {
+      height: 48px;
+      padding: 0 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 15px;
+      color: var(--gray-900);
+      background: var(--white);
+      transition: var(--transition);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(0, 179, 126, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: var(--gray-400);
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Métodos de Pagamento */
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .checkout-preview.mobile-view .payment-methods {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .payment-method {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      background: var(--white);
+      cursor: pointer;
+      transition: var(--transition);
+      height: 84px;
+    }
+
+    .payment-method:hover {
+      border-color: var(--primary);
+      background: var(--gray-50);
+    }
+
+    .payment-method.selected {
+      border-color: var(--primary);
+      background: rgba(0, 179, 126, 0.04);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    /* Override for Cakto style: selected is NOT solid green, but outlined green with light bg */
+    
+    .payment-method i {
+      font-size: 24px;
+      color: var(--gray-400);
+      transition: var(--transition);
+    }
+    
+    .payment-method.selected i {
+      color: var(--primary);
+    }
+
+    .payment-method span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+
+    .payment-method.selected span {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .payment-method .pix-icon {
+      font-weight: 900;
+      color: var(--gray-400);
+      font-size: 16px;
+    }
+    .payment-method.selected .pix-icon {
+      color: var(--primary);
+    }
+
+    #paymentSection .payment-methods{
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+    }
+    #paymentSection .payment-methods-primary{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+    #paymentSection .payment-methods-primary .payment-method{
+      height: 104px;
+      padding: 14px 10px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: transparent;
+      box-shadow: none;
+      gap: 10px;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #paymentSection .payment-methods-primary .payment-method:hover{
+      background: rgba(17,24,39,0.03);
+      border-color: rgba(148,163,184,0.25);
+    }
+    #paymentSection .payment-methods-primary .payment-method:active{transform: translateY(0)}
+    #paymentSection .payment-methods-primary .payment-method:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+      border-color: rgba(34,197,94,0.55);
+    }
+    #paymentSection .payment-methods-primary .payment-method i{
+      font-size: 26px;
+      color: #111827;
+      opacity: 0.78;
+    }
+    #paymentSection .payment-methods-primary .payment-method span{
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+      opacity: 0.72;
+      text-align:center;
+      line-height: 1.15;
+    }
+    #paymentSection .payment-methods-primary .payment-method .pix-icon{
+      width: 34px;
+      height: 34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: #ffffff;
+      opacity: 0.82;
+    }
+    #paymentSection .payment-methods-primary .payment-method .pix-icon svg{width: 34px; height: 34px; display:block}
+    #paymentSection .payment-methods-primary .payment-method:not(.selected) .pix-icon{
+      color: #111827;
+      opacity: 0.72;
+    }
+    #paymentSection .payment-methods-primary .payment-method.selected{
+      background: #1f8f6a;
+      border-color: #1f8f6a;
+      box-shadow: 0 18px 34px rgba(31,143,106,0.18);
+    }
+    #paymentSection .payment-methods-primary .payment-method.selected i,
+    #paymentSection .payment-methods-primary .payment-method.selected span{
+      color: #ffffff;
+      opacity: 1;
+    }
+
+    #paymentSection .payment-methods-secondary{
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      gap: 64px;
+      padding-top: 2px;
+    }
+    #paymentSection .payment-methods-secondary .payment-method{
+      height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      gap: 10px;
+    }
+    #paymentSection .payment-methods-secondary .payment-method:hover{background: transparent}
+    #paymentSection .payment-methods-secondary .payment-method i{
+      font-size: 22px;
+      color: #111827;
+      opacity: 0.78;
+    }
+    #paymentSection .payment-methods-secondary .payment-method span{
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+      opacity: 0.72;
+    }
+    #paymentSection .payment-methods-secondary .payment-method.selected span{
+      opacity: 1;
+      color: #111827;
+    }
+    #paymentSection .gpay-pill{
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      display:inline-flex;
+      align-items:center;
+      gap: 4px;
+      color: #111827;
+      background: rgba(255,255,255,0.7);
+    }
+    #paymentSection .gpay-pill .gpay-g{
+      font-weight: 900;
+      font-size: 14px;
+      color: #4285f4;
+    }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)){
+      #paymentSection .gpay-pill .gpay-g{
+        background: conic-gradient(from 90deg, #ea4335 0 25%, #fbbc05 25% 50%, #34a853 50% 75%, #4285f4 75% 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+    }
+    #paymentSection .gpay-pill .gpay-pay{
+      font-weight: 800;
+      font-size: 14px;
+      color: #111827;
+    }
+    #paymentSection .nubank-mark{
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: lowercase;
+      background: rgba(138, 5, 190, 0.12);
+      border: 1px solid rgba(138, 5, 190, 0.35);
+      color: #8A05BE;
+    }
+    #paymentSection .payment-button .payment-btn-nu{
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 10px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      text-transform: lowercase;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: #ffffff;
+      margin-right: 8px;
+    }
+    #paymentSection .payment-methods-secondary .payment-method-nubank.selected .nubank-mark{
+      background: rgba(138, 5, 190, 0.18);
+      border-color: rgba(138, 5, 190, 0.55);
+    }
+
+    #paymentSection .pix-info-box{
+      margin-top: 18px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      background: rgba(248,250,252,0.9);
+      border-radius: 12px;
+      padding: 16px 16px;
+    }
+    #paymentSection .pix-bullet{
+      width: 10px;
+      height: 10px;
+      margin-top: 4px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.14);
+      flex: 0 0 auto;
+    }
+    #paymentSection .pix-info-item{
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    #paymentSection .pix-info-item span{
+      font-size: 14px;
+      color: rgba(17,24,39,0.78);
+      line-height: 1.45;
+    }
+    #paymentSection .pix-info-item:last-child{margin-bottom:0}
+
+    @media (max-width: 520px){
+      #paymentSection .payment-methods-primary{gap: 12px}
+      #paymentSection .payment-methods-secondary{gap: 44px}
+      #paymentSection .payment-methods-primary .payment-method{height: 98px}
+      #paymentSection .payment-methods-primary .payment-method span{font-size: 12px}
+    }
+
+    /* Caixa de Informação do PIX */
+    .pix-info-box {
+      border: 1px solid var(--primary-light);
+      background: rgba(0, 179, 126, 0.03);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
+    .pix-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .pix-info-item:last-child { margin-bottom: 0; }
+
+    .pix-info-item i {
+      color: var(--primary);
+      font-size: 16px;
+      margin-top: 2px;
+    }
+
+    .pix-info-item span {
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.4;
+    }
+
+    /* Botão de Pagamento */
+    .payment-button {
+      width: 100%;
+      height: 56px;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: var(--transition);
+      margin-top: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 179, 126, 0.2);
+    }
+
+    .payment-button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(0, 179, 126, 0.25);
+    }
+
+    .payment-button:active {
+      transform: translateY(0);
+    }
+
+    /* Rodapé do Checkout */
+    .checkout-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .footer-safe {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--gray-500);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .footer-safe i { color: var(--primary); }
+
+    /* Coluna Direita - Resumo */
+    .order-summary {
+      background: var(--gray-50);
+      padding: 32px 24px;
+      border-left: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .checkout-preview.mobile-view .order-summary {
+      border-left: none;
+      border-top: 1px solid var(--gray-200);
+      padding: 24px;
+    }
+
+    .summary-card {
+      background: transparent;
+      box-shadow: none;
+      border: none;
+    }
+
+    .summary-header {
+      background: transparent;
+      padding: 0 0 16px 0;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 12px;
+    }
+    
+    .summary-header span {
+      color: var(--gray-800);
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .summary-header button{
+      margin-left: 0 !important;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(20, 83, 45, 0.55);
+      background: #15803d;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+    .summary-header button:hover{
+      background: #166534;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(0,0,0,0.22);
+    }
+    .summary-header button:active{
+      transform: translateY(0);
+      background: #14532d;
+    }
+    .summary-header button:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.22), 0 14px 26px rgba(0,0,0,0.22);
+      border-color: rgba(34, 197, 94, 0.55);
+    }
+    @media (max-width: 520px){
+      .summary-header{
+        flex-wrap: wrap;
+        row-gap: 10px;
+      }
+      .summary-header button{
+        width: fit-content;
+        max-width: 100%;
+      }
+    }
+
+    .summary-product {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-product-image {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .summary-product-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+      margin: 20px 0;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    .summary-total-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+
+    .summary-total-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--gray-900);
+      text-align: right;
+    }
+    
+    .summary-total-value span {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-500);
+      margin-top: 2px;
+    }
+    
+    .summary-security {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      padding: 12px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .summary-security i { color: var(--primary); }
+    .summary-security span { font-size: 13px; color: var(--gray-600); font-weight: 500; }
+
+    .summary-legal {
+      text-align: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .summary-legal p {
+      font-size: 11px;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+
+    .summary-legal a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .summary-legal a:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== BARRA LATERAL DIREITA ===== */
+    .sidebar {
+      width: 300px;
+      background: var(--white);
+      border-left: 1px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .sidebar-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .sidebar-tab {
+      flex: 1;
+      padding: 14px 8px;
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 2px solid transparent;
+    }
+
+    .sidebar-tab:hover {
+      color: var(--gray-700);
+      background: var(--gray-50);
+    }
+
+    .sidebar-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Componentes */
+    .components-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .component-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 8px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      cursor: grab;
+      transition: var(--transition);
+    }
+
+    .component-item:hover {
+      border-color: var(--primary);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .component-item:active {
+      cursor: grabbing;
+    }
+
+    .component-item.dragging {
+      opacity: 0.5;
+    }
+
+    .component-item i {
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    .component-item span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-align: center;
+    }
+
+    /* Linhas */
+    .lines-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .line-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      cursor: grab;
+      transition: var(--transition);
+    }
+
+    .line-item:hover {
+      border-color: var(--primary);
+      background: var(--white);
+    }
+
+    .line-item i {
+      font-size: 18px;
+      color: var(--primary);
+    }
+
+    .line-item span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    /* Componentes Extras */
+    .extra-components-section {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .extra-components-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 12px;
+    }
+
+    .extra-component-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      margin-bottom: 8px;
+      transition: var(--transition);
+    }
+
+    .extra-component-item:hover {
+      border-color: var(--primary-light);
+    }
+
+    .extra-component-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .extra-component-info i {
+      font-size: 18px;
+      color: var(--primary);
+    }
+
+    .extra-component-info span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .extra-component-toggle {
+      width: 44px;
+      height: 24px;
+      background: var(--gray-300);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .extra-component-toggle.active {
+      background: var(--accent-green);
+    }
+
+    .extra-component-toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--white);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: var(--transition);
+    }
+
+    .extra-component-toggle.active::after {
+      left: 22px;
+    }
+
+    /* Configurações */
+    .config-section {
+      margin-bottom: 20px;
+    }
+
+    .config-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 12px;
+    }
+
+    .config-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--gray-50);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .config-item label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .config-toggle {
+      width: 44px;
+      height: 24px;
+      background: var(--gray-300);
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .config-toggle.active {
+      background: var(--accent-green);
+    }
+
+    .config-toggle::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: var(--white);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: var(--transition);
+    }
+
+    .config-toggle.active::after {
+      left: 22px;
+    }
+
+    .config-select {
+      padding: 8px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--gray-700);
+      background: var(--white);
+      cursor: pointer;
+    }
+
+    /* Componentes no Canvas */
+    .canvas-components {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .canvas-components .canvas-empty{
+      padding: 12px;
+      text-align:center;
+      color: var(--gray-500);
+      font-size: 12px;
+    }
+
+    .canvas-component {
+      position: relative;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      transition: var(--transition);
+      background: var(--white);
+      padding: 12px;
+      cursor: move;
+    }
+
+    .canvas-component:hover {
+      border-color: var(--primary-light);
+    }
+
+    .canvas-component.selected {
+      border-color: var(--primary);
+    }
+
+    .component-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: none;
+      gap: 6px;
+      background: #1f8f6a;
+      padding: 4px 6px;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      will-change: transform;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .canvas-component:hover .component-actions,
+    .canvas-component.selected .component-actions {
+      display: flex;
+    }
+
+    .component-action {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .component-action:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .component-action[data-action="move"]{cursor:grab}
+    .canvas-component.dragging{opacity:.7;border-color:var(--primary)}
+    .canvas-component{transition: box-shadow .2s ease, transform .2s ease; will-change: transform}
+    .drop-indicator{
+      height:8px;
+      background: rgba(34,197,94,0.35);
+      border-radius: 4px;
+      margin: 4px 0;
+      display:none;
+    }
+
+    /* Componente de Imagem - copia da interface */
+    .canvas-component.image-component{
+      width:100%;
+      height:auto;
+      max-height:none;
+      border-radius:8px;
+      border: 1px dashed #d9d9d9;
+      background:#f9fafb;
+      padding:12px;
+      overflow:visible;
+      margin-bottom:12px;
+    }
+    .canvas-component.image-component .image-block{
+      width: min(100%, 320px);
+      aspect-ratio: 1 / 1;
+      height:auto;
+      margin: 0 auto;
+      border:none;
+      background:transparent;
+      padding:0;
+      min-height:0;
+    }
+    .canvas-component.image-component .image-block.align-left{margin-left:0; margin-right:auto}
+    .canvas-component.image-component .image-block.align-center{margin-left:auto; margin-right:auto}
+    .canvas-component.image-component .image-block.align-right{margin-left:auto; margin-right:0}
+    .canvas-component.image-component .image-block-inner{
+      width:100%;
+      height:100%;
+      border:1px dashed #d9d9d9;
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px;
+      background: transparent;
+    }
+    .canvas-component.image-component .image-block-inner.align-left{justify-content:flex-start}
+    .canvas-component.image-component .image-block-inner.align-center{justify-content:center}
+    .canvas-component.image-component .image-block-inner.align-right{justify-content:flex-end}
+    .canvas-component.image-component .image-link{
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      text-decoration:none;
+    }
+    .canvas-component.image-component .image-placeholder{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      color: #d1d5db;
+      width:100%;
+      height:100%;
+      cursor:pointer;
+      user-select:none;
+    }
+    .canvas-component.image-component .image-placeholder i{font-size:48px;color:#9ca3af}
+    .canvas-component.image-component .ph-text{
+      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size:13px;
+      color:#6b7280;
+      text-align:center;
+      line-height:1.35;
+    }
+    .canvas-component.image-component .ph-text small{font-size:12px;color:#6b7280}
+    .canvas-component.image-component .image-content{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:6px;
+    }
+    @media (max-width: 480px){
+      .canvas-component.image-component .image-block{width: min(100%, 240px)}
+    }
+
+    #imageEditorPanel{
+      position: fixed;
+      right: 16px;
+      top: 72px;
+      width: 360px;
+      max-height: calc(100vh - 96px);
+      overflow: auto;
+      background: #0b1220;
+      border: 1px solid #1e293b;
+      border-radius: 18px;
+      padding: 14px;
+      z-index: 50;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #e2e8f0;
+    }
+    #imageEditorPanel .iep{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    #imageEditorPanel .iep-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding: 4px 4px 0;
+    }
+    #imageEditorPanel .iep-title{
+      font-weight:800;
+      font-size:18px;
+      letter-spacing:-0.01em;
+      color:#e2e8f0;
+    }
+    #imageEditorPanel .iep-actions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    #imageEditorPanel .iep-icon-btn{
+      width:34px;
+      height:34px;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,0.18);
+      background: rgba(15,23,42,0.40);
+      color:#e2e8f0;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease, color .16s ease;
+      backdrop-filter: blur(10px);
+    }
+    #imageEditorPanel .iep-icon-btn:hover{
+      background: rgba(15,23,42,0.65);
+      border-color: rgba(34,197,94,0.35);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+    #imageEditorPanel .iep-icon-btn:active{transform: translateY(0)}
+    #imageEditorPanel .iep-icon-btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.25), 0 12px 24px rgba(0,0,0,0.25);
+      border-color: rgba(34,197,94,0.45);
+    }
+    #imageEditorPanel .iep-icon-btn-danger{color:#f87171}
+    #imageEditorPanel .iep-icon-btn-danger:hover{border-color: rgba(248,113,113,0.55)}
+
+    #imageEditorPanel .iep-thumb{
+      padding: 2px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(148,163,184,0.14) 0%, rgba(148,163,184,0.04) 100%);
+      border: 1px solid rgba(148,163,184,0.16);
+    }
+    #imageEditorPanel .iep-thumb-inner{
+      position:relative;
+      border-radius: 16px;
+      overflow:hidden;
+      background: rgba(15,23,42,0.55);
+      height: 164px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    #imageEditorPanel .iep-thumb-img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:none;
+    }
+    #imageEditorPanel .iep-thumb-inner.has-image .iep-thumb-img{display:block}
+    #imageEditorPanel .iep-thumb-placeholder{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(148,163,184,0.75);
+      font-size: 34px;
+    }
+    #imageEditorPanel .iep-thumb-inner.has-image .iep-thumb-placeholder{display:none}
+    #imageEditorPanel .iep-thumb-actions{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .16s ease, transform .16s ease;
+      transform: translateY(2px);
+    }
+    #imageEditorPanel .iep-thumb-inner:hover .iep-thumb-actions,
+    #imageEditorPanel .iep-thumb-inner:focus-within .iep-thumb-actions{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0);
+    }
+    #imageEditorPanel .iep-thumb-action{
+      width:46px;
+      height:46px;
+      border-radius:999px;
+      border: 1px solid rgba(255,255,255,0.45);
+      background: rgba(2,6,23,0.42);
+      color: rgba(255,255,255,0.95);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease, border-color .16s ease, color .16s ease;
+      backdrop-filter: blur(8px);
+    }
+    #imageEditorPanel .iep-thumb-action:hover{
+      background: rgba(2,6,23,0.62);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(0,0,0,0.35);
+    }
+    #imageEditorPanel .iep-thumb-action:active{transform: translateY(0)}
+    #imageEditorPanel .iep-thumb-action:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.25), 0 14px 26px rgba(0,0,0,0.35);
+      border-color: rgba(34,197,94,0.45);
+    }
+    #imageEditorPanel .iep-thumb-action-danger{color:#fecaca}
+
+    #imageEditorPanel .iep-upload{
+      border: 1px dashed rgba(148,163,184,0.35);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      padding: 14px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+      text-align:center;
+      cursor:pointer;
+      transition: border-color .16s ease, background-color .16s ease, transform .16s ease, box-shadow .16s ease;
+      user-select:none;
+    }
+    #imageEditorPanel .iep-upload:hover{
+      border-color: rgba(34,197,94,0.45);
+      background: rgba(34,197,94,0.06);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(0,0,0,0.22);
+    }
+    #imageEditorPanel .iep-upload:focus-within{
+      border-color: rgba(34,197,94,0.55);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18), 0 14px 26px rgba(0,0,0,0.22);
+    }
+    #imageEditorPanel .iep-upload input[type="file"]{display:none}
+    #imageEditorPanel .iep-upload-title{
+      font-weight:800;
+      color:#e2e8f0;
+      font-size:14px;
+    }
+    #imageEditorPanel .iep-upload-sub{
+      color:#94a3b8;
+      font-size:12px;
+      line-height:1.4;
+    }
+    #imageEditorPanel .iep-hint{
+      font-size:12px;
+      color:#94a3b8;
+      padding: 0 4px;
+    }
+    #imageEditorPanel .iep-section{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      padding: 0 4px;
+    }
+    #imageEditorPanel .iep-section-title{
+      font-size:12px;
+      font-weight:700;
+      color:#94a3b8;
+    }
+    #imageEditorPanel .iep-align{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.18);
+      background: rgba(15,23,42,0.40);
+    }
+    #imageEditorPanel .align-btn{
+      width: 100%;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: rgba(148,163,184,0.92);
+      cursor: pointer;
+      transition: background-color .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    #imageEditorPanel .align-btn:hover{
+      background: rgba(255,255,255,0.06);
+      color: rgba(226,232,240,0.96);
+      transform: translateY(-1px);
+    }
+    #imageEditorPanel .align-btn:active{transform: translateY(0)}
+    #imageEditorPanel .align-btn.active{
+      background: #1f8f6a;
+      border-color: rgba(34,197,94,0.55);
+      color: #ffffff;
+      box-shadow: 0 18px 34px rgba(31,143,106,0.25);
+    }
+    #imageEditorPanel .align-btn:focus-visible{
+      outline:none;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.22), 0 18px 34px rgba(31,143,106,0.25);
+      border-color: rgba(34,197,94,0.55);
+    }
+    #imageEditorPanel .iep-url{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.18);
+      background: rgba(15,23,42,0.40);
+    }
+    #imageEditorPanel .iep-url:focus-within{
+      border-color: rgba(34,197,94,0.55);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+    }
+    #imageEditorPanel .iep-url-icon{
+      width: 22px;
+      height: 22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#94a3b8;
+      flex: 0 0 auto;
+    }
+    #imageEditorPanel .iep-url input{
+      width: 100%;
+      border:none;
+      background: transparent;
+      outline:none;
+      color:#e2e8f0;
+      font-size: 13px;
+      padding: 0;
+    }
+    #imageEditorPanel .iep-url input::placeholder{color: rgba(148,163,184,0.6)}
+    @media (max-width: 900px){
+      #imageEditorPanel{
+        left: 14px;
+        right: 14px;
+        width: auto;
+        top: 68px;
+      }
+    }
+    @media (max-width: 520px){
+      #imageEditorPanel{
+        left: 10px;
+        right: 10px;
+        top: auto;
+        bottom: 10px;
+        max-height: calc(100vh - 120px);
+      }
+    }
+    .align-btn{
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+    .align-btn.active{
+      background: #1f8f6a;
+      border-color: #1f8f6a;
+      color: #ffffff;
+    }
+
+    .component-action.delete:hover {
+      background: #dc2626;
+    }
+
+    /* Responsividade */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 260px;
+      }
+      
+      .checkout-grid {
+        grid-template-columns: 1fr 320px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      
+      .top-bar {
+        padding: 12px 16px;
+      }
+      
+      .builder-title {
+        font-size: 16px;
+      }
+      
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .checkout-form {
+        border-right: none;
+        border-bottom: 1px solid var(--gray-100);
+      }
+    }
+
+    .checkout-preview.theme-customizado{
+      font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      --white:#FFFFFF;
+      --gray-50:#F9FAFB;
+      --gray-100:#F3F4F6;
+      --gray-200:#E5E7EB;
+      --gray-300:#D1D5DB;
+      --gray-400:#9CA3AF;
+      --gray-500:#6B7280;
+      --gray-600:#374151;
+      --gray-700:#1F2937;
+      --gray-800:#111827;
+
+      --text-primary:#1F2937;
+      --text-secondary:#22C55E;
+      --text-active:#22C55E;
+
+      --action:#22C55E;
+      --action-hover:#16A34A;
+      --action-active:#15803D;
+      --action-soft:#DCFCE7;
+
+      --icon-default:#9CA3AF;
+      --icon-active:#22C55E;
+      --icon-disabled:#D1D5DB;
+
+      --btn-muted-text:#6B7280;
+      --btn-muted-bg:#F9FAFB;
+      --btn-muted-icon:#9CA3AF;
+      --btn-muted-border:#E5E7EB;
+      --btn-muted-hover:#F3F4F6;
+
+      --btn-active-text:#FFFFFF;
+      --btn-active-bg:#22C55E;
+      --btn-active-icon:#FFFFFF;
+      --btn-active-hover:#16A34A;
+      --btn-active-pressed:#15803D;
+
+      --card-bg:#FFFFFF;
+      --card-header:#F3F4F6;
+      --card-border:#E5E7EB;
+      --card-selected-header:#22C55E;
+      --card-selected-header-text:#FFFFFF;
+      --card-selected-bg:#DCFCE7;
+      --card-shadow:0 4px 20px rgba(0,0,0,0.05);
+      --card-radius:12px;
+
+      --pay-form-bg:#FFFFFF;
+
+      --primary: var(--action);
+      --primary-light: var(--action-hover);
+      --primary-dark: var(--action-active);
+
+      color: var(--text-primary);
+      background: var(--white);
+    }
+
+    .checkout-preview.theme-customizado .form-section-title{font-weight:600;color:var(--text-primary)}
+    .checkout-preview.theme-customizado .form-section-title i{color:var(--icon-active)}
+    .checkout-preview.theme-customizado .form-group label{color:var(--text-primary)}
+    .checkout-preview.theme-customizado .help-text{color:var(--text-secondary)}
+    .checkout-preview.theme-customizado .product-details h3{font-weight:600;color:var(--text-primary)}
+    .checkout-preview.theme-customizado .product-details .price-main{color:var(--text-secondary)}
+    .checkout-preview.theme-customizado .product-details .price-secondary{color:var(--gray-500)}
+
+    .checkout-preview.theme-customizado .product-card,
+    .checkout-preview.theme-customizado .order-summary-card{
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    .checkout-preview.theme-customizado .checkout-form{background:var(--pay-form-bg)}
+
+    .checkout-preview.theme-customizado .form-group input{
+      height:44px;
+      border:1px solid var(--gray-300);
+      border-radius:8px;
+      color:var(--text-primary);
+      background:var(--white);
+    }
+    .checkout-preview.theme-customizado .form-group input::placeholder{color:var(--gray-400)}
+    .checkout-preview.theme-customizado .form-group input:focus{
+      border:2px solid var(--action);
+      box-shadow:0 0 0 2px rgba(var(--action-rgb),0.15);
+    }
+
+    .checkout-preview.theme-customizado .payment-method{
+      background:var(--btn-muted-bg);
+      border:1px solid var(--btn-muted-border);
+      border-radius:8px;
+      outline:none;
+      transition: var(--transition);
+    }
+    .checkout-preview.theme-customizado .payment-method span{color:var(--btn-muted-text)}
+    .checkout-preview.theme-customizado .payment-method i{color:var(--btn-muted-icon)}
+    .checkout-preview.theme-customizado .payment-method:hover{background:var(--btn-muted-hover)}
+    .checkout-preview.theme-customizado .payment-method:active{transform:translateY(0)}
+    .checkout-preview.theme-customizado .payment-method:focus{box-shadow:0 0 0 3px rgba(var(--action-rgb),0.18)}
+    .checkout-preview.theme-customizado .payment-method.selected{
+      background:var(--btn-active-bg);
+      border-color:var(--btn-active-bg);
+      box-shadow:0 12px 26px rgba(var(--action-rgb),0.18);
+    }
+    .checkout-preview.theme-customizado .payment-method.selected span{color:var(--btn-active-text)}
+    .checkout-preview.theme-customizado .payment-method.selected i{color:var(--btn-active-icon)}
+
+    .checkout-preview.theme-customizado .payment-button{
+      border-radius:8px;
+      background:var(--action);
+      color:#fff;
+      font-weight:600;
+    }
+    .checkout-preview.theme-customizado .payment-button:hover{background:var(--btn-active-hover)}
+    .checkout-preview.theme-customizado .payment-button:active{background:var(--btn-active-pressed)}
+    .checkout-preview.theme-customizado .payment-button:disabled{opacity:.6;cursor:not-allowed}
+
+    .checkout-preview.theme-customizado .summary-header{background:var(--card-selected-header)}
+    .checkout-preview.theme-customizado .summary-header span{color:var(--card-selected-header-text)}
+    .checkout-preview.theme-customizado .summary-help a{color:var(--text-secondary)}
+    .checkout-preview.theme-customizado .summary-security i{color:var(--icon-active)}
+
+    .checkout-preview.theme-customizado .pix-info-item i{color:var(--icon-active)}
+    .checkout-preview.theme-customizado .order-summary-card{background:var(--info-box-bg, var(--card-bg));border:1px solid var(--card-border)}
+    .checkout-preview.theme-customizado .order-total-line{background:var(--gray-50)}
+    .checkout-preview.theme-customizado .summary-total{background:var(--card-header);border-radius:12px;padding:12px 14px}
+
+    .inline-image-editor{
+      width:100%;
+      background:#ffffff;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:14px;
+      display:flex;
+      gap:14px;
+      align-items:stretch;
+      margin: 12px 0;
+    }
+    .inline-image-editor .inline-editor-canvas{
+      flex: 1 1 auto;
+      min-width: 0;
+      position: relative;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#ffffff;
+      padding:10px;
+    }
+    .inline-image-editor .inline-canvas-frame{
+      height: 190px;
+      border:1px dashed #d9d9d9;
+      border-radius:10px;
+      background:#f9fafb;
+      padding:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position: relative;
+      overflow:hidden;
+    }
+    .inline-image-editor .inline-canvas-frame .image-content{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      border-radius:8px;
+      display:block;
+    }
+    .inline-image-editor .inline-canvas-frame .image-placeholder{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#9ca3af;
+      font-size:46px;
+    }
+    .inline-image-editor .inline-actions{
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:#1f8f6a;
+      border-radius:6px;
+      padding:4px 6px;
+      display:none;
+      gap:6px;
+      align-items:center;
+      z-index:2;
+    }
+    .inline-image-editor.selected .inline-actions{display:flex}
+    .inline-image-editor .inline-action{
+      width:26px;
+      height:26px;
+      border:none;
+      background:transparent;
+      color:#ffffff;
+      border-radius:6px;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+    }
+    .inline-image-editor .inline-action:hover{background:rgba(255,255,255,0.15)}
+    .inline-image-editor .inline-editor-panel{
+      width: 300px;
+      flex: 0 0 auto;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#ffffff;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .inline-image-editor .panel-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .inline-image-editor .panel-title{
+      font-weight:700;
+      color:#111827;
+      font-size:14px;
+    }
+    .inline-image-editor .panel-header-actions{
+      display:flex;
+      gap:8px;
+    }
+    .inline-image-editor .panel-icon-btn{
+      width:28px;height:28px;border-radius:8px;border:1px solid #e5e7eb;background:#ffffff;color:#6b7280;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    }
+    .inline-image-editor .panel-icon-btn:hover{background:#f3f4f6}
+    .inline-image-editor .thumb{
+      position:relative;
+      height: 150px;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid #e5e7eb;
+      background:#f9fafb;
+    }
+    .inline-image-editor .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .inline-image-editor .thumb-actions{
+      position:absolute;
+      top:10px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:10px;
+      z-index:2;
+    }
+    .inline-image-editor .thumb-action{
+      width:34px;height:34px;border-radius:999px;border:1px solid rgba(255,255,255,0.75);
+      background:rgba(17,24,39,0.35);
+      color:#ffffff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      backdrop-filter: blur(6px);
+    }
+    .inline-image-editor .thumb-action:hover{background:rgba(17,24,39,0.5)}
+    .inline-image-editor .helper{
+      font-size:12px;
+      color:#6b7280;
+    }
+    .inline-image-editor .panel-section-title{
+      font-size:12px;
+      font-weight:600;
+      color:#111827;
+    }
+    .inline-image-editor .panel-align{
+      display:flex;
+      gap:10px;
+      margin-top:6px;
+    }
+    .inline-image-editor .panel-align button{
+      width:44px;height:44px;border-radius:12px;border:1px solid #e5e7eb;background:#ffffff;color:#6b7280;cursor:pointer;
+    }
+    .inline-image-editor .panel-align button.active{
+      background:#1f8f6a;
+      border-color:#1f8f6a;
+      color:#ffffff;
+    }
+    .inline-image-editor .panel-field input{
+      width:100%;
+      height:44px;
+      border-radius:12px;
+      border:1px solid #e5e7eb;
+      padding:0 12px;
+      color:#111827;
+      background:#ffffff;
+      outline:none;
+    }
+    .inline-image-editor .panel-field input:focus{border-color:#1f8f6a;box-shadow:0 0 0 3px rgba(31,143,106,0.15)}
+    @media (max-width: 768px){
+      .inline-image-editor{flex-direction:column}
+      .inline-image-editor .inline-editor-panel{width:100%}
+      .inline-image-editor .inline-canvas-frame{height:170px}
+    }
+
+    /* Cabeçalho e Caixa de informações: textos */
+    .checkout-preview.theme-customizado .summary-header span{color:var(--header-text-primary, var(--card-selected-header-text))}
+    .checkout-preview.theme-customizado .summary-body{color:var(--info-box-text-primary, var(--text-primary))}
+    .checkout-preview.theme-customizado .summary-legal,
+    .checkout-preview.theme-customizado .summary-help p{color:var(--info-box-text-secondary, var(--gray-500))}
+
+    /* Upload de imagem de fundo do checkout */
+    .upload-card{
+      border: 2px dashed var(--gray-400);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.06);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      color: var(--gray-600);
+    }
+    .upload-card.is-dragover{
+      border-color: rgba(34,197,94,0.8);
+      background: rgba(34,197,94,0.10);
+      color: rgba(17,24,39,0.72);
+    }
+    .upload-card input[type="file"]{display:none}
+    .upload-card .upload-title{font-weight:700;color:var(--text-primary)}
+    .upload-card .upload-sub{font-size:12px;color:var(--gray-500)}
+
+    body.mobile-preview-open{overflow:hidden}
+    body.mobile-preview-open .builder-layout{filter: blur(10px); pointer-events:none; user-select:none}
+    body.mobile-preview-standalone .builder-layout{display:none}
+
+    .mobile-preview-overlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      background: #121212;
+      z-index: 10000;
+    }
+    .mobile-preview-topbar{
+      height: 48px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 0 16px;
+      color: rgba(226,232,240,0.92);
+      background: rgba(11,18,32,0.92);
+      border-bottom: 1px solid rgba(148,163,184,0.14);
+    }
+    .mobile-preview-topbar .mp-left,
+    .mobile-preview-topbar .mp-center,
+    .mobile-preview-topbar .mp-right{display:flex;align-items:center;gap:10px}
+    .mobile-preview-topbar .mp-status{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      color: rgba(226,232,240,0.92);
+    }
+    .mobile-preview-topbar .mp-status i{opacity: 0.85}
+    .mobile-preview-topbar .mp-toggle{
+      display:flex;
+      align-items:center;
+      gap: 6px;
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.18);
+      background: rgba(15,23,42,0.55);
+    }
+    .mobile-preview-topbar .mp-mode{
+      width: 42px;
+      height: 34px;
+      border-radius: 12px;
+      border: 0;
+      background: transparent;
+      color: rgba(226,232,240,0.92);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition: background-color .18s ease, color .18s ease, transform .18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-preview-topbar .mp-mode:hover{transform: translateY(-1px)}
+    .mobile-preview-topbar .mp-mode.active{
+      background: #00ff00;
+      color: #0b1220;
+    }
+    .mobile-preview-topbar .mp-close{
+      width: 40px;
+      height: 34px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(15,23,42,0.55);
+      color: rgba(226,232,240,0.95);
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-preview-topbar .mp-close:hover{transform: translateY(-1px); border-color: rgba(34,197,94,0.35); box-shadow: 0 14px 26px rgba(0,0,0,0.28)}
+    .mobile-preview-topbar .mp-btn{
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(15,23,42,0.55);
+      color: rgba(226,232,240,0.95);
+      font-weight: 700;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+    .mobile-preview-topbar .mp-copy{display:none}
+    .mobile-preview-overlay.mode-desktop .mobile-preview-topbar .mp-copy{display:inline-flex}
+    .mobile-preview-topbar .mp-btn:hover{transform: translateY(-1px); border-color: rgba(34,197,94,0.35); box-shadow: 0 14px 26px rgba(0,0,0,0.28)}
+    .mobile-preview-topbar .mp-pill{
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: rgba(34,197,94,0.14);
+      border: 1px solid rgba(34,197,94,0.28);
+      color: rgba(226,232,240,0.95);
+      font-weight: 800;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .mobile-preview-stage{
+      flex: 1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 18px 18px;
+    }
+    .mobile-preview-rig{
+      position: relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 0;
+      width: 100%;
+    }
+    .mobile-preview-device{
+      width: min(360px, 92vw);
+      height: min(720px, 86vh);
+      border-radius: 54px;
+      background: linear-gradient(180deg, #111827 0%, #0b1220 100%);
+      padding: 14px;
+      position: relative;
+      box-shadow: 0 36px 70px rgba(0,0,0,0.55);
+      transform: perspective(1200px) rotateX(6deg) rotateY(-8deg);
+      transition: transform .25s ease;
+    }
+    .mobile-preview-device:hover{transform: perspective(1200px) rotateX(4deg) rotateY(-6deg)}
+    .mobile-preview-device::before{
+      content:'';
+      position:absolute;
+      inset:-2px;
+      border-radius: 56px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.02) 100%);
+      pointer-events:none;
+      filter: blur(0.2px);
+    }
+    .mobile-preview-device::after{
+      content:'';
+      position:absolute;
+      inset: 10px;
+      border-radius: 48px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+      pointer-events:none;
+    }
+    .mobile-preview-screen{
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 40px;
+      background: #0b1220;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    }
+    .mobile-preview-notch{
+      position:absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 30px;
+      background: rgba(2,6,23,0.92);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+      z-index: 3;
+    }
+    .mobile-preview-glass{
+      position:absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.00) 60%);
+      z-index: 4;
+      pointer-events:none;
+    }
+    .mobile-preview-scroll{
+      position: absolute;
+      inset: 0;
+      padding-top: 44px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      background: #ffffff;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-scroll{padding-top: 0}
+    .mobile-preview-overlay.mode-desktop .mobile-preview-notch{display:none}
+    .mobile-preview-overlay.mode-desktop .mobile-preview-rig{
+      perspective: 1800px;
+      transform-style: preserve-3d;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-device{
+      width: min(980px, 92vw);
+      height: min(640px, 82vh);
+      border-radius: 20px;
+      padding: 14px;
+      transform-origin: center bottom;
+      transform: rotateX(8deg) rotateY(-8deg) translateZ(22px);
+      box-shadow: 0 46px 90px rgba(0,0,0,0.58);
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-device::before{border-radius: 22px}
+    .mobile-preview-overlay.mode-desktop .mobile-preview-device::after{border-radius: 16px}
+    .mobile-preview-overlay.mode-desktop .mobile-preview-screen{
+      border-radius: 14px;
+      background: #0b0f14;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), inset 0 0 0 12px rgba(2,6,23,0.92);
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-screen::before{
+      content:'';
+      position:absolute;
+      top: 9px;
+      left: 50%;
+      width: 7px;
+      height: 7px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(226,232,240,0.22);
+      box-shadow: 0 0 0 2px rgba(0,0,0,0.35);
+      z-index: 5;
+      pointer-events:none;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-scroll{
+      background: #f1f5f9;
+      padding: 22px 22px 26px;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-scroll .checkout-preview{
+      max-width: 1040px !important;
+      margin: 0 auto !important;
+      padding: 0 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 22px 56px rgba(2,6,23,0.14) !important;
+      overflow: hidden;
+      background: #ffffff !important;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-scroll .checkout-preview .checkout-grid{
+      padding: 0 !important;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-scroll .checkout-preview .checkout-form{
+      padding: 28px 34px;
+    }
+    .mobile-preview-overlay.mode-desktop .mobile-preview-scroll .checkout-preview .order-summary{
+      padding: 24px 22px;
+    }
+    .mobile-preview-scroll .checkout-preview{
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #ffffff !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    .mobile-preview-overlay.mode-mobile .mobile-preview-scroll .checkout-preview .checkout-grid{
+      grid-template-columns: 1fr !important;
+      grid-template-areas: "form" !important;
+      padding: 0 !important;
+    }
+    .mobile-preview-controls{
+      padding: 0 18px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mobile-preview-controls .mp-btn{
+      height: 38px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.22);
+      background: rgba(15,23,42,0.55);
+      color: rgba(226,232,240,0.95);
+      font-weight: 800;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease, border-color .18s ease;
+    }
+    .mobile-preview-controls .mp-btn:hover{transform: translateY(-1px); border-color: rgba(34,197,94,0.35); box-shadow: 0 14px 26px rgba(0,0,0,0.28)}
+    @media (max-width: 520px){
+      .mobile-preview-topbar{padding: 0 12px}
+      .mobile-preview-topbar .mp-center{display:none}
+      .mobile-preview-device{transform:none}
+      .mobile-preview-device:hover{transform:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="builder-layout">
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <h1 class="builder-title">Checkout Principal</h1>
+        <div class="view-toggle">
+          <button class="view-btn active" title="Visualização Desktop" onclick="setView('desktop')">
+            <i class="fas fa-desktop"></i>
+          </button>
+          <button class="view-btn" title="Visualização Mobile" onclick="setView('mobile')">
+            <i class="fas fa-mobile-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <button class="btn btn-preview" type="button" onclick="openMobilePreview()">
+          <i class="fas fa-eye"></i>
+          Preview
+        </button>
+        <button class="btn btn-save" onclick="saveCheckout()">
+          <i class="fas fa-save"></i>
+          Salvar
+        </button>
+      </div>
+    </div>
+
+    <!-- ÁREA PRINCIPAL -->
+    <div class="builder-main">
+      <!-- CANVAS DE EDIÇÃO -->
+      <div class="canvas-area">
+        <div class="canvas-container">
+          <!-- Área de Drop -->
+          <div class="drop-zone" id="dropZone" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+            <i class="fas fa-plus-circle"></i>
+            <p>Arraste componentes aqui</p>
+          </div>
+
+          <!-- Componentes adicionados ao Canvas -->
+          <div id="canvasComponents" class="canvas-components"></div>
+
+          <!-- Checkout Preview -->
+          <div class="checkout-preview" id="checkoutPreview">
+            <div class="checkout-grid">
+              <!-- Coluna Esquerda - Formulário -->
+              <div class="checkout-form">
+                <div class="mobile-checkout-card">
+                  <div class="mobile-checkout-banner">
+                    <div class="mobile-checkout-banner-stage">
+                      <div id="mobileCheckoutClone" class="mobile-checkout-clone"></div>
+                    </div>
+                  </div>
+
+                  <!-- Produto (Header da Compra) -->
+                  <div class="product-card">
+                    <div class="product-image">
+                      <i class="fas fa-box-open"></i>
+                    </div>
+                    <div class="product-details">
+                      <h3>CLICJKIFY</h3>
+                      <div class="price-main">1x de R$ 1.122,23</div>
+                      <div class="price-secondary">ou R$ 1.122,23 à vista</div>
+                    </div>
+                  </div>
+
+                  <!-- Seção Dados -->
+                  <div class="form-section">
+                    <div class="form-section-title">
+                      <i class="far fa-user-circle"></i>
+                      Seus dados
+                    </div>
+                    <div class="form-grid">
+                      <div class="form-group">
+                        <label>Nome completo</label>
+                        <input type="text" placeholder="Nome do comprador" required>
+                      </div>
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" placeholder="email@email.com" required>
+                      </div>
+                      <div class="form-group">
+                        <label>CPF</label>
+                        <input type="text" placeholder="304.761.160-23" required>
+                      </div>
+                      <div class="form-group">
+                        <label>Celular</label>
+                        <div class="phone-input" role="group" aria-label="Celular com código do Brasil">
+                          <span class="phone-flag" aria-hidden="true"></span>
+                          <span class="phone-code">+55</span>
+                          <input type="tel" placeholder="(99) 99999-9999" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-help">Por que pedimos esses dados?</div>
+                  </div>
+
+                  <!-- Seção Pagamento -->
+                  <div class="form-section" id="paymentSection">
+                    <div class="form-section-title">
+                      <i class="far fa-credit-card"></i>
+                      Pagamento
+                    </div>
+                    <div class="payment-methods">
+                      <div class="payment-methods-primary">
+                        <div class="payment-method selected" data-method="pix" onclick="selectPayment(this)" tabindex="0" role="button">
+                          <div class="pix-icon" aria-hidden="true">
+                            <svg viewBox="0 0 64 64" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                              <g fill="currentColor">
+                                <rect x="25" y="11" width="14" height="14" rx="4.5" transform="rotate(45 32 18)"/>
+                                <rect x="39" y="25" width="14" height="14" rx="4.5" transform="rotate(45 46 32)"/>
+                                <rect x="25" y="39" width="14" height="14" rx="4.5" transform="rotate(45 32 46)"/>
+                                <rect x="11" y="25" width="14" height="14" rx="4.5" transform="rotate(45 18 32)"/>
+                              </g>
+                            </svg>
+                          </div>
+                          <span>PIX</span>
+                        </div>
+                        <div class="payment-method" data-method="boleto" onclick="selectPayment(this)" tabindex="0" role="button">
+                          <i class="fas fa-barcode" aria-hidden="true"></i>
+                          <span>Boleto</span>
+                        </div>
+                        <div class="payment-method" data-method="card" onclick="selectPayment(this)" tabindex="0" role="button">
+                          <i class="far fa-credit-card" aria-hidden="true"></i>
+                          <span>Cartão de Crédito</span>
+                        </div>
+                        <div class="payment-method" data-method="picpay" onclick="selectPayment(this)" tabindex="0" role="button">
+                          <i class="fas fa-wallet" aria-hidden="true"></i>
+                          <span>PicPay</span>
+                        </div>
+                      </div>
+
+                    <div class="payment-methods-secondary" role="group" aria-label="Métodos alternativos">
+                      <div class="payment-method payment-method-alt" data-method="applepay" onclick="selectPayment(this)" tabindex="0" role="button">
+                        <i class="fab fa-apple" aria-hidden="true"></i>
+                        <span>ApplePay</span>
+                      </div>
+                      <div class="payment-method payment-method-alt" data-method="googlepay" onclick="selectPayment(this)" tabindex="0" role="button">
+                        <div class="gpay-pill" aria-hidden="true">
+                          <span class="gpay-g">G</span><span class="gpay-pay">Pay</span>
+                        </div>
+                        <span>GooglePay</span>
+                      </div>
+                      <div class="payment-method payment-method-alt payment-method-nubank" data-method="nubank" onclick="selectPayment(this)" tabindex="0" role="button">
+                        <div class="nubank-mark" aria-hidden="true">nu</div>
+                        <span>Nubank</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Caixa de Informação do PIX (Hidden by default, shown if PIX selected - Logic in JS) -->
+                  <!-- Aviso de Boleto (Shown because Boleto is selected) -->
+                  <div class="pix-info-box" id="pixInfoBox">
+                    <div class="pix-info-item">
+                      <span class="pix-bullet" aria-hidden="true"></span>
+                      <span>Liberação imediata</span>
+                    </div>
+                    <div class="pix-info-item">
+                      <span class="pix-bullet" aria-hidden="true"></span>
+                      <span>É simples, só usar o aplicativo do seu banco para pagar Pix</span>
+                    </div>
+                  </div>
+
+                  <!-- Botão de Pagamento -->
+                  <button class="payment-button" id="paymentButton" onclick="processPayment()">
+                    <i class="fas fa-qrcode" aria-hidden="true"></i>
+                    Pagar com PIX
+                  </button>
+
+                  <!-- Rodapé do Checkout -->
+                  <div class="checkout-footer">
+                    <div class="footer-safe">
+                      <i class="fas fa-lock"></i>
+                      <span>Pagamento 100% seguro processado por <strong>Clickify</strong></span>
+                    </div>
+                    <div class="footer-safe">
+                      <span><a href="#" style="color:var(--gray-500);text-decoration:none">Privacidade</a> • <a href="#" style="color:var(--gray-500);text-decoration:none">Termos</a></span>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Coluna Direita - Resumo -->
+              <div class="order-summary">
+                <div class="summary-card">
+                  <div class="summary-header">
+                    <span>Resumo do pedido</span>
+                  </div>
+                  <div class="summary-body" style="padding:0">
+                    <div class="summary-product">
+                      <div class="summary-product-image">
+                        <i class="fas fa-box-open"></i>
+                      </div>
+                      <div class="summary-product-name">
+                        CLICKIFY PRO<br>
+                        <span style="font-size:12px;font-weight:400;color:var(--gray-500)">Acesso Vitalício</span>
+                      </div>
+                    </div>
+                    
+                    <div class="summary-total">
+                      <span class="summary-total-label">Total a pagar</span>
+                      <div class="summary-total-value">
+                        R$ 1.122,23
+                        <span>à vista</span>
+                      </div>
+                    </div>
+
+                    <div class="summary-security">
+                      <i class="fas fa-shield-alt"></i>
+                      <span>Ambiente Criptografado</span>
+                    </div>
+                    
+                    <div class="summary-platform">
+                      <p>Vendido e entregue por <strong>Clickify Cursos</strong></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BARRA LATERAL -->
+      <div class="sidebar">
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab active" onclick="switchTab('componentes')">Componentes</button>
+          <button class="sidebar-tab" onclick="switchTab('linhas')">Linhas</button>
+          <button class="sidebar-tab" onclick="switchTab('configuracoes')">Configurações</button>
+        </div>
+        <div class="sidebar-content">
+          <!-- Aba Componentes -->
+          <div class="tab-panel active" id="tab-componentes">
+            <div class="components-grid">
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="texto">
+                <i class="fas fa-font"></i>
+                <span>Texto</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="imagem">
+                <i class="fas fa-image"></i>
+                <span>Imagem</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="vantagens">
+                <i class="fas fa-check-circle"></i>
+                <span>Vantagens</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="selo">
+                <i class="fas fa-certificate"></i>
+                <span>Selo</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="header">
+                <i class="fas fa-heading"></i>
+                <span>Header</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="lista">
+                <i class="fas fa-list"></i>
+                <span>Lista</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="cronometro">
+                <i class="fas fa-clock"></i>
+                <span>Cronômetro</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="depoimento">
+                <i class="fas fa-quote-left"></i>
+                <span>Depoimento</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="video">
+                <i class="fas fa-video"></i>
+                <span>Vídeo</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="facebook">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook</span>
+              </div>
+              <div class="component-item" draggable="true" ondragstart="handleDragStart(event)" data-component="mapa">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Mapa</span>
+              </div>
+            </div>
+
+            <!-- Componentes Extras -->
+            <div class="extra-components-section">
+              <div class="extra-components-title">Componentes Extras</div>
+              <div class="extra-component-item">
+                <div class="extra-component-info">
+                  <i class="fas fa-window-close"></i>
+                  <span>Exit Popup</span>
+                </div>
+                <div class="extra-component-toggle" onclick="toggleExtraComponent(this)"></div>
+              </div>
+              <div class="extra-component-item">
+                <div class="extra-component-info">
+                  <i class="fas fa-bell"></i>
+                  <span>Notificação</span>
+                </div>
+                <div class="extra-component-toggle" onclick="toggleExtraComponent(this)"></div>
+              </div>
+              <div class="extra-component-item">
+                <div class="extra-component-info">
+                  <i class="fas fa-comments"></i>
+                  <span>Chat</span>
+                </div>
+                <div class="extra-component-toggle" onclick="toggleExtraComponent(this)"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aba Linhas -->
+          <div class="tab-panel" id="tab-linhas">
+            <div class="lines-list">
+              <div class="line-item" draggable="true" ondragstart="handleDragStart(event)" data-component="linha-texto">
+                <i class="fas fa-align-left"></i>
+                <span>Linha de Texto</span>
+              </div>
+              <div class="line-item" draggable="true" ondragstart="handleDragStart(event)" data-component="linha-imagem">
+                <i class="fas fa-image"></i>
+                <span>Linha de Imagem</span>
+              </div>
+              <div class="line-item" draggable="true" ondragstart="handleDragStart(event)" data-component="divisor">
+                <i class="fas fa-minus"></i>
+                <span>Divisor</span>
+              </div>
+              <div class="line-item" draggable="true" ondragstart="handleDragStart(event)" data-component="espaco">
+                <i class="fas fa-arrows-alt-v"></i>
+                <span>Espaço</span>
+              </div>
+              <div class="line-item" draggable="true" ondragstart="handleDragStart(event)" data-component="duas-colunas">
+                <i class="fas fa-columns"></i>
+                <span>Duas Colunas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aba Configurações -->
+          <div class="tab-panel" id="tab-configuracoes">
+            <div class="config-section">
+              <div class="config-title">Tipografia</div>
+              <div class="config-item">
+                <label>Tema</label>
+                <select class="config-select" id="themeSelect">
+                  <option value="padrao">Padrão</option>
+                  <option value="customizado" selected>Customizado</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Fonte</label>
+                <select class="config-select" id="fontSelect">
+                  <option value="open-sans" selected>Open Sans</option>
+                  <option value="inter">Inter</option>
+                </select>
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Cores (Textos e Interface)</div>
+              <div class="config-item">
+                <label>Cor primária do texto</label>
+                <input type="color" id="textPrimary" value="#1f2937" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor secundária do texto</label>
+                <input type="color" id="textSecondary" value="#22c55e" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor ativa do texto</label>
+                <input type="color" id="textActive" value="#22c55e" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor dos ícones</label>
+                <input type="color" id="iconDefault" value="#9ca3af" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor de fundo</label>
+                <input type="color" id="bgColor" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor de fundo do formulário de pagamento</label>
+                <input type="color" id="payFormBg" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Ação (Verde)</div>
+              <div class="config-item">
+                <label>Verde médio (Action)</label>
+                <input type="color" id="action" value="#22c55e" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Verde hover</label>
+                <input type="color" id="actionHover" value="#16a34a" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Verde forte</label>
+                <input type="color" id="actionActive" value="#15803d" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Verde claro</label>
+                <input type="color" id="actionSoft" value="#dcfce7" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Botões não selecionados</div>
+              <div class="config-item">
+                <label>Cor do texto</label>
+                <input type="color" id="btnMutedText" value="#6b7280" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor do fundo</label>
+                <input type="color" id="btnMutedBg" value="#f9fafb" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor dos ícones</label>
+                <input type="color" id="btnMutedIcon" value="#9ca3af" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor da borda</label>
+                <input type="color" id="btnMutedBorder" value="#e5e7eb" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Hover</label>
+                <input type="color" id="btnMutedHover" value="#f3f4f6" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Botão selecionado</div>
+              <div class="config-item">
+                <label>Cor do texto</label>
+                <input type="color" id="btnActiveText" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor do fundo</label>
+                <input type="color" id="btnActiveBg" value="#22c55e" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor do ícone</label>
+                <input type="color" id="btnActiveIcon" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Hover</label>
+                <input type="color" id="btnActiveHover" value="#16a34a" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Active</label>
+                <input type="color" id="btnActivePressed" value="#15803d" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Cards</div>
+              <div class="config-item">
+                <label>Cabeçalho padrão</label>
+                <input type="color" id="cardHeader" value="#f3f4f6" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Borda</label>
+                <input type="color" id="cardBorder" value="#e5e7eb" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cabeçalho selecionado</label>
+                <input type="color" id="cardSelectedHeader" value="#22c55e" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Texto do cabeçalho selecionado</label>
+                <input type="color" id="cardSelectedHeaderText" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Fundo selecionado</label>
+                <input type="color" id="cardSelectedBg" value="#dcfce7" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Cores do Cabeçalho</div>
+              <div class="config-item">
+                <label>Cor primária do texto do cabeçalho</label>
+                <input type="color" id="headerTextPrimary" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor secundária do texto do cabeçalho</label>
+                <input type="color" id="headerTextSecondary" value="#9ca3af" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Caixa de Informações</div>
+              <div class="config-item">
+                <label>Cor de fundo da caixa</label>
+                <input type="color" id="infoBoxBg" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor primária do texto da caixa</label>
+                <input type="color" id="infoBoxTextPrimary" value="#1f2937" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor secundária do texto da caixa</label>
+                <input type="color" id="infoBoxTextSecondary" value="#9ca3af" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Botão do Pagamento</div>
+              <div class="config-item">
+                <label>Cor do texto botão de pagar</label>
+                <input type="color" id="paymentBtnText" value="#ffffff" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+              <div class="config-item">
+                <label>Cor do botão de pagar</label>
+                <input type="color" id="paymentBtnBg" value="#22c55e" style="width: 32px; height: 32px; border: none; border-radius: 6px; cursor: pointer;">
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Imagem de Fundo do Checkout</div>
+              <div class="upload-card">
+                <label for="bgImageInput" style="cursor:pointer; width:100%;">
+                  <input id="bgImageInput" type="file" accept="image/*">
+                  <div class="upload-title">Arraste ou selecione o arquivo</div>
+                  <div class="upload-sub">Solte os arquivos aqui ou clique para buscar em seu computador</div>
+                </label>
+              </div>
+              <div class="summary-legal" style="margin-top:8px;">
+                <small>Formatos aceitos: imagens. Tamanho máximo: 10MB</small>
+              </div>
+              <div class="config-item">
+                <div class="config-toggle" id="bgFixedToggle"></div>
+                <label>Imagem de fundo fixa</label>
+              </div>
+              <div class="config-item">
+                <div class="config-toggle" id="bgRepeatToggle"></div>
+                <label>Repetir imagem de fundo</label>
+              </div>
+              <div class="config-item">
+                <div class="config-toggle active" id="bgCoverToggle"></div>
+                <label>Expandir imagem de fundo</label>
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Geral</div>
+              <div class="config-item">
+                <label>Modo Escuro</label>
+                <div class="config-toggle" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="config-item">
+                <label>Mostrar Preço Original</label>
+                <div class="config-toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="config-item">
+                <label>Contagem Regressiva</label>
+                <div class="config-toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+            </div>
+            <div class="config-section">
+              <div class="config-title">Exibição</div>
+              <div class="config-item">
+                <label>Layout</label>
+                <select class="config-select">
+                  <option>Checkout Vertical</option>
+                  <option>Checkout Lateral</option>
+                  <option>Checkout Modal</option>
+                </select>
+              </div>
+              <div class="config-item">
+                <label>Posição Resumo</label>
+                <select class="config-select">
+                  <option>Direita</option>
+                  <option>Esquerda</option>
+                  <option>Mobile: Abaixo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="imageEditorPanel" style="display:none">
+          <div class="iep">
+            <div class="iep-header">
+              <div class="iep-title">Imagem</div>
+              <div class="iep-actions">
+                <button type="button" class="iep-icon-btn iep-icon-btn-danger" data-iep-action="remove-component" aria-label="Remover componente de imagem">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button type="button" class="iep-icon-btn" data-iep-action="duplicate-component" aria-label="Duplicar componente de imagem">
+                  <i class="fas fa-clone"></i>
+                </button>
+                <button type="button" id="closeImagePanel" class="iep-icon-btn" aria-label="Fechar painel de imagem">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="iep-thumb">
+              <div class="iep-thumb-inner">
+                <img class="iep-thumb-img" alt="Pré-visualização da imagem" referrerpolicy="no-referrer">
+                <div class="iep-thumb-placeholder" aria-hidden="true">
+                  <i class="fas fa-image"></i>
+                </div>
+                <div class="iep-thumb-actions" role="group" aria-label="Ações da imagem">
+                  <button type="button" class="iep-thumb-action" data-iep-action="edit-image" aria-label="Editar imagem">
+                    <i class="fas fa-crop"></i>
+                  </button>
+                  <button type="button" class="iep-thumb-action iep-thumb-action-danger" data-iep-action="clear-image" aria-label="Excluir imagem">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <label class="iep-upload" for="imagePanelInput">
+              <input type="file" id="imagePanelInput" accept="image/png,image/jpeg">
+              <div class="iep-upload-title">Arraste ou selecione o arquivo</div>
+              <div class="iep-upload-sub">Solte os arquivos aqui ou clique para buscar em seu computador</div>
+            </label>
+
+            <div class="iep-hint">Formatos aceitos: JPG ou PNG. Tamanho máximo: 10MB</div>
+
+            <div class="iep-section">
+              <div class="iep-section-title">Alinhamento</div>
+              <div class="iep-align" role="group" aria-label="Alinhamento da imagem">
+                <button type="button" class="align-btn" data-align="left" aria-label="Alinhar à esquerda"><i class="fas fa-align-left"></i></button>
+                <button type="button" class="align-btn active" data-align="center" aria-label="Centralizar"><i class="fas fa-align-center"></i></button>
+                <button type="button" class="align-btn" data-align="right" aria-label="Alinhar à direita"><i class="fas fa-align-right"></i></button>
+              </div>
+            </div>
+
+            <div class="iep-section">
+              <div class="iep-section-title">URL de redirecionamento</div>
+              <div class="iep-url">
+                <div class="iep-url-icon" aria-hidden="true"><i class="fas fa-link"></i></div>
+                <input type="text" id="imageRedirectUrl" placeholder="https://">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobilePreviewOverlay" class="mobile-preview-overlay" aria-hidden="true">
+    <div class="mobile-preview-topbar">
+      <div class="mp-left">
+        <div class="mp-status"><span id="mobilePreviewStatus">Checkout Principal</span></div>
+        <button type="button" class="mp-btn mp-copy" onclick="copyDesktopToNotebook()"><i class="fas fa-copy"></i> Copiar do Desktop</button>
+      </div>
+      <div class="mp-center">
+        <div class="mp-toggle" role="tablist" aria-label="Modo de visualização">
+          <button type="button" class="mp-mode active" data-mode="mobile" onclick="setMobilePreviewMode('mobile')" aria-label="Mobile"><i class="fas fa-mobile-alt"></i></button>
+          <button type="button" class="mp-mode" data-mode="desktop" onclick="setMobilePreviewMode('desktop')" aria-label="Desktop"><i class="fas fa-laptop"></i></button>
+        </div>
+      </div>
+      <div class="mp-right">
+        <button type="button" class="mp-close" onclick="closeMobilePreview()" aria-label="Fechar"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="mobile-preview-stage">
+      <div class="mobile-preview-rig">
+        <div class="mobile-preview-device" id="mobilePreviewDevice">
+          <div class="mobile-preview-screen">
+            <div class="mobile-preview-notch"></div>
+            <div class="mobile-preview-scroll" id="mobilePreviewScroll"></div>
+            <div class="mobile-preview-glass"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Utilitário: seletor de imagem para componentes do canvas -->
+  <input id="canvasImagePicker" type="file" accept="image/*" style="display:none">
+
+  <script>
+    // Variáveis de estado
+    let currentView = 'desktop';
+    let selectedPayment = 'pix';
+    let _mobilePreviewState = { open: false, placeholder: null, mode: 'mobile' };
+
+    function setMobilePreviewMode(mode){
+      const overlay = document.getElementById('mobilePreviewOverlay');
+      if (!overlay) return;
+      const m = mode === 'desktop' ? 'desktop' : 'mobile';
+      _mobilePreviewState.mode = m;
+      overlay.classList.toggle('mode-desktop', m === 'desktop');
+      overlay.classList.toggle('mode-mobile', m === 'mobile');
+      overlay.querySelectorAll('.mp-mode').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+      refreshMobilePreview();
+    }
+
+    function copyDesktopToNotebook(){
+      if (_mobilePreviewState.mode !== 'desktop') {
+        setMobilePreviewMode('desktop');
+        return;
+      }
+      refreshMobilePreview();
+    }
+
+    function attachCheckoutPreviewToOverlay(){
+      const preview = document.getElementById('checkoutPreview');
+      const target = document.getElementById('mobilePreviewScroll');
+      if (!preview || !target) return;
+      if (_mobilePreviewState.placeholder) return;
+      const ph = document.createElement('div');
+      ph.style.display = 'none';
+      preview.parentElement.insertBefore(ph, preview);
+      _mobilePreviewState.placeholder = ph;
+      target.appendChild(preview);
+      preview.classList.toggle('mobile-view', _mobilePreviewState.mode === 'mobile');
+    }
+
+    function detachCheckoutPreviewFromOverlay(){
+      const preview = document.getElementById('checkoutPreview');
+      const ph = _mobilePreviewState.placeholder;
+      if (!preview || !ph) return;
+      preview.classList.remove('mobile-view');
+      ph.parentElement.insertBefore(preview, ph);
+      ph.remove();
+      _mobilePreviewState.placeholder = null;
+    }
+
+    function refreshMobilePreview(){
+      applyTheme();
+      attachCheckoutPreviewToOverlay();
+      const preview = document.getElementById('checkoutPreview');
+      if (preview) preview.classList.toggle('mobile-view', _mobilePreviewState.mode === 'mobile');
+      const scroll = document.getElementById('mobilePreviewScroll');
+      if (scroll) scroll.scrollTop = 0;
+      syncMobileCheckoutClone();
+    }
+
+    function openMobilePreview(opts){
+      const overlay = document.getElementById('mobilePreviewOverlay');
+      if (!overlay) return;
+      const options = opts || {};
+      overlay.style.display = 'flex';
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('mobile-preview-open');
+      document.body.classList.toggle('mobile-preview-standalone', !!options.standalone);
+      overlay.classList.add('mode-mobile');
+      overlay.classList.remove('mode-desktop');
+      _mobilePreviewState.mode = 'mobile';
+      refreshMobilePreview();
+      syncMobileCheckoutClone();
+      _mobilePreviewState.open = true;
+    }
+
+    function closeMobilePreview(){
+      const overlay = document.getElementById('mobilePreviewOverlay');
+      if (!overlay) return;
+      detachCheckoutPreviewFromOverlay();
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('mobile-preview-open');
+      if (document.body.classList.contains('mobile-preview-standalone')) {
+        document.body.classList.remove('mobile-preview-standalone');
+        history.replaceState(null, '', window.location.pathname);
+      }
+      _mobilePreviewState.open = false;
+    }
+
+    function openMobilePreviewNewTab(){
+      const device = document.getElementById('mobilePreviewPhone')?.classList?.contains('android') ? 'android' : 'iphone';
+      const url = new URL(window.location.href);
+      url.searchParams.set('mobilePreview', '1');
+      url.searchParams.set('device', device);
+      window.open(url.toString(), '_blank', 'noopener');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && _mobilePreviewState.open) closeMobilePreview();
+    });
+
+    // Função para alternar visualização
+    function setView(view) {
+      currentView = view;
+      const preview = document.getElementById('checkoutPreview');
+      const buttons = document.querySelectorAll('.view-btn');
+      
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      if (view === 'desktop') {
+        buttons[0].classList.add('active');
+        preview.classList.remove('mobile-view');
+      } else {
+        buttons[1].classList.add('active');
+        preview.classList.add('mobile-view');
+      }
+      syncMobileCheckoutClone();
+    }
+
+    function syncMobileCheckoutClone(){
+      const preview = document.getElementById('checkoutPreview');
+      const slot = document.getElementById('mobileCheckoutClone');
+      if (!preview || !slot) return;
+      if (!preview.classList.contains('mobile-view')) { slot.textContent = ''; return; }
+
+      slot.querySelectorAll('[data-preview-blob]').forEach(el => {
+        const u = el.getAttribute('data-preview-blob') || '';
+        if (u) releaseBlobUrl(u);
+      });
+      slot.textContent = '';
+
+      const selected = document.querySelector('#canvasComponents .canvas-component.image-component.selected') || document.querySelector('#canvasComponents .canvas-component.image-component');
+      const block = selected?.querySelector?.('.image-block') || null;
+      const node = block ? block.cloneNode(true) : null;
+
+      if (node){
+        node.querySelectorAll('.component-actions').forEach(n => n.remove());
+        node.querySelectorAll('[draggable]').forEach(n => n.removeAttribute('draggable'));
+        node.querySelectorAll('img').forEach(img => {
+          const src = img.getAttribute('src') || '';
+          if (String(src).startsWith('blob:')) {
+            retainBlobUrl(src);
+            img.setAttribute('data-preview-blob', src);
+          }
+        });
+        slot.appendChild(node);
+        return;
+      }
+
+      slot.innerHTML = `<div class="image-block">
+        <div class="image-block-inner align-center">
+          <a class="image-link" href="" target="_blank">
+            <div class="image-placeholder">
+              <i class="fas fa-image"></i>
+              <div class="ph-text">Arraste ou selecione o arquivo<br><small>Solte os arquivos aqui ou clique para buscar em seu computador</small></div>
+            </div>
+            <img class="image-content" src="" alt="Imagem" style="display:none" loading="lazy" decoding="async" referrerpolicy="no-referrer"/>
+          </a>
+        </div>
+      </div>`;
+    }
+
+    // Função para selecionar método de pagamento
+    function selectPayment(element) {
+      const methods = document.querySelectorAll('.payment-method');
+      methods.forEach(m => m.classList.remove('selected'));
+      element.classList.add('selected');
+      selectedPayment = element.getAttribute('data-method') || null;
+      
+      // Atualizar o botão de pagamento
+      updatePaymentButton(element);
+      updatePaymentInfo(selectedPayment);
+    }
+
+    function updatePaymentInfo(method) {
+       const box = document.querySelector('.pix-info-box');
+       if(!box) return;
+       
+       if(method === 'pix') {
+         box.innerHTML = `
+          <div class="pix-info-item"><span class="pix-bullet" aria-hidden="true"></span><span>Liberação imediata</span></div>
+          <div class="pix-info-item"><span class="pix-bullet" aria-hidden="true"></span><span>É simples, só usar o aplicativo do seu banco para pagar Pix</span></div>
+         `;
+         box.style.display = 'block';
+       } else if(method === 'boleto') {
+         box.innerHTML = `
+           <div class="pix-info-item"><i class="fas fa-info-circle"></i><span>Boletos podem levar até 3 dias úteis para compensar.</span></div>
+           <div class="pix-info-item"><i class="fas fa-envelope"></i><span>O boleto será enviado para o seu e-mail.</span></div>
+         `;
+         box.style.display = 'block';
+       } else if(method === 'card') {
+          box.innerHTML = `
+           <div class="pix-info-item"><i class="fas fa-check"></i><span>Parcele em até 12x no cartão.</span></div>
+           <div class="pix-info-item"><i class="fas fa-lock"></i><span>Ambiente criptografado e 100% seguro.</span></div>
+         `;
+         box.style.display = 'block';
+       } else {
+         box.style.display = 'none';
+       }
+    }
+
+    // Função para atualizar o texto do botão de pagamento
+    function updatePaymentButton(element) {
+      const button = document.getElementById('paymentButton');
+      const methodName = element.querySelector('span').textContent;
+      let icon = '';
+      let label = '';
+      
+      switch(selectedPayment) {
+        case 'pix':
+          icon = '<i class="fas fa-qrcode"></i>';
+          label = 'Pagar com PIX';
+          break;
+        case 'boleto':
+          icon = '<i class="fas fa-barcode"></i>';
+          label = 'Gerar Boleto';
+          break;
+        case 'card':
+          icon = '<i class="far fa-credit-card"></i>';
+          label = 'Pagar com Cartão';
+          break;
+        case 'picpay':
+          icon = '<i class="fas fa-wallet"></i>';
+          label = 'Pagar com PicPay';
+          break;
+        case 'applepay':
+          icon = '<i class="fab fa-apple"></i>';
+          label = 'Pagar com Apple Pay';
+          break;
+        case 'googlepay':
+          icon = '<i class="fab fa-google"></i>';
+          label = 'Pagar com Google Pay';
+          break;
+        case 'nubank':
+          icon = '<span class="payment-btn-nu" aria-hidden="true">nu</span>';
+          label = 'Pagar com Nubank';
+          break;
+        default:
+          icon = '<i class="fas fa-lock"></i>';
+          label = 'Pagar Agora';
+      }
+      
+      button.innerHTML = icon + ' ' + label;
+    }
+
+    // Função para processar o pagamento
+    function processPayment() {
+      const selectedMethod = document.querySelector('.payment-method.selected');
+      if (selectedMethod) {
+        const methodName = selectedMethod.querySelector('span').textContent;
+        alert('Processando pagamento via ' + methodName + '...');
+      }
+    }
+
+    function scrollToPayment() {
+      const preview = document.getElementById('checkoutPreview');
+      const payment = document.getElementById('paymentSection');
+      if (!preview || !payment) return;
+      payment.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function applyTheme() {
+      const preview = document.getElementById('checkoutPreview');
+      if (!preview) return;
+
+      const get = (id) => document.getElementById(id);
+      const theme = get('themeSelect') ? get('themeSelect').value : 'customizado';
+      const font = get('fontSelect') ? get('fontSelect').value : 'open-sans';
+
+      preview.classList.toggle('theme-customizado', theme === 'customizado');
+
+      const setVar = (name, id, fallback) => {
+        const el = get(id);
+        preview.style.setProperty(name, el ? el.value : fallback);
+      };
+
+      // Cabeçalho
+      setVar('--header-text-primary', 'headerTextPrimary', '#ffffff');
+      setVar('--header-text-secondary', 'headerTextSecondary', '#9ca3af');
+      // Caixa de informações
+      setVar('--info-box-bg', 'infoBoxBg', '#ffffff');
+      setVar('--info-box-text-primary', 'infoBoxTextPrimary', '#1f2937');
+      setVar('--info-box-text-secondary', 'infoBoxTextSecondary', '#9ca3af');
+
+      setVar('--text-primary', 'textPrimary', '#1f2937');
+      setVar('--text-secondary', 'textSecondary', '#22c55e');
+      setVar('--text-active', 'textActive', '#22c55e');
+      setVar('--icon-default', 'iconDefault', '#9ca3af');
+
+      setVar('--white', 'bgColor', '#ffffff');
+      setVar('--pay-form-bg', 'payFormBg', '#ffffff');
+
+      setVar('--action', 'action', '#22c55e');
+      setVar('--action-hover', 'actionHover', '#16a34a');
+      setVar('--action-active', 'actionActive', '#15803d');
+      setVar('--action-soft', 'actionSoft', '#dcfce7');
+
+      const hexToRgb = (hex) => {
+        const v = String(hex || '').trim().replace('#','');
+        if (v.length !== 6) return null;
+        const r = parseInt(v.slice(0,2), 16);
+        const g = parseInt(v.slice(2,4), 16);
+        const b = parseInt(v.slice(4,6), 16);
+        if ([r,g,b].some(n => Number.isNaN(n))) return null;
+        return `${r},${g},${b}`;
+      };
+      const actionHex = (get('action') && get('action').value) || '#22c55e';
+      preview.style.setProperty('--action-rgb', hexToRgb(actionHex) || '34,197,94');
+
+      setVar('--btn-muted-text', 'btnMutedText', '#6b7280');
+      setVar('--btn-muted-bg', 'btnMutedBg', '#f9fafb');
+      setVar('--btn-muted-icon', 'btnMutedIcon', '#9ca3af');
+      setVar('--btn-muted-border', 'btnMutedBorder', '#e5e7eb');
+      setVar('--btn-muted-hover', 'btnMutedHover', '#f3f4f6');
+
+      // Botão do pagamento
+      setVar('--btn-active-text', get('paymentBtnText') ? 'paymentBtnText' : 'btnActiveText', '#ffffff');
+      setVar('--btn-active-bg', get('paymentBtnBg') ? 'paymentBtnBg' : 'btnActiveBg', '#22c55e');
+      setVar('--btn-active-icon', 'btnActiveIcon', '#ffffff');
+      setVar('--btn-active-hover', 'btnActiveHover', '#16a34a');
+      setVar('--btn-active-pressed', 'btnActivePressed', '#15803d');
+
+      setVar('--card-header', 'cardHeader', '#f3f4f6');
+      setVar('--card-border', 'cardBorder', '#e5e7eb');
+      setVar('--card-selected-header', 'cardSelectedHeader', '#22c55e');
+      setVar('--card-selected-header-text', 'cardSelectedHeaderText', '#ffffff');
+      setVar('--card-selected-bg', 'cardSelectedBg', '#dcfce7');
+
+      preview.style.setProperty('--icon-active', actionHex);
+      preview.style.setProperty('--icon-disabled', '#d1d5db');
+
+      if (font === 'open-sans') {
+        preview.style.fontFamily = `'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+      } else {
+        preview.style.fontFamily = `Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+      }
+
+      applyBackgroundBehavior();
+    }
+
+    function enhancePaymentAccessibility() {
+      document.querySelectorAll('.payment-method').forEach(el => {
+        el.tabIndex = 0;
+        el.setAttribute('role', 'button');
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectPayment(el);
+          }
+        });
+      });
+    }
+
+    function applyBackgroundImageFile(file){
+      const preview = document.getElementById('checkoutPreview');
+      if (!preview || !file) return;
+      const name = String(file.name || '');
+      const type = String(file.type || '').toLowerCase();
+      const isImage = type.startsWith('image/') || /\.(png|jpg|jpeg|webp|gif|svg|avif|bmp|tif|tiff|ico)$/i.test(name);
+      if (!isImage) { alert('Formato inválido. Envie um arquivo de imagem.'); return; }
+      if (file.size > 10*1024*1024) { alert('Tamanho máximo 10MB'); return; }
+      const reader = new FileReader();
+      reader.onload = () => {
+        preview.style.backgroundImage = `url('${reader.result}')`;
+        preview.style.backgroundPosition = 'center';
+        applyBackgroundBehavior();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateBackgroundImage(e){
+      const input = e?.target || document.getElementById('bgImageInput');
+      if (!input || !input.files || !input.files[0]) return;
+      applyBackgroundImageFile(input.files[0]);
+    }
+
+    function applyBackgroundBehavior(){
+      const preview = document.getElementById('checkoutPreview');
+      if (!preview) return;
+      const fixedOn = document.getElementById('bgFixedToggle')?.classList.contains('active');
+      const repeatOn = document.getElementById('bgRepeatToggle')?.classList.contains('active');
+      const coverOn = document.getElementById('bgCoverToggle')?.classList.contains('active');
+      preview.style.backgroundAttachment = fixedOn ? 'fixed' : 'scroll';
+      preview.style.backgroundRepeat = repeatOn ? 'repeat' : 'no-repeat';
+      preview.style.backgroundSize = coverOn ? 'cover' : 'auto';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
+      enhancePaymentAccessibility();
+      const defaultPay = document.querySelector('#paymentSection .payment-method.selected') || document.querySelector('#paymentSection .payment-method[data-method="pix"]');
+      if (defaultPay) selectPayment(defaultPay);
+      syncCanvasEmptyState();
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('mobilePreview') === '1') {
+        openMobilePreview({ standalone: true, device: params.get('device') || 'iphone' });
+      }
+      [
+        'themeSelect','fontSelect','textPrimary','textSecondary','textActive','iconDefault',
+        'bgColor','payFormBg','action','actionHover','actionActive','actionSoft',
+        'btnMutedText','btnMutedBg','btnMutedIcon','btnMutedBorder','btnMutedHover',
+        'btnActiveText','btnActiveBg','btnActiveIcon','btnActiveHover','btnActivePressed',
+        'cardHeader','cardBorder','cardSelectedHeader','cardSelectedHeaderText','cardSelectedBg',
+        'headerTextPrimary','headerTextSecondary','infoBoxBg','infoBoxTextPrimary','infoBoxTextSecondary',
+        'paymentBtnText','paymentBtnBg'
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', applyTheme);
+      });
+      const bgInput = document.getElementById('bgImageInput');
+      if (bgInput) {
+        bgInput.addEventListener('change', updateBackgroundImage);
+        const card = bgInput.closest('.upload-card');
+        if (card){
+          const onOver = (ev) => {
+            ev.preventDefault();
+            card.classList.add('is-dragover');
+          };
+          const onLeave = () => card.classList.remove('is-dragover');
+          const onDrop = (ev) => {
+            ev.preventDefault();
+            card.classList.remove('is-dragover');
+            const file = ev.dataTransfer?.files?.[0];
+            if (file) applyBackgroundImageFile(file);
+          };
+          card.addEventListener('dragover', onOver);
+          card.addEventListener('dragenter', onOver);
+          card.addEventListener('dragleave', onLeave);
+          card.addEventListener('drop', onDrop);
+        }
+      }
+      ['bgFixedToggle','bgRepeatToggle','bgCoverToggle'].forEach(id => {
+        const t = document.getElementById(id);
+        if (t) t.addEventListener('click', () => { t.classList.toggle('active'); applyBackgroundBehavior(); });
+      });
+      // DnD no canvas para reordenar
+      const canvas = document.getElementById('canvasComponents');
+      if (canvas){
+        canvas.addEventListener('dragover', canvasDragOver);
+        canvas.addEventListener('drop', canvasDrop);
+        canvas.addEventListener('dragleave', () => {
+          const indicator = canvas.querySelector('.drop-indicator');
+          if (indicator) indicator.style.display = 'none';
+        });
+      }
+
+      const closeBtn = document.getElementById('closeImagePanel');
+      if (closeBtn) closeBtn.addEventListener('click', closeImagePanel);
+
+      const input = document.getElementById('imagePanelInput');
+      if (input){
+        input.addEventListener('change', () => {
+          if (!activeImageComponent || !input.files || !input.files[0]) return;
+          setImageFromFile(activeImageComponent, input.files[0]);
+          refreshImageEditorPanel(activeImageComponent);
+        });
+      }
+
+      const imagePanel = document.getElementById('imageEditorPanel');
+      if (imagePanel){
+        const thumbInner = imagePanel.querySelector('.iep-thumb-inner');
+        if (thumbInner){
+          thumbInner.tabIndex = 0;
+          thumbInner.setAttribute('role', 'button');
+          thumbInner.setAttribute('aria-label', 'Selecionar imagem');
+          thumbInner.addEventListener('keydown', (e) => {
+            if (!activeImageComponent) return;
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              const picker = document.getElementById('imagePanelInput');
+              if (picker) picker.click();
+            }
+          });
+        }
+        imagePanel.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-iep-action]');
+          if (!btn) {
+            const thumb = e.target.closest('.iep-thumb-inner');
+            if (!thumb) return;
+            if (!activeImageComponent) return;
+            e.preventDefault();
+            const picker = document.getElementById('imagePanelInput');
+            if (picker) picker.click();
+            return;
+          }
+          const action = btn.getAttribute('data-iep-action');
+          if (!action) return;
+          e.preventDefault();
+          if (action === 'remove-component') {
+            if (!activeImageComponent) return;
+            const nextFocus = activeImageComponent.nextElementSibling || activeImageComponent.previousElementSibling;
+            if (activeImageComponent.classList?.contains?.('image-component')) clearImageFromComponent(activeImageComponent);
+            activeImageComponent.remove();
+            syncCanvasEmptyState();
+            closeImagePanel();
+            if (nextFocus && nextFocus.classList?.contains?.('canvas-component')) nextFocus.classList.add('selected');
+            return;
+          }
+          if (action === 'duplicate-component') {
+            if (!activeImageComponent) return;
+            const clone = duplicateImageComponent(activeImageComponent);
+            if (clone) {
+              document.querySelectorAll('.canvas-component').forEach(c => c.classList.remove('selected'));
+              clone.classList.add('selected');
+              openImagePanel(clone);
+            }
+            return;
+          }
+          if (action === 'clear-image') {
+            if (!activeImageComponent) return;
+            clearImageFromComponent(activeImageComponent);
+            refreshImageEditorPanel(activeImageComponent);
+            return;
+          }
+          if (action === 'edit-image') {
+            const picker = document.getElementById('imagePanelInput');
+            if (picker) picker.click();
+            return;
+          }
+        });
+      }
+
+      document.querySelectorAll('#imageEditorPanel .align-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (!activeImageComponent) return;
+          const a = btn.dataset.align;
+          applyImageAlign(activeImageComponent, a);
+          document.querySelectorAll('#imageEditorPanel .align-btn').forEach(b => b.classList.toggle('active', b === btn));
+          refreshImageEditorPanel(activeImageComponent);
+        });
+      });
+
+      const urlInput = document.getElementById('imageRedirectUrl');
+      if (urlInput){
+        urlInput.addEventListener('input', () => {
+          if (!activeImageComponent) return;
+          updateImageLink(activeImageComponent, urlInput.value.trim());
+        });
+      }
+
+      initInlineImageEditor();
+    });
+
+    async function captureNodeToPng(node, filename) {
+      if (!node) return;
+      if (!window.html2canvas) {
+        alert('Não foi possível carregar o capturador de imagem. Verifique sua conexão.');
+        return;
+      }
+
+      const canvas = await window.html2canvas(node, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+      });
+
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    async function captureConfigPanel() {
+      switchTab('configuracoes');
+      await new Promise(r => setTimeout(r, 60));
+
+      const panel = document.getElementById('tab-configuracoes');
+      if (!panel) return;
+
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-99999px';
+      container.style.top = '0';
+      container.style.width = '320px';
+      container.style.padding = '16px';
+      container.style.background = '#ffffff';
+
+      const clone = panel.cloneNode(true);
+      clone.classList.add('active');
+      clone.style.display = 'block';
+
+      container.appendChild(clone);
+      document.body.appendChild(container);
+
+      await captureNodeToPng(container, 'checkout-builder-configuracoes.png');
+      container.remove();
+    }
+
+    async function capturePreview(device) {
+      if (device === 'mobile') setView('mobile');
+      else setView('desktop');
+      await new Promise(r => setTimeout(r, 80));
+
+      const preview = document.getElementById('checkoutPreview');
+      await captureNodeToPng(preview, `checkout-builder-preview-${device}.png`);
+    }
+
+    async function captureBuilderShots() {
+      const themeSelect = document.getElementById('themeSelect');
+      if (themeSelect) themeSelect.value = 'customizado';
+      const fontSelect = document.getElementById('fontSelect');
+      if (fontSelect) fontSelect.value = 'open-sans';
+      applyTheme();
+
+      await captureConfigPanel();
+      await capturePreview('desktop');
+      await capturePreview('mobile');
+    }
+
+    // Função para toggle dos componentes extras
+    function toggleExtraComponent(element) {
+      element.classList.toggle('active');
+    }
+
+    // Função para alternar abas
+    function switchTab(tabName) {
+      const tabs = document.querySelectorAll('.sidebar-tab');
+      const panels = document.querySelectorAll('.tab-panel');
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      
+      document.querySelector(`.sidebar-tab:nth-child(${tabName === 'componentes' ? 1 : tabName === 'linhas' ? 2 : 3})`).classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+    }
+
+    // Funções de Drag and Drop
+    let draggedComponent = null;
+    let draggingNode = null;
+    let activeImageComponent = null;
+
+    function handleDragStart(event) {
+      draggedComponent = event.target.dataset.component;
+      event.target.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'copy';
+      event.dataTransfer.setData('text/plain', draggedComponent || '');
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      const dropZone = document.getElementById('dropZone');
+      dropZone.classList.add('drag-over');
+      if (event.dataTransfer?.types?.includes?.('Files')) {
+        event.dataTransfer.dropEffect = 'copy';
+      }
+      // permitir reordenar sobre o canvas
+      const canvas = document.getElementById('canvasComponents');
+      if (!canvas) return;
+      const after = getDragAfterElement(canvas, event.clientY);
+      const indicator = ensureDropIndicator(canvas);
+      if (after == null) {
+        canvas.appendChild(indicator);
+      } else {
+        canvas.insertBefore(indicator, after);
+      }
+      indicator.style.display = 'block';
+    }
+
+    function handleDragLeave(event) {
+      const dropZone = document.getElementById('dropZone');
+      dropZone.classList.remove('drag-over');
+      const indicator = document.querySelector('#canvasComponents .drop-indicator');
+      if (indicator) indicator.style.display = 'none';
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      const dropZone = document.getElementById('dropZone');
+      dropZone.classList.remove('drag-over');
+      
+      // Remover classe dragging de todos os componentes
+      document.querySelectorAll('.component-item').forEach(item => {
+        item.classList.remove('dragging');
+      });
+      
+      // Se arquivos foram soltos: criar componente de imagem com o arquivo
+      const files = event.dataTransfer?.files;
+      if (files && files.length > 0) {
+        const file = files[0];
+        if (/^image\//i.test(file.type)) {
+          const canvas = document.getElementById('canvasComponents');
+          const el = createCanvasComponent('imagem');
+          canvas.appendChild(el);
+          syncCanvasEmptyState();
+          setImageFromFile(el, file);
+          el.classList.add('selected');
+          openImagePanel(el);
+          draggedComponent = null;
+          draggingNode = null;
+          return;
+        }
+      }
+
+      if (draggedComponent) {
+        const canvas = document.getElementById('canvasComponents');
+        const el = createCanvasComponent(draggedComponent);
+        const indicator = document.querySelector('#canvasComponents .drop-indicator');
+        if (indicator && indicator.parentElement === canvas && indicator.style.display !== 'none') {
+          canvas.insertBefore(el, indicator);
+          indicator.style.display = 'none';
+        } else {
+          canvas.appendChild(el);
+        }
+        draggingNode = null;
+        draggedComponent = null;
+        syncCanvasEmptyState();
+        if (el.classList.contains('image-component')) {
+          el.classList.add('selected');
+          openImagePanel(el);
+        }
+      }
+    }
+
+    function ensureDropIndicator(canvas){
+      let ind = canvas.querySelector('.drop-indicator');
+      if (!ind){
+        ind = document.createElement('div');
+        ind.className = 'drop-indicator';
+        canvas.appendChild(ind);
+      }
+      return ind;
+    }
+
+    function getDragAfterElement(container, y){
+      const draggableElements = [...container.querySelectorAll('.canvas-component:not(.dragging)')];
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height/2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function createCanvasComponent(type){
+      const wrapper = document.createElement('div');
+      wrapper.className = 'canvas-component' + ((type === 'imagem' || type === 'linha-imagem') ? ' image-component' : '');
+      wrapper.dataset.componentType = type;
+      wrapper.draggable = true;
+      const showActions = !(type === 'imagem' || type === 'linha-imagem');
+      wrapper.innerHTML = `
+        ${showActions ? `<div class="component-actions">
+          <button class="component-action" title="Mover para cima" data-action="up"><i class="fas fa-arrow-up"></i></button>
+          <button class="component-action" title="Mover para baixo" data-action="down"><i class="fas fa-arrow-down"></i></button>
+          <button class="component-action" title="Duplicar" data-action="duplicate"><i class="fas fa-clone"></i></button>
+          <button class="component-action" title="Mover" data-action="move"><i class="fas fa-arrows-alt"></i></button>
+          <button class="component-action" title="Remover" data-action="delete"><i class="fas fa-trash"></i></button>
+        </div>` : ``}
+        ${getTemplateHTML(type)}
+      `;
+      // seleção
+      wrapper.addEventListener('click', (e) => {
+        if (e.target.closest('.component-action')) return;
+        document.querySelectorAll('.canvas-component').forEach(c => c.classList.remove('selected'));
+        wrapper.classList.add('selected');
+        if (wrapper.classList.contains('image-component')) openImagePanel(wrapper);
+        else closeImagePanel();
+      });
+      // ações
+      wrapper.querySelectorAll('.component-action').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const action = btn.dataset.action;
+          if (action === 'delete') {
+            if (wrapper.classList.contains('image-component')) clearImageFromComponent(wrapper);
+            wrapper.remove();
+            syncCanvasEmptyState();
+            if (activeImageComponent === wrapper) closeImagePanel();
+          } else if (action === 'up') {
+            wrapper.parentElement.insertBefore(wrapper, wrapper.previousElementSibling || wrapper);
+          } else if (action === 'down') {
+            const next = wrapper.nextElementSibling;
+            if (next) wrapper.parentElement.insertBefore(next, wrapper);
+          } else if (action === 'duplicate') {
+            const clone = createCanvasComponent(type);
+            if (wrapper.classList.contains('image-component')) {
+              const img = wrapper.querySelector('.image-content');
+              const src = img?.getAttribute('src') || '';
+              const srcset = img?.getAttribute('srcset') || '';
+              const sizes = img?.getAttribute('sizes') || '';
+              const link = wrapper.dataset.link || '';
+              const align = wrapper.dataset.align || 'center';
+              const cimg = clone.querySelector('.image-content');
+              const cph = clone.querySelector('.image-placeholder');
+              if (cimg && src) {
+                if (String(src).startsWith('blob:')) {
+                  retainBlobUrl(src);
+                  clone.dataset.blobUrl = src;
+                }
+                cimg.src = src;
+                if (srcset) cimg.srcset = srcset;
+                if (sizes) cimg.sizes = sizes;
+                cimg.style.display = 'block';
+                if (cph) cph.style.display = 'none';
+              }
+              clone.dataset.link = link;
+              clone.dataset.align = align;
+              applyImageAlign(clone, align);
+              updateImageLink(clone, link);
+            }
+            wrapper.parentElement.insertBefore(clone, wrapper.nextElementSibling);
+          } else if (action === 'move') {
+            wrapper.classList.add('selected');
+          }
+        });
+      });
+      // drag reorder
+      wrapper.addEventListener('dragstart', () => {
+        draggingNode = wrapper;
+        wrapper.classList.add('dragging');
+        try { event?.dataTransfer?.setData('text/plain', 'reorder'); } catch(e){}
+      });
+      wrapper.addEventListener('dragend', () => {
+        wrapper.classList.remove('dragging');
+        const indicator = document.querySelector('#canvasComponents .drop-indicator');
+        if (indicator) indicator.style.display = 'none';
+      });
+      return wrapper;
+    }
+
+    function openImagePanel(component){
+      activeImageComponent = component;
+      const panel = document.getElementById('imageEditorPanel');
+      if (!panel) return;
+      panel.style.display = 'block';
+      const align = component.dataset.align || 'center';
+      applyImageAlign(component, align);
+      document.querySelectorAll('#imageEditorPanel .align-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.align === align);
+      });
+      const url = document.getElementById('imageRedirectUrl');
+      if (url) url.value = component.dataset.link || '';
+      refreshImageEditorPanel(component);
+    }
+
+    function closeImagePanel(){
+      const panel = document.getElementById('imageEditorPanel');
+      if (panel) panel.style.display = 'none';
+      activeImageComponent = null;
+    }
+
+    function refreshImageEditorPanel(component){
+      const panel = document.getElementById('imageEditorPanel');
+      if (!panel) return;
+      const inner = panel.querySelector('.iep-thumb-inner');
+      const imgEl = panel.querySelector('.iep-thumb-img');
+      if (!inner || !imgEl) return;
+      const src = getImageComponentSrc(component);
+      if (src) {
+        imgEl.src = src;
+        inner.classList.add('has-image');
+      } else {
+        imgEl.removeAttribute('src');
+        inner.classList.remove('has-image');
+      }
+    }
+
+    function getImageComponentSrc(component){
+      const img = component?.querySelector?.('.image-content');
+      const src = img?.getAttribute?.('src') || '';
+      return String(src || '').trim();
+    }
+
+    const _blobUrlRefCounts = new Map();
+    function retainBlobUrl(url){
+      const u = String(url || '');
+      if (!u.startsWith('blob:')) return;
+      _blobUrlRefCounts.set(u, (_blobUrlRefCounts.get(u) || 0) + 1);
+    }
+    function releaseBlobUrl(url){
+      const u = String(url || '');
+      if (!u.startsWith('blob:')) return;
+      const n = _blobUrlRefCounts.get(u) || 0;
+      if (n <= 1){
+        _blobUrlRefCounts.delete(u);
+        try { URL.revokeObjectURL(u); } catch (_) {}
+      } else {
+        _blobUrlRefCounts.set(u, n - 1);
+      }
+    }
+
+    function clearImageFromComponent(component){
+      const old = component?.dataset?.blobUrl || '';
+      if (old) releaseBlobUrl(old);
+      if (component?.dataset) delete component.dataset.blobUrl;
+      const img = component?.querySelector?.('.image-content');
+      const placeholder = component?.querySelector?.('.image-placeholder');
+      if (img){
+        img.removeAttribute('src');
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
+        img.style.display = 'none';
+      }
+      if (placeholder) placeholder.style.display = 'flex';
+    }
+
+    function copyImageComponentState(from, to){
+      const img = from?.querySelector?.('.image-content');
+      const src = img?.getAttribute?.('src') || '';
+      const srcset = img?.getAttribute?.('srcset') || '';
+      const sizes = img?.getAttribute?.('sizes') || '';
+      const link = from?.dataset?.link || '';
+      const align = from?.dataset?.align || 'center';
+      const toImg = to?.querySelector?.('.image-content');
+      const toPh = to?.querySelector?.('.image-placeholder');
+      if (toImg && src) {
+        if (String(src).startsWith('blob:')) {
+          retainBlobUrl(src);
+          to.dataset.blobUrl = src;
+        }
+        toImg.src = src;
+        if (srcset) toImg.srcset = srcset;
+        if (sizes) toImg.sizes = sizes;
+        toImg.style.display = 'block';
+        if (toPh) toPh.style.display = 'none';
+      }
+      applyImageAlign(to, align);
+      updateImageLink(to, link);
+    }
+
+    function duplicateImageComponent(component){
+      const type = component?.dataset?.componentType || 'imagem';
+      const clone = createCanvasComponent(type);
+      copyImageComponentState(component, clone);
+      component.parentElement.insertBefore(clone, component.nextElementSibling);
+      return clone;
+    }
+
+    function applyImageAlign(component, align){
+      const a = (align === 'left' || align === 'right' || align === 'center') ? align : 'center';
+      const img = component?.querySelector?.('.image-content');
+      if (img) img.style.objectPosition = a === 'left' ? 'left center' : a === 'right' ? 'right center' : 'center center';
+      const block = component?.querySelector?.('.image-block');
+      if (block){
+        block.classList.remove('align-left','align-center','align-right');
+        block.classList.add(`align-${a}`);
+      }
+      if (component?.dataset) component.dataset.align = a;
+    }
+
+    function updateImageLink(component, url){
+      const a = component.querySelector('.image-link');
+      if (a) a.href = url || '';
+      component.dataset.link = url || '';
+    }
+
+    function setImageFromFile(component, file){
+      if (!component || !file) return;
+      if (!/^image\//i.test(file.type)) { alert('Formatos aceitos: JPG ou PNG'); return; }
+      if (file.size > 10 * 1024 * 1024) { alert('Tamanho máximo: 10MB'); return; }
+      const img = component.querySelector('.image-content');
+      const placeholder = component.querySelector('.image-placeholder');
+      if (!img) return;
+      const old = component?.dataset?.blobUrl || '';
+      if (old) releaseBlobUrl(old);
+      const url = URL.createObjectURL(file);
+      retainBlobUrl(url);
+      component.dataset.blobUrl = url;
+      img.src = url;
+      img.style.display = 'block';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      if (placeholder) placeholder.style.display = 'none';
+      syncMobileCheckoutClone();
+    }
+
+    function getDefaultPromoBannerDataUrl(){
+      const svg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#eef2ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="420" rx="28" fill="url(#bg)"/>
+  <text x="76" y="96" font-family="Open Sans, Arial, sans-serif" font-weight="700" font-size="40" fill="#111827">Você merece voltar no tempo!</text>
+  <g transform="translate(120,120)">
+    <rect x="0" y="0" width="360" height="260" rx="18" fill="#ffffff" stroke="#e5e7eb"/>
+    <g transform="translate(70,34)">
+      <rect x="64" y="24" width="112" height="190" rx="16" fill="#0f172a" opacity="0.08"/>
+      <rect x="74" y="34" width="92" height="170" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+      <rect x="104" y="10" width="32" height="32" rx="8" fill="#e5e7eb"/>
+      <text x="120" y="128" text-anchor="middle" font-family="Open Sans, Arial, sans-serif" font-weight="700" font-size="18" fill="#1f2937">PILAM</text>
+    </g>
+    <g transform="translate(250,60)">
+      <path d="M66 62c22-8 38-34 22-50-14-14-38 2-50 22-4 8 4 14 12 10 8-4 22-8 28-6-8 6-16 18-12 24z" fill="#f59e0b" opacity="0.85"/>
+      <path d="M66 62c-22-8-38-34-22-50 14-14 38 2 50 22 4 8-4 14-12 10-8-4-22-8-28-6 8 6 16 18 12 24z" fill="#fb7185" opacity="0.65"/>
+      <circle cx="66" cy="70" r="8" fill="#111827" opacity="0.6"/>
+    </g>
+  </g>
+</svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg.trim())}`;
+    }
+
+    function initInlineImageEditor(root){
+      const el = root || document.getElementById('inlineImageEditor');
+      if (!el) return;
+
+      const frame = el.querySelector('.inline-canvas-frame');
+      const img = el.querySelector('.inline-canvas-frame .image-content');
+      const ph = el.querySelector('.inline-canvas-frame .image-placeholder');
+      const link = el.querySelector('.inline-canvas-frame .image-link');
+      const input = el.querySelector('input[type="file"]');
+      const thumbImg = el.querySelector('.thumb img');
+      const urlInput = el.querySelector('#inlineRedirectUrl') || el.querySelector('input[placeholder="https://"]');
+      const alignGroup = el.querySelector('#inlineAlign') || el.querySelector('.panel-align');
+
+      const ensureDefault = () => {
+        if (!img) return;
+        if (!img.getAttribute('src')) {
+          const src = getDefaultPromoBannerDataUrl();
+          img.src = src;
+          img.style.display = 'block';
+          if (ph) ph.style.display = 'none';
+          if (thumbImg) thumbImg.src = src;
+        }
+      };
+      ensureDefault();
+
+      const setSelected = (on) => el.classList.toggle('selected', on);
+      setSelected(true);
+
+      const openFile = () => input && input.click();
+
+      const clearImage = () => {
+        if (img) { img.removeAttribute('src'); img.style.display = 'none'; }
+        if (thumbImg) thumbImg.removeAttribute('src');
+        if (ph) ph.style.display = 'flex';
+      };
+
+      const removeBlock = () => el.remove();
+
+      const duplicateBlock = () => {
+        const parent = el.parentElement;
+        const btn = document.getElementById('paymentButton');
+        if (!parent || !btn) return;
+        const clone = el.cloneNode(true);
+        clone.id = `inlineImageEditor-${Date.now()}`;
+        clone.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+        clone.classList.remove('selected');
+        parent.insertBefore(clone, btn);
+        initInlineImageEditor(clone);
+      };
+
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        setSelected(true);
+      });
+
+      if (link) link.addEventListener('click', (e) => e.preventDefault());
+
+      if (frame) {
+        frame.addEventListener('click', () => openFile());
+        frame.addEventListener('dragover', (e) => { e.preventDefault(); });
+        frame.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const file = e.dataTransfer?.files?.[0];
+          if (file) {
+            setImageFromFile(el, file);
+            if (thumbImg) thumbImg.src = img?.getAttribute('src') || '';
+          }
+        });
+      }
+
+      el.querySelectorAll('[data-action="upload"]').forEach(b => b.addEventListener('click', openFile));
+      el.querySelectorAll('.inline-action[data-action="delete"], .panel-icon-btn[data-action="delete"]').forEach(b => b.addEventListener('click', removeBlock));
+      el.querySelectorAll('.thumb-action[data-action="delete"]').forEach(b => b.addEventListener('click', clearImage));
+      el.querySelectorAll('.inline-action[data-action="duplicate"], .panel-icon-btn[data-action="duplicate"]').forEach(b => b.addEventListener('click', duplicateBlock));
+
+      if (input) {
+        input.addEventListener('change', () => {
+          const f = input.files?.[0];
+          if (f) {
+            setImageFromFile(el, f);
+            if (thumbImg) thumbImg.src = img?.getAttribute('src') || '';
+          }
+          input.value = '';
+        });
+      }
+
+      if (alignGroup) {
+        const applyAlign = (align) => {
+          if (img) img.style.objectPosition = align === 'left' ? 'left center' : align === 'right' ? 'right center' : 'center center';
+        };
+        alignGroup.querySelectorAll('button[data-align]').forEach(b => {
+          b.addEventListener('click', () => {
+            const align = b.dataset.align || 'center';
+            alignGroup.querySelectorAll('button[data-align]').forEach(x => x.classList.toggle('active', x === b));
+            applyAlign(align);
+          });
+        });
+        const active = alignGroup.querySelector('button[data-align].active')?.dataset?.align || 'center';
+        applyAlign(active);
+      }
+
+      if (urlInput) {
+        urlInput.addEventListener('change', () => {
+          const v = String(urlInput.value || '').trim();
+          if (!link) return;
+          if (/^https?:\/\//i.test(v)) link.href = v;
+          else link.removeAttribute('href');
+        });
+      }
+    }
+
+    function canvasDragOver(event){
+      event.preventDefault();
+      const canvas = document.getElementById('canvasComponents');
+      if (!canvas) return;
+      const after = getDragAfterElement(canvas, event.clientY);
+      const indicator = ensureDropIndicator(canvas);
+      if (after == null) canvas.appendChild(indicator);
+      else canvas.insertBefore(indicator, after);
+      indicator.style.display = 'block';
+    }
+
+    function canvasDrop(event){
+      event.preventDefault();
+      const canvas = document.getElementById('canvasComponents');
+      const indicator = canvas?.querySelector('.drop-indicator');
+      if (indicator) indicator.style.display = 'none';
+      const files = event.dataTransfer?.files;
+      if (files && files.length > 0 && /^image\//i.test(files[0].type)) {
+        const file = files[0];
+        const imgTarget = event.target.closest('.canvas-component img');
+        if (imgTarget) {
+          setImageFromFile(imgTarget.closest('.image-component') || imgTarget.closest('.canvas-component'), file);
+          return;
+        } else {
+          const el = createCanvasComponent('imagem');
+          setImageFromFile(el, file);
+          const after = getDragAfterElement(canvas, event.clientY);
+          if (after == null) canvas.appendChild(el);
+          else canvas.insertBefore(el, after);
+          syncCanvasEmptyState();
+          el.classList.add('selected');
+          openImagePanel(el);
+          return;
+        }
+      }
+      // Reordenar item arrastado dentro do canvas
+      if (draggingNode){
+        const after = getDragAfterElement(canvas, event.clientY);
+        if (after == null) canvas.appendChild(draggingNode);
+        else canvas.insertBefore(draggingNode, after);
+        draggingNode.classList.remove('dragging');
+        draggingNode = null;
+        return;
+      }
+      // Inserir novo a partir da sidebar
+      if (draggedComponent){
+        const el = createCanvasComponent(draggedComponent);
+        const after = getDragAfterElement(canvas, event.clientY);
+        if (after == null) canvas.appendChild(el);
+        else canvas.insertBefore(el, after);
+        draggedComponent = null;
+        syncCanvasEmptyState();
+      }
+    }
+
+    // Atalhos e interações adicionais
+    document.addEventListener('keydown', (e) => {
+      const selected = document.querySelector('.canvas-component.selected');
+      if (!selected) return;
+      if ((e.key === 'Delete') || (e.key === 'Backspace' && e.target === document.body)) {
+        e.preventDefault();
+        if (selected.classList.contains('image-component')) clearImageFromComponent(selected);
+        selected.remove();
+        syncCanvasEmptyState();
+      } else if ((e.key === 'ArrowUp') && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        selected.parentElement.insertBefore(selected, selected.previousElementSibling || selected);
+      } else if ((e.key === 'ArrowDown') && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        const next = selected.nextElementSibling;
+        if (next) selected.parentElement.insertBefore(next, selected);
+      }
+    });
+
+    // Duplo clique na lista para adicionar direto ao canvas
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.component-item, .line-item').forEach(item => {
+        item.addEventListener('dblclick', () => {
+          const type = item.dataset.component;
+          if (!type) return;
+          const canvas = document.getElementById('canvasComponents');
+          const el = createCanvasComponent(type);
+          canvas.appendChild(el);
+          syncCanvasEmptyState();
+        });
+      });
+    });
+
+    // Troca de imagem por duplo clique
+    let _imageTarget = null;
+    const _imagePicker = document.getElementById('canvasImagePicker');
+    if (_imagePicker){
+      _imagePicker.addEventListener('change', () => {
+        if (!_imageTarget || !_imagePicker.files || !_imagePicker.files[0]) return;
+        const file = _imagePicker.files[0];
+        setImageFromFile(_imageTarget.closest('.image-component') || _imageTarget.closest('.canvas-component'), file);
+        _imageTarget = null;
+        _imagePicker.value = '';
+      });
+    }
+    document.addEventListener('dblclick', (e) => {
+      const img = e.target.closest('.canvas-component img');
+      if (img && _imagePicker){
+        _imageTarget = img;
+        _imagePicker.click();
+      }
+    });
+
+    // Clique na área de placeholder/área de imagem abre seletor
+    document.addEventListener('click', (e) => {
+      const ph = e.target.closest('.image-placeholder');
+      const inner = e.target.closest('.image-block-inner');
+      if ((ph || inner) && _imagePicker){
+        const inMobileBanner = !!e.target.closest('#mobileCheckoutClone');
+        const comp = e.target.closest('.image-component') || (inMobileBanner ? (document.querySelector('#canvasComponents .canvas-component.image-component.selected') || document.querySelector('#canvasComponents .canvas-component.image-component')) : null);
+        const img = comp?.querySelector?.('.image-content');
+        if (img){
+          _imageTarget = img;
+          _imagePicker.click();
+        }
+      }
+    });
+
+    function getTemplateHTML(type){
+      switch(type){
+        case 'texto':
+        case 'linha-texto':
+          return `<div contenteditable="true" style="outline:none;">Clique e edite o texto...</div>`;
+        case 'imagem':
+        case 'linha-imagem':
+          return `<div class="image-block">
+            <div class="image-block-inner align-center">
+              <a class="image-link" href="" target="_blank">
+                <div class="image-placeholder">
+                  <i class="fas fa-image"></i>
+                  <div class="ph-text">Arraste ou selecione o arquivo<br><small>Solte os arquivos aqui ou clique para buscar em seu computador</small></div>
+                </div>
+                <img class="image-content" src="" alt="Imagem" style="display:none" loading="lazy" decoding="async" referrerpolicy="no-referrer"/>
+              </a>
+            </div>
+          </div>`;
+        case 'header':
+          return `<h2 style="margin:0">Título de Seção</h2>`;
+        case 'lista':
+          return `<ul style="margin:0;padding-left:18px"><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>`;
+        case 'divisor':
+          return `<hr style="border:none;border-top:1px solid var(--gray-200);margin:4px 0">`;
+        case 'espaco':
+          return `<div style="height:16px"></div>`;
+        case 'duas-colunas':
+          return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div style="background:var(--gray-50);border:1px dashed var(--gray-300);border-radius:8px;padding:12px;text-align:center">Coluna A</div>
+            <div style="background:var(--gray-50);border:1px dashed var(--gray-300);border-radius:8px;padding:12px;text-align:center">Coluna B</div>
+          </div>`;
+        case 'vantagens':
+          return `<div><strong>Vantagens</strong><ul style="margin:6px 0 0 18px"><li>Entrega imediata</li><li>Garantia de 7 dias</li></ul></div>`;
+        case 'selo':
+          return `<div style="display:flex;align-items:center;gap:8px"><i class="fas fa-shield-alt" style="color:var(--icon-active)"></i><span>Site protegido</span></div>`;
+        case 'cronometro':
+          return `<div><i class="fas fa-clock"></i> Oferta expira em 00:15:00</div>`;
+        case 'depoimento':
+          return `<blockquote style="margin:0">&ldquo;Produto excelente!&rdquo; <br><small>— Cliente satisfeito</small></blockquote>`;
+        case 'video':
+          return `<div style="background:#000;border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:#fff">Vídeo</div>`;
+        case 'facebook':
+          return `<div><i class="fab fa-facebook"></i> Widget do Facebook</div>`;
+        case 'mapa':
+          return `<div style="background:#e5e7eb;border-radius:8px;height:180px;display:flex;align-items:center;justify-content:center">Mapa</div>`;
+        default:
+          return `<div>Componente: ${type}</div>`;
+      }
+    }
+
+    function syncCanvasEmptyState(){
+      const canvas = document.getElementById('canvasComponents');
+      if (!canvas) return;
+      const drop = document.getElementById('dropZone');
+      if (!canvas.querySelector('.canvas-component')){
+        const empty = canvas.querySelector('.canvas-empty');
+        if (empty) empty.remove();
+        if (drop) drop.classList.remove('has-components');
+      } else {
+        const empty = canvas.querySelector('.canvas-empty');
+        if (empty) empty.remove();
+        if (drop) drop.classList.add('has-components');
+      }
+      canvas.querySelectorAll('.canvas-component.image-component .component-actions').forEach(n => n.remove());
+      syncCheckoutInjectedComponents();
+      syncMobileCheckoutClone();
+    }
+
+    function syncCheckoutInjectedComponents(){
+      const source = document.getElementById('canvasComponents');
+      const target = document.getElementById('checkoutInjectedComponents');
+      if (!source || !target) return;
+
+      target.querySelectorAll('[data-preview-blob]').forEach(el => {
+        const u = el.getAttribute('data-preview-blob') || '';
+        if (u) releaseBlobUrl(u);
+      });
+
+      target.textContent = '';
+
+      const comps = source.querySelectorAll(':scope > .canvas-component');
+      comps.forEach(comp => {
+        const isImage = comp.classList.contains('image-component');
+        const node = isImage ? (comp.querySelector('.image-block')?.cloneNode(true) || null) : comp.cloneNode(true);
+        if (!node) return;
+
+        if (!isImage) {
+          node.classList.remove('selected', 'dragging');
+          node.draggable = false;
+          node.removeAttribute('draggable');
+          node.querySelectorAll('.component-actions').forEach(n => n.remove());
+          node.querySelectorAll('[draggable]').forEach(n => n.removeAttribute('draggable'));
+        }
+
+        node.querySelectorAll('img').forEach(img => {
+          const src = img.getAttribute('src') || '';
+          if (String(src).startsWith('blob:')) {
+            retainBlobUrl(src);
+            img.setAttribute('data-preview-blob', src);
+          }
+        });
+
+        target.appendChild(node);
+      });
+    }
+
+    // Função para salvar
+    function saveCheckout() {
+      // Simulação de salvamento
+      const btn = document.querySelector('.btn-save');
+      const originalText = btn.innerHTML;
+      
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Salvando...';
+      
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fas fa-check"></i> Salvo!';
+        btn.style.background = '#16a34a';
+        
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = '';
+        }, 2000);
+      }, 1000);
+    }
+
+    // Adicionar event listeners para drag end
+    document.addEventListener('dragend', function(event) {
+      document.querySelectorAll('.component-item').forEach(item => {
+        item.classList.remove('dragging');
+      });
+    });
+
+    let _imageLinkBehaviorBound = false;
+    function bindImageLinkBehavior(){
+      if (_imageLinkBehaviorBound) return;
+      _imageLinkBehaviorBound = true;
+
+      document.addEventListener('click', (e) => {
+        const link = e.target.closest('.image-link');
+        if (!link) return;
+
+        if (link.closest('#checkoutInjectedComponents') || link.closest('#mobileCheckoutClone')) {
+          e.preventDefault();
+          return;
+        }
+
+        const comp = link.closest('#canvasComponents .canvas-component.image-component');
+        if (!comp) return;
+
+        e.preventDefault();
+
+        const img = comp.querySelector('.image-content');
+        const src = String(img?.getAttribute?.('src') || '').trim();
+        const shouldPick = !src;
+
+        if (shouldPick) {
+          const picker = document.getElementById('imagePanelInput');
+          if (picker) picker.click();
+        }
+      });
+    }
+
+    bindImageLinkBehavior();
+  </script>
+</body>
+</html>

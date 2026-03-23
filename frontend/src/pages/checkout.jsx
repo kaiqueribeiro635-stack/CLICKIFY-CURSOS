@@ -5,23 +5,55 @@ import '../assets/styles/checkout.css';
 export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('pix');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [address, setAddress] = useState({
+    fullName: '',
+    cep: '',
+    street: '',
+    number: '',
+    complement: '',
+    district: '',
+    city: '',
+    state: ''
+  });
 
   const product = {
     name: 'Marketing Digital Completo',
     description: 'Acesso vitalício ao curso completo',
     price: 197.00,
-    originalPrice: 297.00
+    originalPrice: 297.00,
+    requireAddress: true // Simulando que este produto exige endereço
   };
 
   const discount = product.originalPrice - product.price;
 
+  const validateForm = () => {
+    if (product.requireAddress) {
+      const requiredFields = ['fullName', 'cep', 'street', 'number', 'district', 'city', 'state'];
+      for (const field of requiredFields) {
+        if (!address[field] || address[field].trim() === '') {
+          alert(`O campo ${field} é obrigatório.`);
+          return false;
+        }
+      }
+    }
+    return true;
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+
     setIsProcessing(true);
     // Simulate payment processing
     setTimeout(() => {
       setIsProcessing(false);
-      alert('Pagamento processado com sucesso!');
+      alert('Pagamento processado com sucesso! Endereço salvo vinculado ao pedido.');
+      console.log('Dados do Pedido:', {
+        product: product.name,
+        paymentMethod,
+        address: product.requireAddress ? address : null
+      });
     }, 2000);
   }
 
@@ -178,6 +210,119 @@ export default function Checkout() {
                 />
               </div>
             </div>
+
+            {/* Endereço de Entrega - Condicional */}
+            {product.requireAddress && (
+              <div style={{ marginTop: '32px', padding: '24px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#f1f1f1', margin: '0 0 20px 0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  Endereço de Entrega
+                </h2>
+                
+                <div className="checkout-form-group">
+                  <label htmlFor="fullName">Nome Completo</label>
+                  <input
+                    id="fullName"
+                    type="text"
+                    placeholder="Nome de quem receberá o pedido"
+                    value={address.fullName}
+                    onChange={(e) => setAddress({...address, fullName: e.target.value})}
+                    required
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="checkout-form-group">
+                    <label htmlFor="cep">CEP</label>
+                    <input
+                      id="cep"
+                      type="text"
+                      placeholder="00000-000"
+                      value={address.cep}
+                      onChange={(e) => setAddress({...address, cep: e.target.value})}
+                      maxLength={9}
+                      required
+                    />
+                  </div>
+                  <div className="checkout-form-group">
+                    <label htmlFor="state">Estado</label>
+                    <input
+                      id="state"
+                      type="text"
+                      placeholder="UF"
+                      value={address.state}
+                      onChange={(e) => setAddress({...address, state: e.target.value})}
+                      maxLength={2}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="checkout-form-group" style={{ flex: 2 }}>
+                    <label htmlFor="street">Rua</label>
+                    <input
+                      id="street"
+                      type="text"
+                      placeholder="Nome da rua"
+                      value={address.street}
+                      onChange={(e) => setAddress({...address, street: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div className="checkout-form-group">
+                    <label htmlFor="number">Número</label>
+                    <input
+                      id="number"
+                      type="text"
+                      placeholder="123"
+                      value={address.number}
+                      onChange={(e) => setAddress({...address, number: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="checkout-form-group">
+                    <label htmlFor="district">Bairro</label>
+                    <input
+                      id="district"
+                      type="text"
+                      placeholder="Seu bairro"
+                      value={address.district}
+                      onChange={(e) => setAddress({...address, district: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div className="checkout-form-group">
+                    <label htmlFor="city">Cidade</label>
+                    <input
+                      id="city"
+                      type="text"
+                      placeholder="Sua cidade"
+                      value={address.city}
+                      onChange={(e) => setAddress({...address, city: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="checkout-form-group">
+                  <label htmlFor="complement">Complemento (Opcional)</label>
+                  <input
+                    id="complement"
+                    type="text"
+                    placeholder="Apto, Bloco, Sala, etc."
+                    value={address.complement}
+                    onChange={(e) => setAddress({...address, complement: e.target.value})}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Order Summary */}

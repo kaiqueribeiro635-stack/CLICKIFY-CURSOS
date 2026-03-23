@@ -4,6 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { ProductsModule } from './modules/products/products.module';
+import { PixelIntegrationsModule } from './integrations/pixels/pixel-integrations.module';
+import { ConversionPixelsModule } from './modules/conversion-pixels/conversion-pixels.module';
 
 @Controller('health')
 class HealthController {
@@ -19,6 +22,9 @@ class HealthController {
     TypeOrmModule.forRoot(databaseConfig),
     AuthModule,
     UsersModule,
+    ProductsModule,
+    PixelIntegrationsModule,
+    ConversionPixelsModule,
   ],
   controllers: [HealthController],
 })
