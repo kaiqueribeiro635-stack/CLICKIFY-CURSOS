@@ -1190,7 +1190,7 @@ function initPageEditorPro() {
         const modal = q('#modal');
         modalOverlay?.classList.remove('show');
         modal?.classList.remove('show');
-        setTimeout(() => { modalOverlay?.style.display = 'none'; }, 150);
+        setTimeout(() => { if (modalOverlay) modalOverlay.style.display = 'none'; }, 150);
     });
 
     // Top toolbar

@@ -974,7 +974,6 @@
               <select id="pcPaymentType" class="pc-select">
                 <option value="unico" selected>Único</option>
                 <option value="recorrente">Recorrente</option>
-                <option value="parcelado">Parcelado</option>
               </select>
               <span class="pc-select-ico"><i class="fa-solid fa-chevron-down"></i></span>
             </div>
@@ -1826,7 +1825,7 @@
       let ckPreviewDevice = 'desktop';
 
       const formatBRL = (n) => `R$ ${Number(n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      const isMonthlyProduct = () => (payEl && payEl.value === 'recorrente') || isMonthlySubscriptionEnabled();
+      const isMonthlyProduct = () => (payEl && payEl.value === 'recorrente');
 
       function ensureDefaultCheckout() {
         if (!Array.isArray(checkouts)) checkouts = [];
@@ -3056,6 +3055,7 @@
         body.innerHTML = '';
         
         offers.forEach(off => {
+          const modeLabel = getPaymentTypeLabel((payEl && payEl.value) || 'unico');
           const tr = document.createElement('tr');
           tr.dataset.id = off.id;
           tr.innerHTML = `
@@ -3065,7 +3065,7 @@
             <td class="pc-price-cell" style="cursor:pointer" title="Clique para editar valor">
               R$ ${off.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </td>
-            <td>${off.mode}</td>
+            <td>${modeLabel}</td>
             <td style="text-align:right" class="pc-actions-cell">
               <button class="pc-action-btn pc-edit-offer" title="Configurações"><i class="fa-solid fa-gear"></i></button>
               <button class="pc-action-btn pc-delete-offer" title="Excluir" style="color:#FCA5A5"><i class="fa-solid fa-trash-can"></i></button>
@@ -3116,7 +3116,7 @@
             return;
           }
           const nextId = offers.length > 0 ? Math.max(...offers.map(o => o.id)) + 1 : 1;
-          const newOffer = { id: nextId, name: `Nova Oferta ${nextId}`, price: 0.00, mode: 'Pagamento Único' };
+          const newOffer = { id: nextId, name: `Nova Oferta ${nextId}`, price: 0.00, mode: getPaymentTypeLabel((payEl && payEl.value) || 'unico') };
           offers.push(newOffer);
           renderOffers();
           saveDraft();
@@ -3254,7 +3254,7 @@
       function renderDeliveryItems() {
         if (!delGrid) return;
         delGrid.innerHTML = '';
-        const list = deliveryItems.filter(i => i.id !== 'link' || isMonthlySubscriptionEnabled());
+        const list = deliveryItems.filter(i => i.id !== 'link' || isMonthlyProduct());
         list.forEach((m) => {
           const card = document.createElement('div');
           card.className = `del-card ${m.active ? 'is-active' : ''}`;
@@ -3298,7 +3298,7 @@
           case 'telegram': return `<div class="pc-field"><div class="pc-label">Link do Grupo/Canal</div><input type="url" class="pc-input" placeholder="https://t.me/..." value="${m.config.url}" oninput="updateDelConfig('${m.id}', 'url', this.value)"><div style="display:flex; gap:16px; margin-top:10px"><label style="font-size:12px; display:flex; align-items:center; gap:6px"><input type="radio" name="tg_type_${m.id}" ${m.config.type==='canal'?'checked':''} onclick="updateDelConfig('${m.id}', 'type', 'canal')"> Canal</label><label style="font-size:12px; display:flex; align-items:center; gap:6px"><input type="radio" name="tg_type_${m.id}" ${m.config.type==='grupo'?'checked':''} onclick="updateDelConfig('${m.id}', 'type', 'grupo')"> Grupo</label></div><div class="pay-toggle-row" style="border:none; padding:10px 0"><span style="font-size:12px">Adicionar comprador automaticamente</span><label class="switch"><input type="checkbox" ${m.config.autoAdd?'checked':''} onchange="updateDelConfig('${m.id}', 'autoAdd', this.checked)"><span class="slider"></span></label></div></div>`;
           case 'email': return `<div class="pc-field"><div class="pc-label">URL de Acesso</div><input type="url" class="pc-input" placeholder="https://" value="${m.config.url}" oninput="updateDelConfig('${m.id}', 'url', this.value)"><div class="pc-label" style="margin-top:10px">Mensagem Personalizada</div><textarea class="pc-textarea" placeholder="Olá, aqui está seu acesso..." maxlength="500" oninput="updateDelConfig('${m.id}', 'message', this.value)">${m.config.message}</textarea></div>`;
           case 'link': {
-            if (!isMonthlySubscriptionEnabled()) return '';
+            if (!isMonthlyProduct()) return '';
             if (!recurringLinkToken) {
               recurringLinkToken = `subm_${Math.random().toString(36).slice(2, 10)}`;
               saveDraft();
@@ -3346,7 +3346,7 @@
 
       function updateDelSelectAllState() {
         if (!delSelectAll) return;
-        const visible = deliveryItems.filter(i => i.id !== 'link' || isMonthlySubscriptionEnabled());
+        const visible = deliveryItems.filter(i => i.id !== 'link' || isMonthlyProduct());
         const total = visible.length;
         const active = visible.filter(i => i.active).length;
         delSelectAll.checked = active === total;
@@ -3356,7 +3356,7 @@
       if (delSelectAll) {
         delSelectAll.onchange = () => {
           deliveryItems.forEach(i => {
-            if (i.id === 'link' && !isMonthlySubscriptionEnabled()) {
+            if (i.id === 'link' && !isMonthlyProduct()) {
               i.active = false;
               return;
             }
@@ -3375,15 +3375,49 @@
         { id: 'cartao', name: 'Cartão de Crédito', ico: 'fa-solid fa-credit-card', price: '17,90', active: true },
         { id: 'picpay', name: 'PicPay', ico: 'fa-solid fa-p', price: '17,25', active: true },
         { id: 'apple', name: 'Apple Pay', ico: 'fa-brands fa-apple', price: '16,82', active: true },
-        { id: 'google', name: 'Google Pay', ico: 'fa-brands fa-google-pay', price: '16,82', active: true },
-        { id: 'mensal', name: 'Parcelado mensal', ico: 'fa-solid fa-repeat', price: '—', active: false }
+        { id: 'google', name: 'Google Pay', ico: 'fa-brands fa-google-pay', price: '16,82', active: true }
       ];
 
       // Estado central global para o método padrão
       let defaultPaymentMethod = 'pix';
 
-      function isMonthlySubscriptionEnabled() {
-        return Array.isArray(paymentMethods) && paymentMethods.some(m => m.id === 'mensal' && m.active);
+      function getPaymentTypeLabel(type) {
+        if (type === 'recorrente') return 'Cobrança mensal recorrente';
+        return 'Pagamento Único';
+      }
+
+      function applyPaymentTypeRules({ skipSave = false } = {}) {
+        const type = (payEl && payEl.value) || 'unico';
+        const recurring = type === 'recorrente';
+        ensureDefaultCheckout();
+        const ck = getActiveCheckout();
+
+        if (recurring) {
+          paymentMethods.forEach(pm => { pm.active = pm.id === 'cartao'; });
+          defaultPaymentMethod = 'cartao';
+          if (ck && ck.payment) {
+            if (ck.payment.credit) { ck.payment.credit.enabled = true; ck.payment.credit.recurring = true; }
+            if (ck.payment.pix) { ck.payment.pix.enabled = false; ck.payment.pix.recurring = false; }
+            if (ck.payment.boleto) { ck.payment.boleto.enabled = false; ck.payment.boleto.recurring = false; }
+            if (ck.payment.installment) ck.payment.installment.enabled = false;
+          }
+        } else {
+          if (ck && ck.payment) {
+            if (ck.payment.credit) ck.payment.credit.recurring = false;
+            if (ck.payment.pix) ck.payment.pix.enabled = true;
+            if (ck.payment.boleto) ck.payment.boleto.enabled = true;
+          }
+        }
+
+        const modeLabel = getPaymentTypeLabel(type);
+        offers.forEach(off => { off.mode = modeLabel; });
+
+        renderPaymentMethods();
+        updatePaySelectAllState();
+        renderDeliveryItems();
+        renderOffers();
+        renderCheckoutPreview();
+        if (!skipSave) saveDraft();
       }
 
       function renderPaymentMethods() {
@@ -3589,17 +3623,16 @@
             if (typeof d.paymentType === 'string') {
               const m = { single:'unico', recurring:'recorrente', installment:'parcelado' };
               payEl.value = m[d.paymentType] || d.paymentType;
+              if (!Array.from(payEl.options).some(o => o.value === payEl.value)) payEl.value = 'unico';
             }
             if (Array.isArray(d.paymentMethods)) {
-              paymentMethods = d.paymentMethods;
-              if (!paymentMethods.some(pm => pm.id === 'mensal')) {
-                paymentMethods.push({ id: 'mensal', name: 'Parcelado mensal', ico: 'fa-solid fa-repeat', price: '—', active: false });
-              }
+              paymentMethods = d.paymentMethods.filter(pm => pm && pm.id !== 'mensal');
               defaultPaymentMethod = d.defaultPaymentMethod || 'pix';
-              renderPaymentMethods();
-              updatePaySelectAllState();
+              if (defaultPaymentMethod === 'mensal') defaultPaymentMethod = 'pix';
+              if (defaultPaymentMethod && !paymentMethods.some(pm => pm.id === defaultPaymentMethod)) defaultPaymentMethod = 'pix';
+              applyPaymentTypeRules({ skipSave: true });
             } else {
-              renderPaymentMethods();
+              applyPaymentTypeRules({ skipSave: true });
             }
             if (typeof d.recurringLinkToken === 'string') recurringLinkToken = d.recurringLinkToken;
             if (typeof d.repeatEmail === 'boolean' && toggleEmail) toggleEmail.checked = d.repeatEmail;
@@ -3759,6 +3792,7 @@
       if (removeBtn) removeBtn.addEventListener('click', clearPreview);
 
       [nameEl, descEl, catEl, payEl].forEach(el=> el && el.addEventListener('input', ()=>{ try{ saveDraft(); } catch(_){ } }));
+      if (payEl) payEl.addEventListener('change', () => applyPaymentTypeRules());
 
       const ckAddBtn = document.getElementById('ckAddBtn');
       const ckSearch = document.getElementById('ckSearch');

@@ -10,6 +10,7 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const logoSrc = 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22140%22%20height%3D%2240%22%20viewBox%3D%220%200%20140%2040%22%3E%3Crect%20width%3D%22140%22%20height%3D%2240%22%20rx%3D%2210%22%20fill%3D%22%230f172a%22/%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2218%22%20fill%3D%22%23ffffff%22%3ECLICKIFY%3C/text%3E%3C/svg%3E';
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -30,7 +31,7 @@ export default function Register() {
       <div className="login-container">
         <div className="login-header">
           <img 
-            src="/img/logo3.jpeg" 
+            src={logoSrc} 
             alt="Clickify Cursos" 
             className="login-logo"
           />
